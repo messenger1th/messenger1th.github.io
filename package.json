@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "c": "cd ./source/_posts/ && git add . && git commit -m \"auto\"",
-    "p": "cd ./source/_posts/ && git push",
+    "c": "git add . && git commit -m \"auto\"",
+    "p": "yarn c || git push",
     "s": "hexo clean && hexo generate && hexo s",
     "d": "hexo clean && hexo generate && hexo d",
     "cs": "yarn c && yarn s",
