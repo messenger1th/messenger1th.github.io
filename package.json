@@ -1,0 +1,36 @@
+{
+  "name": "hexo-site",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "c": "cd ./source/_posts/ && git add . && git commit -m \"auto\"",
+    "p": "cd ./source/_posts/ && git push",
+    "s": "hexo clean && hexo generate && hexo s",
+    "d": "hexo clean && hexo generate && hexo d",
+    "cs": "yarn c && yarn s",
+    "pd": "yarn p && yarn d",
+    "total": "yarn c || yarn pd"
+  },
+  "hexo": {
+    "version": "6.3.0"
+  },
+  "dependencies": {
+    "hexo": "^6.3.0",
+    "hexo-asset-image": "github:CodeFalling/hexo-asset-image",
+    "hexo-deployer-git": "^3.0.0",
+    "hexo-enhancer": "^1.0.10",
+    "hexo-generator-archive": "^1.0.0",
+    "hexo-generator-category": "^1.0.0",
+    "hexo-generator-index": "^2.0.0",
+    "hexo-generator-json-content": "^4.2.3",
+    "hexo-generator-search": "^2.4.3",
+    "hexo-generator-tag": "^1.0.0",
+    "hexo-renderer-ejs": "^2.0.0",
+    "hexo-renderer-marked": "^5.0.0",
+    "hexo-renderer-stylus": "^2.1.0",
+    "hexo-server": "^3.0.0",
+    "hexo-theme-fluid": "^1.9.3",
+    "hexo-theme-landscape": "^0.0.3",
+    "hexo-theme-volantis": "^5.7.6"
+  }
+}
