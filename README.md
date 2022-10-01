@@ -13,3 +13,4 @@
 1. 生成目录插件：`"hexo-enhancer": "^1.0.10",`
 2. 图片插件：`"hexo-asset-image": "github:CodeFalling/hexo-asset-image"`， 并设置 `post_asset_folder: true`。
 
+ 
