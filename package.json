@@ -8,7 +8,7 @@
     "s": "hexo clean && hexo generate && hexo s",
     "d": "hexo clean && hexo generate && hexo d",
     "cs": "yarn c && yarn s",
-    "pd": "yarn p && yarn d",
+    "pd": "yarn p || yarn d",
     "total": "yarn c || yarn pd"
   },
   "hexo": {
