@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "c": "git add . && git commit -m \"auto\"",
-    "p": "yarn c || git push",
+    "p": "yarn c | git push",
     "s": "hexo clean && hexo generate && hexo s",
     "d": "hexo clean && hexo generate && hexo d",
     "backup": "yarn c | yarn p",
