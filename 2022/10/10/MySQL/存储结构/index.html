@@ -24,7 +24,7 @@
 <meta property="og:description" content="MySQL存储的结构 记录: Record 页: Page 区: extent 组:  段: Segement 表: Table 库  记录: Record记录与记录之间连成单向链表, 便于二分查找到页面最小记录向后遍历查询. 页: Page这是MySQL存储最基本的单位, 一般为16KB, 页与页之间连成双向链表, 便于双向查询. 区: Extent对于16KB的页来说 连续的64个页就是一个区">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-10-10T12:00:09.805Z">
-<meta property="article:modified_time" content="2022-10-10T12:00:09.805Z">
+<meta property="article:modified_time" content="2022-11-20T10:31:30.386Z">
 <meta property="article:author" content="Epoch">
 <meta property="article:tag" content="Epoch Blog">
 <meta name="twitter:card" content="summary_large_image">
@@ -218,7 +218,7 @@
         
         
         
-          22 分钟
+          21 分钟
         
       </span>
     
@@ -290,7 +290,7 @@
 <li>没有剩余页面的碎片区 <em>FREE FRAG</em></li>
 <li>附属于某个段的区 <em>FSEG</em></li>
 </ul>
-<p>每个区都对应一个XDES Entry结构, 这个结构记录了对应的区的一些属性![image-20220601213959673](Storage Structure.assets&#x2F;image-20220601213959673.png)</p>
+<p>每个区都对应一个XDES Entry结构, 这个结构记录了对应的区的一些属性![image-20220601213959673](Storage Structure&#x2F;image-20220601213959673.png)</p>
 <p>区与区之间可以通过<code>List Node</code>中的来连成一个双向链表.</p>
 <p><strong>连成链表有什么特殊用处呢? 等谈到段的概念再来解释.</strong></p>
 <h2 id="组"><a href="#组" class="headerlink" title="组"></a>组</h2><p>每256个区被划分为一个组.组的前几页是用于管理组的, 由于页面的大小有限, <code>XDES Entry</code>结构大小为40字节, 所以才把256个区分为一组, 在每组的第一个页面存放256个<code>XDES Entry</code> 结构.</p>
@@ -299,7 +299,7 @@
 <h2 id="段-Segment"><a href="#段-Segment" class="headerlink" title="段: Segment"></a>段: Segment</h2><p>段不是一个物理上的区域, 是一个逻辑上的概念,由<strong>一些完整的区和若干零散页面组成</strong>.</p>
 <p>像每个区都有对应的<code>XDES Entry</code>来记录这个区的属性一样, InnoDB的设计者为每个段都定义了一个<code>INODE Entry</code>来记录这个段的属性, 方便管理段.</p>
 <p>第一个分组中的第三个页面类型是<code>INODE</code>, 用于存储<code>INODE Entry</code>.</p>
-<p> ![image-20220602081744949](Storage Structure.assets&#x2F;image-20220602081744949.png)</p>
+<p> ![image-20220602081744949](Storage Structure&#x2F;image-20220602081744949.png)</p>
 <ul>
 <li><code>Segment ID</code>: 记录段的编号</li>
 <li><code>NOT_FULL_N_USED</code>: 在<code>NOT_FULL</code>链表中已经使用了多少个页面</li>
@@ -316,7 +316,7 @@
 <li>FULL链表</li>
 </ul>
 <p>​	<strong>这就可以快速定位需要的区, 使用该页面后, 页面的状态改变, 继而从该状态的链表移动到转换后状态的链表.</strong></p>
-<p>![image-20220602085659058](Storage Structure.assets&#x2F;image-20220602085659058.png)</p>
+<p>![image-20220602085659058](Storage Structure&#x2F;image-20220602085659058.png)</p>
 <p>如图中描述, .每个<code>INODE Entry</code> 结构占用 192 字节 个页面中可以存储 85 个这样的结构. <strong>那如果该结构不够用了怎么办?</strong> </p>
 <p>类似段中的三种区域链表, 将是否有空闲<code>INODE Entry</code>结构分成2类, 用<code>SEG_INODES_FULL</code>和<code>SEG_INDOE_FREE</code>链表连接起来, 基节点位于<code>FSP_HDR</code>类型页面的<code>File Space Header</code>中</p>
 <p><strong>说到这里, 我们来总结一下共有哪些结构连成了链表吧</strong></p>
@@ -332,9 +332,9 @@
 </ul>
 <h2 id="Other-Tips"><a href="#Other-Tips" class="headerlink" title="Other Tips"></a>Other Tips</h2><p>我们知道，一个索引会产生两个段，分别是叶子节点段和非叶子节点段，而每个段都会对 应一个 <code>INODE</code>结构. <strong>我们 怎么知道某个段对应哪个<code>INODE Entry</code>结构呢?</strong></p>
 <p>索引页(INDEX页) 中有一个<code>Page Header</code>部分</p>
-<p>![image-20220602092951933](Storage Structure.assets&#x2F;image-20220602092951933.png)</p>
+<p>![image-20220602092951933](Storage Structure&#x2F;image-20220602092951933.png)</p>
 <p>其中的 PAGE BTR_SEG_LEAF PAGE_BTR_SEG_TOP 都占用 10 字节，它们其实对应一个名为 Segmen Header 的结构，如图 9- 所示.</p>
-<p>![image-20220602093022807](Storage Structure.assets&#x2F;image-20220602093022807.png)</p>
+<p>![image-20220602093022807](Storage Structure&#x2F;image-20220602093022807.png)</p>
 <p>这样就很清晰了， <code>Page_BTR_SEG_LEAF</code> 记录着叶子节点段对应的 <code>INODE Entry</code>结构的 地址是哪个表空间中哪个页丽的哪个偏移量 </p>
 <p><code>PAGE_BTR_SEG_TOP</code> 记录着非叶子节点段对应 <code>INODE Entry</code>结构的地址是哪个表空间中哪个页面的哪个偏移量.</p>
 <p>这样, 索引和对应的段的关系就建立起来了. 不过需要注意的点是, 因为一个索引只对应两个段，所以只需要在索引的根页面中记录这两个结构即可.</p>
