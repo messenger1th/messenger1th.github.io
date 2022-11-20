@@ -1,0 +1,881 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/girl.png">
+  <link rel="icon" href="/img/girl.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Epoch">
+  <meta name="keywords" content="Epoch Blog">
+  
+    <meta name="description" content="进程 进程是程序的一个实例   单道程序：内存中只能运行一个程序 多道程序：多个程序穿插运行，有利于提高CPU利用率  相关概念时间片 由操作系统内核分配给每个进程。首先，内核会给每个进程分配相同初始时间片， 当所有进程都处于时间片耗尽，重新分配时间片。  并发与并行 并行（parallel): 同一时刻， 多条指令在多个处理器上同时执行。 并发：指同一时刻，只能有一个一条指令。多个进程快速交替执">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进程">
+<meta property="og:url" content="https://messenger1th.github.io/2022/10/10/Linux/%E8%BF%9B%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Epoch">
+<meta property="og:description" content="进程 进程是程序的一个实例   单道程序：内存中只能运行一个程序 多道程序：多个程序穿插运行，有利于提高CPU利用率  相关概念时间片 由操作系统内核分配给每个进程。首先，内核会给每个进程分配相同初始时间片， 当所有进程都处于时间片耗尽，重新分配时间片。  并发与并行 并行（parallel): 同一时刻， 多条指令在多个处理器上同时执行。 并发：指同一时刻，只能有一个一条指令。多个进程快速交替执">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-10-10T12:00:09.781Z">
+<meta property="article:modified_time" content="2022-10-10T12:00:09.781Z">
+<meta property="article:author" content="Epoch">
+<meta property="article:tag" content="Epoch Blog">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>进程 - Epoch</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"messenger1th.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Epoch</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/messenger1th">
+                <i class="iconfont icon-github-fill"></i>
+                GitHub
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="进程"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-10-10 20:00" pubdate>
+          2022年10月10日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">进程</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h1><blockquote>
+<p>进程是程序的一个实例</p>
+</blockquote>
+<ol>
+<li>单道程序：内存中只能运行一个程序</li>
+<li>多道程序：多个程序穿插运行，有利于提高CPU利用率</li>
+</ol>
+<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><h3 id="时间片"><a href="#时间片" class="headerlink" title="时间片"></a>时间片</h3><blockquote>
+<p>由操作系统内核分配给每个进程。首先，内核会给每个进程分配相同初始时间片， 当所有进程都处于时间片耗尽，重新分配时间片。</p>
+</blockquote>
+<h3 id="并发与并行"><a href="#并发与并行" class="headerlink" title="并发与并行"></a>并发与并行</h3><blockquote>
+<p>并行（parallel): 同一时刻， 多条指令在多个处理器上同时执行。</p>
+<p>并发：指同一时刻，只能有一个一条指令。多个进程快速交替执行。</p>
+</blockquote>
+<h3 id="进程号和相关函数"><a href="#进程号和相关函数" class="headerlink" title="进程号和相关函数"></a>进程号和相关函数</h3><blockquote>
+<p>每个进程都是一个唯一的进程号，<code>pid_t</code>类型， 范围<code>0-32767</code></p>
+</blockquote>
+<ul>
+<li><p>每个进程（除了init）都是由另一个进程创建，父进程创建子进程，父进程的<code>pid_t</code>为称为<code>PPID</code></p>
+</li>
+<li><p>进程组是一个或多个进程的集合。关联的进程号有一个进程组号<code>PGID</code>.默认情况下，当前进程号当作当前进程组号。</p>
+</li>
+<li><p>相关函数</p>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">pid_t</span> <span class="hljs-title function_">getpid</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>;
+<span class="hljs-type">pid_t</span> <span class="hljs-title function_">getppid</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>;
+<span class="hljs-type">pid_t</span> <span class="hljs-title function_">getpgid</span><span class="hljs-params">(<span class="hljs-type">pid_t</span> pid)</span>;</code></pre></div></li>
+</ul>
+<h2 id="进程管理"><a href="#进程管理" class="headerlink" title="进程管理"></a>进程管理</h2><blockquote>
+<p>PCB(Processing Control Block)，进程控制块，维护进程相关的信息</p>
+</blockquote>
+<ul>
+<li>进程id：用pit_t类型表示</li>
+<li>进程的状态：就绪、运行、挂起、停止等状态</li>
+<li>进程切换时需要保存和恢复的一些CPU寄存器</li>
+<li>描述虚拟地址空间的信息</li>
+<li>描述控制终端的信息</li>
+<li>当前工作目录</li>
+<li>umask掩码</li>
+<li>文件描述符，包含很多指向file结构体的指针</li>
+<li>用户id和组id</li>
+<li>会话（Session）和进程组</li>
+<li>进程可以适用的资源上限（Rescource Limit）</li>
+</ul>
+<h2 id="进程状态转移"><a href="#进程状态转移" class="headerlink" title="进程状态转移"></a>进程状态转移</h2><blockquote>
+<p>三态模型：就绪、运行、阻塞</p>
+<p>五态模型：新建、就绪、运行、阻塞、终止</p>
+</blockquote>
+<h3 id="查看进程"><a href="#查看进程" class="headerlink" title="查看进程"></a>查看进程</h3><div class="code-wrapper"><pre><code class="hljs shell">ps aux / ajx</code></pre></div>
+
+<ul>
+<li>STAT 相关参数含义（查吧）</li>
+<li>实时显示进程动态</li>
+</ul>
+<h3 id="杀死进程"><a href="#杀死进程" class="headerlink" title="杀死进程"></a>杀死进程</h3><div class="code-wrapper"><pre><code class="hljs shell">kill [-signal] pid
+kill -l #列出所有信号
+kill -9 pid# or -SIGKILL</code></pre></div>
+
+
+
+<h2 id="进程创建及父子进程调试"><a href="#进程创建及父子进程调试" class="headerlink" title="进程创建及父子进程调试"></a>进程创建及父子进程调试</h2><ol>
+<li><p><code>pid_t fork(void)</code> 创建进程。 pid_t 本质是int。</p>
+<div class="code-wrapper"><pre><code class="hljs C"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys.types.h&gt;</span> <span class="hljs-comment">//宏文件</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span> <span class="hljs-comment">//std unix</span></span>
+<span class="hljs-type">pid_t</span> <span class="hljs-title function_">fork</span><span class="hljs-params">(<span class="hljs-type">void</span>)</span>; 
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">return: 成功返回pid &gt;= 0</span>
+<span class="hljs-comment">		失败返回-1</span>
+<span class="hljs-comment">		返回值会返回两次，一次是父进程（pid &gt; 0），一次在子进程。(pid = 0)</span>
+<span class="hljs-comment">		</span>
+<span class="hljs-comment">失败原因：</span>
+<span class="hljs-comment">	1. 进程数到达上限。 errno被设置为EAGAIN</span>
+<span class="hljs-comment">	2. 系统内存不足。errno被设置为ENOMEM</span>
+<span class="hljs-comment">	</span>
+<span class="hljs-comment">原理： </span>
+<span class="hljs-comment">	1.写时候拷贝（copy-on-write）</span>
+<span class="hljs-comment">	2.只有写的时候才拷贝，否则共享地址和文件</span>
+<span class="hljs-comment">*/</span>
+<span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span>&#123;
+    <span class="hljs-type">pid_t</span> pid = fork();
+    <span class="hljs-keyword">if</span> (pid &gt; <span class="hljs-number">0</span>) &#123; <span class="hljs-comment">//父进程</span>
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;I am parent process, pid %d, ppid: %d&quot;</span>,getpid(),getppid());
+    &#125; <span class="hljs-keyword">else</span>  <span class="hljs-keyword">if</span> (pid == <span class="hljs-number">0</span>) &#123; <span class="hljs-comment">// 子进程</span>
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;I am child process, pid %d, ppid: %d&quot;</span>,getpid(), getppid());
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+</li>
+<li><p>父子进程的异同</p>
+<ol>
+<li>不同点<ol>
+<li><code>pid = fork()</code>值不同 </li>
+<li>PCB内容不同： pid、ppid不同、信号集</li>
+</ol>
+</li>
+<li>相同点<ol>
+<li>无写入的情况下，用户区的数据，文件描述符共享</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>GDB多进程调试</p>
+<ol>
+<li><p>设置调试模式：子进程还是父进程</p>
+<div class="code-wrapper"><pre><code class="hljs bash">show follow-fork-mode
+<span class="hljs-built_in">set</span> follow-fork-mode [child | parent]</code></pre></div>
+</li>
+<li><p>设置调试模式：调试当前程序时，其他程序是否运行</p>
+<div class="code-wrapper"><pre><code class="hljs shell">show detach-on-fork
+set detach-on-fork [on | off]</code></pre></div>
+</li>
+<li><p>其他命令</p>
+<div class="code-wrapper"><pre><code class="hljs shell">info inferiors //查看调试进程
+inferior id //切换调试进程
+detach inferiors id //使进程分离</code></pre></div></li>
+</ol>
+</li>
+</ol>
+<h2 id="exec-函数族"><a href="#exec-函数族" class="headerlink" title="exec 函数族"></a>exec 函数族</h2><blockquote>
+<p>功能相同或者相似的一系列函数。</p>
+</blockquote>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><p>根据指定文件路径，找到并执行，用它来取代调用进程的内容。即，在调用进程内部执行一个可执行文件。</p>
+<h3 id="返回值"><a href="#返回值" class="headerlink" title="返回值"></a>返回值</h3><blockquote>
+<p> 成功的话无返回值，失败返回-1</p>
+</blockquote>
+<p>因为调用进程的实体，包括代码段，数据段和堆栈等都已经被新的内容取代，只留下进程ID等一些表面信息保持原样。失败原代码段才存在，才能接收-1。</p>
+<h3 id="相关函数"><a href="#相关函数" class="headerlink" title="相关函数"></a>相关函数</h3><div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">execl</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* path, <span class="hljs-type">const</span> <span class="hljs-type">char</span>* args)</span>; <span class="hljs-comment">//absolute path</span>
+<span class="hljs-type">int</span> <span class="hljs-title function_">execlp</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* file, <span class="hljs-type">const</span> <span class="hljs-type">char</span>* args)</span>;<span class="hljs-comment">//会找系统环境变量</span>
+<span class="hljs-type">int</span> <span class="hljs-title function_">execv</span><span class="hljs-params">()</span>;
+<span class="hljs-type">int</span> <span class="hljs-title function_">execvp</span><span class="hljs-params">()</span>;
+<span class="hljs-type">int</span> <span class="hljs-title function_">execvpe</span><span class="hljs-params">()</span>;
+<span class="hljs-type">int</span> <span class="hljs-title function_">execve</span><span class="hljs-params">()</span>;
+
+<span class="hljs-comment">/*</span>
+<span class="hljs-comment">l(list) 参数地址列表， 以空指针结尾</span>
+<span class="hljs-comment">v(vector) 存有各参数地址的指针数组的地址。</span>
+<span class="hljs-comment">p(path) 按PATH环境变量指定的目录搜索</span>
+<span class="hljs-comment">e(environment) 按有环境变量字符串地址的指针数组的地址。</span>
+<span class="hljs-comment">*/</span></code></pre></div>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>进程</div>
+      <div>https://messenger1th.github.io/2022/10/10/Linux/进程/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Epoch</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年10月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/10/10/Linux/Shell/" title="Shell">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Shell</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/10/10/MySQL/Buffer%20Pool/" title="Buffer Pool">
+                        <span class="hidden-mobile">Buffer Pool</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Linux"
+        id="heading-edc9f0a5a5d57797bf68e37364743831" role="tab" data-toggle="collapse" href="#collapse-edc9f0a5a5d57797bf68e37364743831"
+        aria-expanded="true"
+      >
+        Linux
+        <span class="list-group-count">(3)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-edc9f0a5a5d57797bf68e37364743831"
+           role="tabpanel" aria-labelledby="heading-edc9f0a5a5d57797bf68e37364743831">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2022/10/10/Linux/Makefile/" title="Makefile"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Makefile</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/Linux/Shell/" title="Shell"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Shell</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/Linux/%E8%BF%9B%E7%A8%8B/" title="进程"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">进程</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

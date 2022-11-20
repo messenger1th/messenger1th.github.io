@@ -1,0 +1,1109 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/girl.png">
+  <link rel="icon" href="/img/girl.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Epoch">
+  <meta name="keywords" content="Epoch Blog">
+  
+    <meta name="description" content="TCP握手为什么是三次原因一：确保双方能够发送和接受syn和ack数据包，并同步seq数据。 在网络中，由于丢包的存在，发出一个数据包，在没有收到应答的情况下，无法确定对方是否收到。 因此，要确认一个数据包对方收到了，对于发送方来说，只有收到接收方的ACK确认包。 请求建立连接  发送方发送syn包用于发起连接。 接收方发送ack包用于同意连接建立。  即，发送和确认，一来一回。保证了一个数据包被">
+<meta property="og:type" content="article">
+<meta property="og:title" content="interview">
+<meta property="og:url" content="https://messenger1th.github.io/2022/10/10/internet/interview/index.html">
+<meta property="og:site_name" content="Epoch">
+<meta property="og:description" content="TCP握手为什么是三次原因一：确保双方能够发送和接受syn和ack数据包，并同步seq数据。 在网络中，由于丢包的存在，发出一个数据包，在没有收到应答的情况下，无法确定对方是否收到。 因此，要确认一个数据包对方收到了，对于发送方来说，只有收到接收方的ACK确认包。 请求建立连接  发送方发送syn包用于发起连接。 接收方发送ack包用于同意连接建立。  即，发送和确认，一来一回。保证了一个数据包被">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://messenger1th.github.io/2022/10/10/internet/interview/Users/Alias/AppData/Roaming/Typora/typora-user-images/image-20220923153127072.png">
+<meta property="article:published_time" content="2022-10-10T12:00:09.777Z">
+<meta property="article:modified_time" content="2022-10-10T12:00:09.777Z">
+<meta property="article:author" content="Epoch">
+<meta property="article:tag" content="Epoch Blog">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://messenger1th.github.io/2022/10/10/internet/interview/Users/Alias/AppData/Roaming/Typora/typora-user-images/image-20220923153127072.png">
+  
+  
+  
+  <title>interview - Epoch</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"messenger1th.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Epoch</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/messenger1th">
+                <i class="iconfont icon-github-fill"></i>
+                GitHub
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="interview"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-10-10 20:00" pubdate>
+          2022年10月10日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          43 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">interview</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="TCP握手为什么是三次"><a href="#TCP握手为什么是三次" class="headerlink" title="TCP握手为什么是三次"></a>TCP握手为什么是三次</h2><p><strong>原因一：确保双方能够发送和接受<code>syn</code>和<code>ack</code>数据包，并同步<code>seq</code>数据。</strong></p>
+<p>在网络中，由于丢包的存在，发出一个数据包，在没有收到应答的情况下，无法确定对方是否收到。</p>
+<p>因此，要确认一个数据包对方收到了，对于发送方来说，只有收到接收方的ACK确认包。</p>
+<p><strong>请求建立连接</strong></p>
+<ul>
+<li>发送方发送<code>syn</code>包用于发起连接。</li>
+<li>接收方发送<code>ack</code>包用于同意连接建立。</li>
+</ul>
+<p>即，发送和确认，一来一回。保证了一个数据包被接受。</p>
+<p>对于主动发起方和被动发起方来说，都需要一来一回的过程。本来是四次握手，但由于第二次握手时的ack和（原来是）第三次握手的<code>syn</code>合并成了一次，总共也就是一次握手。</p>
+<p><strong>原因二：避免历史连接</strong></p>
+<blockquote>
+<p>RFC 793: <em>The principle reason for the three-way handshake is to prevent old duplicate connection initiations from causing confusion.</em></p>
+</blockquote>
+<p>假设一个<code>syn</code>在发送时延时，发送方认为接收方没有接收到该包。即认为该包失效，重发<code>syn</code>包。</p>
+<p>但该包在新<code>syn</code>包之前到达，如果是两次握手，就会建立历史连接。</p>
+<p>三次握手就可以避免，流程如下</p>
+<ol>
+<li>旧<code>syn</code>到达，被动发起方发送<code>ack+syn</code>。</li>
+<li>主动发起方接收到该<code>ack+syn</code>，认识到该连接过期（序列号过期或超时），便发送<code>RST</code>给被动发起方。</li>
+<li>被动发起方接到<code>RST</code>，退出<code>SYN_RCVD</code>状态，避免了历史连接。</li>
+</ol>
+<p><strong>原因三：避免资源浪费</strong></p>
+<p>如果只有两次握手，即每收到一个 <code>SYN</code> 就只能先主动建立一个连接，这会造成什么情况呢？</p>
+<p>消息滞留情况下，服务器重复接受无用的连接请求 <code>SYN</code> 报文，而造成重复分配资源。</p>
+<p><strong>其他原因</strong></p>
+<p>对于两次握手，在面对SYN攻击时，即建立多个无用TCP连接，也会造成资源大量浪费，导致服务器崩溃无法为正常用户服务。</p>
+<h2 id="TCP挥手为什么是四次？"><a href="#TCP挥手为什么是四次？" class="headerlink" title="TCP挥手为什么是四次？"></a>TCP挥手为什么是四次？</h2><p>类比TCP三次握手，对于TCP连接双方，都需要一个<code>FIN</code>和一个<code>ACK</code>。</p>
+<p><code>FIN</code>发送方，表示自己不在发送数据但可以接收数据。</p>
+<p>通常来说，双方的数据不是同时发送完成的，因此FIN和ACK一般是分开发送。</p>
+<p>特定情况下（TCP延迟应答开启+无数据发送或第二次<code>FIN</code>到达），便可缩短成三次握手。见<a target="_blank" rel="noopener" href="https://xiaolincoding.com/network/3_tcp/tcp_three_fin.html#tcp-%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B">4.22 TCP 四次挥手，可以变成三次吗？ | 小林coding (xiaolincoding.com)</a></p>
+<h2 id="TCP和UDP的区别"><a href="#TCP和UDP的区别" class="headerlink" title="TCP和UDP的区别"></a>TCP和UDP的区别</h2><p>我觉得TCP和UDP最大的区别就是，应用场景。</p>
+<p>对于交易支付这种依赖可靠性的传输，需要用到TCP。对于视频这种对于延迟有较低要求的场景，需要用到UDP。</p>
+<p>针对TCP的可靠，UDP的低延迟，展开对区别的描述。</p>
+<p><strong>TCP可靠性</strong></p>
+<p>可靠意味着对于文件要完整地无差错到达。</p>
+<ol>
+<li><p>而数据链路层是有数据包大小限制的。对于一个大文件，我们需要将其分片，编号。保证完整到达只需编号完整即可。</p>
+</li>
+<li><p>数据分片传输，也就导致了TCP是流式协议。</p>
+</li>
+<li><p>需要对以及接受到的数据包编号进行维护，TCP是面向连接的协议也就不难理解了。</p>
+</li>
+<li><p>对于丢失的数据包，需要进行重传。而UDP不会。</p>
+</li>
+</ol>
+<p><strong>UDP低延迟</strong></p>
+<p>低延迟，只管立即发送，不管能不能完整到达，不管网络拥塞情况。</p>
+<ul>
+<li>对于TCP的那套建立连接的三次握手，就可以省去，所以UDP不是面向连接的协议。</li>
+<li>是“自私”的协议，没有拥塞控制、流量控制。在网络拥挤时，仍然不减少发送速率。</li>
+<li>没有了编号，数据包就可能是乱序的。</li>
+<li>没有了重传，不管丢包问题。</li>
+</ul>
+<p><strong>当然还有因为功能的不一致，导致的区别</strong>。</p>
+<ol>
+<li><strong>首部开销</strong>：TCP需要维护<code>Ack</code>和<code>Seq</code>，关闭连接的<code>FIN</code>和<code>RST</code>等大概20字节，如果用到”选项“，则会更多。而UDP首部（共8字节）只需要双方端口、包长度、检验和各16位。</li>
+<li><strong>分片不同</strong>：TCP在传输层分片，而UDP在网络层分片。由于网络层不保证可靠性，如果TCP在网络层再分片，原本为一个编号的数据分为多个包，若丢失一个就要全部重传，因而TCP在传输层就直接分片进行编号，丢失只需重传该编号的即可。而UDP本就不保证可靠，就在网络层分片即可。</li>
+</ol>
+<p><strong>按照各种特性分，TCP和UDP的总区别如下</strong></p>
+<p><em>1. 连接</em></p>
+<ul>
+<li>TCP 是面向连接的传输层协议，传输数据前先要建立连接。</li>
+<li>UDP 是不需要连接，即刻传输数据。</li>
+</ul>
+<p><em>2. 服务对象</em></p>
+<ul>
+<li>TCP 是一对一的两点服务，即一条连接只有两个端点。</li>
+<li>UDP 支持一对一、一对多、多对多的交互通信</li>
+</ul>
+<p><em>3. 可靠性</em></p>
+<ul>
+<li>TCP 是可靠交付数据的，数据可以无差错、不丢失、不重复、按序到达。</li>
+<li>UDP 是尽最大努力交付，不保证可靠交付数据。</li>
+</ul>
+<p><em>4. 拥塞控制、流量控制</em></p>
+<ul>
+<li>TCP 有拥塞控制和流量控制机制，保证数据传输的安全性。</li>
+<li>UDP 则没有，即使网络非常拥堵了，也不会影响 UDP 的发送速率。</li>
+</ul>
+<p><em>5. 首部开销</em></p>
+<ul>
+<li>TCP 首部长度较长，会有一定的开销，首部在没有使用「选项」字段时是 <code>20</code> 个字节，如果使用了「选项」字段则会变长的。</li>
+<li>UDP 首部只有 8 个字节，并且是固定不变的，开销较小。</li>
+</ul>
+<p><em>6. 传输方式</em></p>
+<ul>
+<li>TCP 是流式传输，没有边界，但保证顺序和可靠。</li>
+<li>UDP 是一个包一个包的发送，是有边界的，但可能会丢包和乱序。</li>
+</ul>
+<p><em>7. 分片不同</em></p>
+<ul>
+<li>TCP 的数据大小如果大于 MSS 大小，则会在传输层进行分片，目标主机收到后，也同样在传输层组装 TCP 数据包，如果中途丢失了一个分片，只需要传输丢失的这个分片。</li>
+<li>UDP 的数据大小如果大于 MTU 大小，则会在 IP 层进行分片，目标主机收到后，在 IP 层组装完数据，接着再传给传输层。</li>
+</ul>
+<h2 id="如何应对Syn泛洪攻击？"><a href="#如何应对Syn泛洪攻击？" class="headerlink" title="如何应对Syn泛洪攻击？"></a>如何应对Syn泛洪攻击？</h2><p>Syn泛洪攻击，是大量伪造的IP和端口，向服务器发送Syn报文。服务器便会将他们放入半连接队列，占满服务器的半连接队列后，就无法为正常TCP连接服务。</p>
+<p>因此，针对上述过程，有以下方式应对。</p>
+<p><strong>既然是占满了服务器的半连接队列</strong></p>
+<ul>
+<li>增大半连接队列的大小，Linux下，由内核的多个参数决定。</li>
+<li>服务器的空间满了，那就调大网卡的队列大小。Linux下，由参数 <code>net.core.netdev_max_backlog</code>决定。</li>
+</ul>
+<p><strong>既然空间不够用，那就时间换空间</strong></p>
+<ul>
+<li>开启 <code>net.ipv4.tcp_syncookies</code>。在半连接队列满了之后，服务不会丢弃syn报文，而是根据算法计算一个cookie值。在下次收到ack报文时，验证合法性。</li>
+</ul>
+<p><strong>当然还有一些可能误伤的方法</strong></p>
+<ul>
+<li>减少<code>syn+ack</code>报文的重传次数。由 <code>tcp_synack_retries</code>内核参数决定（默认值是 5 次）</li>
+<li>减少重传时间等等。</li>
+</ul>
+<h2 id="安全相关算法"><a href="#安全相关算法" class="headerlink" title="安全相关算法"></a>安全相关算法</h2><h3 id="对称加密算法"><a href="#对称加密算法" class="headerlink" title="对称加密算法"></a>对称加密算法</h3><p>有对每固定数目的数据块加密的算法，称为分组秘密（或块密码），也有对流进行加密的算法，称为为流密码。</p>
+<ul>
+<li>DES（逐渐被AES取代）：是块密码</li>
+<li>AES，块密码，针对块大小有AES-128、AES-192、AES-256等。</li>
+</ul>
+<h3 id="非对称加密算法"><a href="#非对称加密算法" class="headerlink" title="非对称加密算法"></a>非对称加密算法</h3><ul>
+<li>RSA</li>
+<li>DH-&gt;DHE-&gt;ECDHE</li>
+</ul>
+<h3 id="哈希算法"><a href="#哈希算法" class="headerlink" title="哈希算法"></a>哈希算法</h3><ul>
+<li>MD5</li>
+<li>SHA-1、SHA-2、SHA-3。</li>
+</ul>
+<h2 id="HTTPS如何保证安全？"><a href="#HTTPS如何保证安全？" class="headerlink" title="HTTPS如何保证安全？"></a>HTTPS如何保证安全？</h2><p>HTTP不安全的方面有3个</p>
+<ul>
+<li>可能会被窃听</li>
+<li>身份可被冒充</li>
+<li>数据可被篡改</li>
+</ul>
+<p><strong>对于一次通信，我们首先保证双方不被窃听。</strong></p>
+<p>使用对称加密直接传输密钥会有密钥也被窃取的风险。因此改用非对称加密，私钥 + 公钥来加密。</p>
+<p>但由于非对称加密直接加密内容运算量太大，我们改用非对称加密加密对称密钥的方式，该对称密钥称为，对话密钥。</p>
+<p>这样，就解决了通信会被窃听的风险。但仍然存在被冒充的风险。</p>
+<p><strong>数字证书CA，解决被冒充的风险。</strong></p>
+<p>非对称加密，仅仅能让通信不被窃听。但伪造一对公钥私钥，冒充服务器还是可行的。需要对这进行安全措施。</p>
+<p>解决方案是，CA提供服务，对服务器公钥进行验证。</p>
+<p>服务器注册步骤如下：</p>
+<ol>
+<li>服务器向CA发送其公钥、用途、颁发者、有效时间等信息，称为证书信息。</li>
+<li>CA用Hash算法做一个摘要（也称签名）。</li>
+<li>同时，使用CA的私钥，对该摘要进行加密。</li>
+</ol>
+<p>客户端验证步骤如下</p>
+<ol>
+<li>接收到服务器发来的数字证书。</li>
+<li>使用CA的公钥（通常由浏览器或操作系统集成），将数字证书里头的摘要解密，得到CA注册时的原始Hash摘要值。</li>
+<li>使用Hash算法同样对原始证书进行摘要计算。</li>
+<li>比较两个摘要是否相同。</li>
+</ol>
+<p>这样就保证了，通讯过程的安全性和服务器的权威性，但还可能被篡改。</p>
+<p><strong>哈希算法保证完整性</strong></p>
+<p>在通讯双方安全地生成会话密钥后，就可以对通信进行加密了。</p>
+<p>每次对数据分块进行压缩，以及该块的Hash值进行计算。再用会话密钥进行加密。</p>
+<h2 id="HTTPS握手流程"><a href="#HTTPS握手流程" class="headerlink" title="HTTPS握手流程"></a>HTTPS握手流程</h2><blockquote>
+<p>以RSA算法为例，但实际情况下，使用ECDHE算法更普遍。</p>
+</blockquote>
+<p>抓包分析：</p>
+<img src="/2022/10/10/internet/interview/Users\Alias\AppData\Roaming\Typora\typora-user-images\image-20220923153127072.png" srcset="/img/loading.gif" lazyload alt="image-20220923153127072" style="zoom: 67%;">
+
+<p>TCP三次握手</p>
+<p>SSL&#x2F;TLS握手</p>
+<ol>
+<li>Client Hello ， 发送以下数据<ul>
+<li>支持的SSL&#x2F;TLS协议版本</li>
+<li>随机数Client Random</li>
+<li>支持的密码套件列表，如RSA。</li>
+</ul>
+</li>
+<li>Server Hello，发送以下数据<ul>
+<li>确定的SSL&#x2F;TLS协议版本</li>
+<li>随机数Server Random</li>
+<li>确定的密码套件，如RSA。</li>
+<li>服务器证书（含公钥等信息）。</li>
+</ul>
+</li>
+<li>第三次握手：客户端回应<ul>
+<li>客户端检查数字证书的有效性，并获取公钥。</li>
+<li>Change Cipher Key Exchange：生成一个随机数pre-master，并用公钥加密发。仅仅能用私钥打开，所以保证安全。</li>
+<li>Change Cipher Spec：告诉服务端开始使用加密方式发送消息。</li>
+<li>Encrypted Handshake Message（Finished）把之前所有发送的数据做个摘要，再用会话密钥（master secret）加密一下，让服务器做个验证。</li>
+</ul>
+</li>
+<li>第四次握手：服务器回应<ul>
+<li>Change Cipher Spec：告诉客户端开始使用加密方式发送消息。</li>
+<li>Encrypted Handshake Message（Finished）把之前所有发送的数据做个摘要，再用会话密钥（master secret）加密一下，让客户端做个验证。</li>
+</ul>
+</li>
+</ol>
+<p>注意到，以上通信安全的前提是，服务器私钥不被泄露。一旦私钥泄露，之前所有的通信都会被破解。</p>
+<p>于是，DH（演变: DH-&gt;DHE-&gt;ECDHE）算法出现了。它的通信双方都使用公私钥。服务器的公私钥不变，仍然用于确认身份。但客户端的公私钥动态选取。</p>
+<p>这样，就算泄露了服务器私钥。以前的通信，还需要客户端的私钥才能破解，保证了<strong>前向安全</strong>性。</p>
+<h2 id="HTTP发展史"><a href="#HTTP发展史" class="headerlink" title="HTTP发展史"></a>HTTP发展史</h2><h3 id="HTTP1-0"><a href="#HTTP1-0" class="headerlink" title="HTTP1.0"></a>HTTP1.0</h3><p>是一份参考文档，并未强制标准。定义了HTTP的部分规范。</p>
+<p>直接由明文传输，不安全，无状态信息，一个请求需要TCP握手挥手，效率很低。</p>
+<h3 id="HTTP-x2F-1-1"><a href="#HTTP-x2F-1-1" class="headerlink" title="HTTP&#x2F;1.1"></a>HTTP&#x2F;1.1</h3><p>对HTTP&#x2F;1.0进行了连接的优化，有了HTTP长连接, mo’ren，多个请求可用同一个TCP连接。HTTP&#x2F;1.0默认不开启，需要在头部字段开启。</p>
+<p>同时，理论上支持管道传输，无需上一个请求的回应即可进行下一个请求，但实际上默认不开启，浏览器基本不支持。</p>
+<h3 id="HTTP2"><a href="#HTTP2" class="headerlink" title="HTTP2"></a>HTTP2</h3><p>HTTP2基于HTTPS，默认开启SSL&#x2F;TLS。安全性有了保障。</p>
+<p>HTTP2使用HPACK算法，通信双方都有一张固定静态表、维护一张动态表、使用Huffman编码对头部压缩优化。</p>
+<p>HTTP2使用二进制帧，将原来的文本改为二进制流，便于直接传输，无需中间转换。</p>
+<p>HTTP2可以实现并行传输，给原本HTTP数据压缩后，给封装成二进制帧frame，含帧长度、流标识符、帧类型、标志位等信息，一条TCP连接可以传输多个stream。</p>
+<p>此外，HTTP2还支持服务器主动推送资源。减少了一次请求。</p>
+<h3 id="HTTP3"><a href="#HTTP3" class="headerlink" title="HTTP3"></a>HTTP3</h3><h2 id="路由算法"><a href="#路由算法" class="headerlink" title="路由算法"></a>路由算法</h2><p>已知，网络是划分区域的，划分成一个一个的AS（Autonomous System）自治系统。</p>
+<p>一般来说，AS与AS之间使用<strong>BGP</strong>（是一种<strong>EGP</strong>协议）算法路由，AS内使用<strong>RIP</strong>或<strong>OSPF</strong>算法(统称<strong>IGP</strong>协议)路由。</p>
+<h3 id="RIP算法"><a href="#RIP算法" class="headerlink" title="RIP算法"></a>RIP算法</h3><p>Routing Information Protocol：基于距离，泛洪法广播自己的路由表信息。</p>
+<ul>
+<li>仅和相邻路由器交换信息。</li>
+<li>交换的信息是当前本路由器所知道的全部信息，即自己现在路由表。</li>
+<li>按固定的时间间隔交换信息，如每隔30s或网络拓扑发生变化时。</li>
+</ul>
+<p>最终路由器都具有其他路由器距离信息。</p>
+<p><strong>特点：好消息传得快，坏消息传得慢</strong></p>
+<p>由于路由表中的信息并不记录具体的路线，只关心到达的距离。</p>
+<p>在新加路线时，路由表会被泛洪很快更新为更优路径。</p>
+<p>但线路故障时，虽然故障双方能检测到故障，设置对方不可达。</p>
+<p>但其他路由器并不知道，在自己的广播周期时，发送以前的老路由表。现在实际不可达的路线被认为是可达，就发生了错误。</p>
+<p><strong>改良方式</strong></p>
+<ol>
+<li>水平分割：从上一个节点来的信息，更新节点后，不再发送更新的节点回去。</li>
+<li>毒性反转的水平分割：接受节点信息时还是会回传，但回传一个无穷大的值。</li>
+</ol>
+<p>但水平分割的方式在有环路时还是存在问题。故RIP算法现在并不流行。</p>
+<h3 id="OSPF算法"><a href="#OSPF算法" class="headerlink" title="OSPF算法"></a>OSPF算法</h3><p>Open Shortest Path First：基于链路状态，首先确定自己的链路状态，再泛洪广播LSA信息。</p>
+<p>最终，每个路由器都有所有节点的邻接表信息，这样就可以算出最短路径，比如用Dijkstra算法。</p>
+<p><strong>故障</strong>：当链路故障时，只需更新自身的邻接表，然后泛洪发送给其他节点更新即可。</p>
+<p><strong>新增</strong>：同理。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/internet/" class="category-chain-item">internet</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>interview</div>
+      <div>https://messenger1th.github.io/2022/10/10/internet/interview/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Epoch</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年10月10日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/10/10/LeetCode/Milestone/" title="Milestone">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Milestone</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/10/10/internet/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" title="计算机网络">
+                        <span class="hidden-mobile">计算机网络</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="internet"
+        id="heading-c3581516868fb3b71746931cac66390e" role="tab" data-toggle="collapse" href="#collapse-c3581516868fb3b71746931cac66390e"
+        aria-expanded="true"
+      >
+        internet
+        <span class="list-group-count">(12)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-c3581516868fb3b71746931cac66390e"
+           role="tabpanel" aria-labelledby="heading-c3581516868fb3b71746931cac66390e">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2022/10/10/internet/Frame/" title="Frame"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Frame</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/internet/interview/" title="interview"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">interview</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/internet/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" title="计算机网络"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">计算机网络</span>
+        </a>
+      
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="HTTP"
+        id="heading-293c9ea246ff9985dc6f62a650f78986" role="tab" data-toggle="collapse" href="#collapse-293c9ea246ff9985dc6f62a650f78986"
+        aria-expanded="false"
+      >
+        HTTP
+        <span class="list-group-count">(4)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-293c9ea246ff9985dc6f62a650f78986"
+           role="tabpanel" aria-labelledby="heading-293c9ea246ff9985dc6f62a650f78986">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2022/10/10/internet/HTTP/Http/" title="Http"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Http</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/internet/HTTP/RSA%E4%B8%8EECDHE/" title="RSA与ECDHE"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">RSA与ECDHE</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/internet/HTTP/%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/" title="加密算法"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">加密算法</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/internet/HTTP/%E5%9B%BE%E8%A7%A3HTTP-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" title="图解HTTP-读书笔记"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">图解HTTP-读书笔记</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="TCP&amp;IP"
+        id="heading-acca60c65a1878adaf9780d6bc5b93c6" role="tab" data-toggle="collapse" href="#collapse-acca60c65a1878adaf9780d6bc5b93c6"
+        aria-expanded="false"
+      >
+        TCP&amp;IP
+        <span class="list-group-count">(5)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-acca60c65a1878adaf9780d6bc5b93c6"
+           role="tabpanel" aria-labelledby="heading-acca60c65a1878adaf9780d6bc5b93c6">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2022/10/10/internet/TCP&amp;IP/IP/" title="IP"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">IP</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/internet/TCP&amp;IP/Question/" title="Question"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Question</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/internet/TCP&amp;IP/TCP/" title="TCP"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">TCP</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/internet/TCP&amp;IP/readme/" title="readme"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">readme</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/internet/TCP&amp;IP/%E5%9B%BE%E8%A7%A3TCP&amp;IP/" title="图解TCP&amp;IP"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">图解TCP&amp;IP</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
