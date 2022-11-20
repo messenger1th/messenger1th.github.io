@@ -81,4 +81,4 @@ source/_posts/
 
 分类页面就是这样的，打开LeetCode还可以看到Dynamic Programming目录下的文章。
 
-![image-20221120182302630](./README/image-20221120182302630.png)
+![image-20221120182302630](./README/image-20221120182302630.png)  
