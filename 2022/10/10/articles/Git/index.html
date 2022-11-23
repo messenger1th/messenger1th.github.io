@@ -24,7 +24,7 @@
 <meta property="og:description" content="Git 配置用户签名（首次需要设置，否则提交时报错） 初始化本地库  命令 初始化本地库(会在当前目录生成.git的文件夹)  git init  连接远程仓库  git remote add origin xxxxx&#x2F;&#x2F;x为remoteRepo的SSH或者https git clone xxxxx&#x2F;&#x2F;克隆会直接连接 git remote -v&#x2F;&#x2F;查看远程仓库地址 查看状态  git status">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-10-10T12:00:09.749Z">
-<meta property="article:modified_time" content="2022-10-10T12:00:09.749Z">
+<meta property="article:modified_time" content="2022-11-23T13:10:19.638Z">
 <meta property="article:author" content="Epoch">
 <meta property="article:tag" content="Epoch Blog">
 <meta name="twitter:card" content="summary_large_image">
@@ -207,7 +207,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.3k 字
+          1.6k 字
         
       </span>
     
@@ -218,7 +218,7 @@
         
         
         
-          22 分钟
+          28 分钟
         
       </span>
     
@@ -300,7 +300,24 @@ git rm --cached filename //去除对文件的追踪</code></pre></div>
 git log  //详细信息</code></pre></div>
 </li>
 <li><p>版本设置（会修改本地文件）</p>
- <div class="code-wrapper"><pre><code class="hljs shell">git reset --hard xxxxxxx //--hard 强制回退到xxxxxx版本</code></pre></div></li>
+ <div class="code-wrapper"><pre><code class="hljs shell">git reset --soft xxxxxxx //回退版本，但保留文件修改到untracked
+git reset --mixed xxxxxxx //回退版本，但保留文件修改到tracked
+git reset --hard xxxxxxx //--hard 强制回退到xxxxxx版本，并丢失数据，慎重！！！</code></pre></div></li>
+</ol>
+<h2 id="远程"><a href="#远程" class="headerlink" title="远程"></a>远程</h2><p>所有带push的才会修改远程，否则只是修改本地。例如<code>git remote remove [ref]</code>仅仅删除本地引用。</p>
+<ol>
+<li><p>推送到远程</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git push</code></pre></div>
+</li>
+<li><p>推送到远程并设置默认推送</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git push -u origin main</code></pre></div>
+</li>
+<li><p>推送到远程（本地当前分支和远程要分支不一致）</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git push origin [local_branch]:[remote_branch]</code></pre></div>
+</li>
+<li><p>删除远程分支</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git push -d [remote_branch] #方式1
+git push origin :remote_branch #将空推送到远程分支，即删除。</code></pre></div></li>
 </ol>
 <h2 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h2><blockquote>
 <p>可以并行开发多个功能，提高开发效率。</p>
