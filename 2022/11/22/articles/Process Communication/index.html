@@ -19,19 +19,19 @@
     <meta name="description" content="进程通信线程之间共享全局变量、文件描述符表、堆区资源等。通信较为方便，但进程之间通信需要跨越虚拟内存的鸿沟。 进程之间通信种方式有  管道 消息队列 共享内存 信号量 信号 Socket  接下来分别介绍他们和在Linux下的实现。 管道匿名管道 在Linux下，命令中传递参数用的|就是匿名管道，例如 ps aux | grep mysql  它将前一个命令ps aux的结果传递给下一个命令gre">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Process Communication">
-<meta property="og:url" content="https://messenger1th.github.io/2022/11/22/Process%20Communication/index.html">
+<meta property="og:url" content="https://messenger1th.github.io/2022/11/22/articles/Process%20Communication/index.html">
 <meta property="og:site_name" content="Epoch">
 <meta property="og:description" content="进程通信线程之间共享全局变量、文件描述符表、堆区资源等。通信较为方便，但进程之间通信需要跨越虚拟内存的鸿沟。 进程之间通信种方式有  管道 消息队列 共享内存 信号量 信号 Socket  接下来分别介绍他们和在Linux下的实现。 管道匿名管道 在Linux下，命令中传递参数用的|就是匿名管道，例如 ps aux | grep mysql  它将前一个命令ps aux的结果传递给下一个命令gre">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://messenger1th.github.io/2022/11/22/Process%20Communication/5-%E7%AE%A1%E9%81%93-pipe.jpg">
-<meta property="og:image" content="https://messenger1th.github.io/2022/11/22/Process%20Communication/7-%E7%AE%A1%E9%81%93-pipe-fork-%E5%8D%95%E5%90%91%E9%80%9A%E4%BF%A1.jpg">
-<meta property="og:image" content="https://messenger1th.github.io/2022/11/22/Process%20Communication/9-%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98.jpg">
+<meta property="og:image" content="https://messenger1th.github.io/2022/11/22/articles/Process%20Communication/5-%E7%AE%A1%E9%81%93-pipe.jpg">
+<meta property="og:image" content="https://messenger1th.github.io/2022/11/22/articles/Process%20Communication/7-%E7%AE%A1%E9%81%93-pipe-fork-%E5%8D%95%E5%90%91%E9%80%9A%E4%BF%A1.jpg">
+<meta property="og:image" content="https://messenger1th.github.io/2022/11/22/articles/Process%20Communication/9-%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98.jpg">
 <meta property="article:published_time" content="2022-11-22T12:41:14.157Z">
-<meta property="article:modified_time" content="2022-11-23T12:54:24.726Z">
+<meta property="article:modified_time" content="2022-11-28T10:34:31.530Z">
 <meta property="article:author" content="Epoch">
 <meta property="article:tag" content="Epoch Blog">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://messenger1th.github.io/2022/11/22/Process%20Communication/5-%E7%AE%A1%E9%81%93-pipe.jpg">
+<meta name="twitter:image" content="https://messenger1th.github.io/2022/11/22/articles/Process%20Communication/5-%E7%AE%A1%E9%81%93-pipe.jpg">
   
   
   
@@ -211,7 +211,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          6.5k 字
+          6.6k 字
         
       </span>
     
@@ -222,7 +222,7 @@
         
         
         
-          109 分钟
+          111 分钟
         
       </span>
     
@@ -291,7 +291,7 @@
 <div class="code-wrapper"><pre><code class="hljs shell">ps aux | grep mysql</code></pre></div>
 
 <p>它将前一个命令<code>ps aux</code>的结果传递给下一个命令<code>grep mysql</code>作为输入。</p>
-<p><strong>命令管道</strong></p>
+<p><strong>命令管道&#x2F;FIFO</strong></p>
 <p>使用命令<code>mkfifo</code>创建命名管道，也称<code>FIFO</code>，因为符合先入先出的规律。</p>
 <div class="code-wrapper"><pre><code class="hljs shell">mkfifo my_pipe</code></pre></div>
 
@@ -312,9 +312,9 @@ hello</code></pre></div>
 
 <p>这里表示创建一个匿名管道，并返回了两个描述符，一个是管道的读取端描述符 <code>fd[0]</code>，另一个是管道的写入端描述符 <code>fd[1]</code>。注意，这个匿名管道是特殊的文件，只存在于内存，不存于文件系统中。</p>
 <p>普通的<code>pipe</code>就只能在单进程里头使用，如下图</p>
-<p><img src="/2022/11/22/Process%20Communication/5-%E7%AE%A1%E9%81%93-pipe.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2022/11/22/articles/Process%20Communication/5-%E7%AE%A1%E9%81%93-pipe.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>但结合<code>fork</code>即可在父进程和子进程之间通信。</p>
-<p><img src="/2022/11/22/Process%20Communication/7-%E7%AE%A1%E9%81%93-pipe-fork-%E5%8D%95%E5%90%91%E9%80%9A%E4%BF%A1.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2022/11/22/articles/Process%20Communication/7-%E7%AE%A1%E9%81%93-pipe-fork-%E5%8D%95%E5%90%91%E9%80%9A%E4%BF%A1.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>父进程<strong>Linux示例代码</strong>：父进程写，子进程读为例。</p>
 <div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string&gt;</span></span>
@@ -325,11 +325,13 @@ hello</code></pre></div>
     <span class="hljs-built_in">pipe</span>(fd);
     <span class="hljs-keyword">auto</span> ret = fork();
     <span class="hljs-keyword">if</span> (ret == <span class="hljs-number">0</span>) &#123;
+        <span class="hljs-built_in">close</span>(fd[<span class="hljs-number">1</span>]);
         <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;I&#x27; child.\n&quot;</span>);
         <span class="hljs-type">char</span> buf[<span class="hljs-number">1024</span>];
         <span class="hljs-built_in">read</span>(fd[<span class="hljs-number">0</span>], buf, <span class="hljs-number">1024</span>); <span class="hljs-comment">//阻塞在这， 等有数据再读。</span>
         <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;get messege: %s\n&quot;</span>, buf);
     &#125; <span class="hljs-keyword">else</span> &#123;
+        <span class="hljs-built_in">close</span>(fd[<span class="hljs-number">0</span>]);
         <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;I&#x27;m parent.\n&quot;</span>);
         <span class="hljs-built_in">sleep</span>(<span class="hljs-number">5</span>); <span class="hljs-comment">//让读进程阻塞。</span>
         <span class="hljs-type">const</span> std::string s = <span class="hljs-string">&quot;Hello pipe reader&quot;</span>;
@@ -342,6 +344,7 @@ hello</code></pre></div>
 <p>总的来说，对于<strong>匿名管道</strong>，由于没有文件名，只有描述符，仅能通过fork复制fd来实现父子进程通信。</p>
 <p>而<strong>命名管道</strong>则是一个实实在在的文件，有文件名。因此，两个进程可以通过文件名找到该管道来通信。</p>
 <p><strong>值得一提的是，不管是匿名管道还是命名管道，进程写入的数据都是缓存在内核中，另一个进程读取数据时候自然也是从内核中获取，同时通信数据都遵循先进先出原则，不支持 lseek 之类的文件定位操作。</strong></p>
+<p>此外，匿名管道和FIFO读写都是默认阻塞的，如果要使用非阻塞模式，需要在<code>pipe</code>和<code>open</code>的第二个参数指定<code>O_NONBLOCK</code>，并根据返回值和错误号来判断具体情况做后续处理。</p>
 <h2 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h2><p>前面提到管道的写方需要阻塞到数据被读取才能够返回，而消息队列则不需要。</p>
 <p>对于写方，只需要写完数据即可。</p>
 <p>对于读方，读取时需要阻塞到数据来临。</p>
@@ -426,7 +429,7 @@ hello</code></pre></div>
 <p><strong>消息队列通信过程中，存在用户态与内核态之间的数据拷贝开销</strong>，因为进程写入数据到内核中的消息队列时，会发生从用户态拷贝数据到内核态的过程，同理另一进程读取内核中的消息数据时，会发生从内核态拷贝数据到用户态的过程。</p>
 <h2 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h2><p>上面提到，消息队列涉及用户态与内核态之间的数据拷贝，显然这是不必要的。而共享内存的方式，就很好的去除了这个开销。</p>
 <p>现代操作系统的内存采用的是虚拟内存技术，即每个进程的内存相互独立，互不干扰。而虚拟内存就是拿出来一块共享内存来通信。</p>
-<p><img src="/2022/11/22/Process%20Communication/9-%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><img src="/2022/11/22/articles/Process%20Communication/9-%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>示例代码</p>
 <div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-comment">// Writer </span>
 <span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
@@ -487,7 +490,7 @@ hello</code></pre></div>
 &#125;</code></pre></div>
 
 <p>共享内存不仅仅可以作为消息通信，还可以作为进程共享其他数据用于通信、同步、互斥等，例如共享内存的锁，信号量等等。</p>
-<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>信号量不仅可以用于线程之间通信（原理和使用见[读者写着文章](.&#x2F;reader-writer control)），还可以在进程之间通信。</p>
+<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>信号量不仅可以用于线程之间通信（原理和使用见[读者写者文章](.&#x2F;reader-writer control)），还可以在进程之间通信。</p>
 <p><strong>信号量其实是一个整型的计数器，主要用于实现进程间的互斥与同步，而不是用于缓存进程间通信的数据</strong>。</p>
 <p>而信号量在进程之间通信主要依赖于共享内存，并强转成对应的类型。</p>
 <p>代码同共享内存和[读者写着文章](.&#x2F;reader-writer control)类似，关键在于分配内存后强转成信号量类型。</p>
@@ -557,6 +560,27 @@ hello</code></pre></div>
             <div>
               <div class="post-metas my-3">
   
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/articles/" class="category-chain-item">articles</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
   
 </div>
 
@@ -567,7 +591,7 @@ hello</code></pre></div>
   <div class="license-box my-3">
     <div class="license-title">
       <div>Process Communication</div>
-      <div>https://messenger1th.github.io/2022/11/22/Process Communication/</div>
+      <div>https://messenger1th.github.io/2022/11/22/articles/Process Communication/</div>
     </div>
     <div class="license-meta">
       
@@ -611,6 +635,12 @@ hello</code></pre></div>
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2022/12/01/LeetCode/review/" title="review">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">review</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
@@ -643,6 +673,124 @@ hello</code></pre></div>
 
 <div class="category-list">
   
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="articles"
+        id="heading-dba5d91846ce1a5e63734dfcbcb481cb" role="tab" data-toggle="collapse" href="#collapse-dba5d91846ce1a5e63734dfcbcb481cb"
+        aria-expanded="true"
+      >
+        articles
+        <span class="list-group-count">(10)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-dba5d91846ce1a5e63734dfcbcb481cb"
+           role="tabpanel" aria-labelledby="heading-dba5d91846ce1a5e63734dfcbcb481cb">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2022/10/10/articles/Binary%20Tree%20Traversal/" title="Binary Tree Traversal"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Binary Tree Traversal</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/14/articles/Compile&amp;Link/" title="Compile&amp;Link"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Compile&amp;Link</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/11/13/articles/Consistency/" title="Consistency"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Consistency</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/articles/Counting%20Sort/" title="Counting Sort"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Counting Sort</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/articles/Git/" title="Git"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Git</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/articles/Huffman%20Code/" title="Huffman Code"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Huffman Code</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/11/22/articles/Process%20Communication/" title="Process Communication"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">Process Communication</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/articles/Union-Find/" title="Union-Find"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Union-Find</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/11/19/articles/distributed-system/" title="distributed-system"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">distributed-system</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/11/21/articles/reader-writer%20control/" title="reader-writer control"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">reader-writer control</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
   
 </div>
 

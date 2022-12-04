@@ -24,7 +24,7 @@
 <meta property="og:description" content="为什么需要三次握手? 阻⽌重复历史连接的初始化（主因) 当旧的SYN报⽂先到达服务端，服务端回⼀个ACK+SYN报⽂  客户端收到后可以根据⾃身的上下⽂，判断这是⼀个历史连接（序列号过期或超时），那么客户端就会发送 RST 报⽂给服务端，表示中⽌这⼀次连接。  两次握⼿在收到服务端的响应后开始发⽣数据，不能判断当前连接是否是历史连接。 三次握⼿可以在客户端准备发送第三次报⽂时，客户端因有⾜够的上下">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-10-10T12:00:09.773Z">
-<meta property="article:modified_time" content="2022-10-10T12:00:09.773Z">
+<meta property="article:modified_time" content="2022-12-03T04:50:11.981Z">
 <meta property="article:author" content="Epoch">
 <meta property="article:tag" content="Epoch Blog">
 <meta name="twitter:card" content="summary_large_image">
@@ -344,7 +344,7 @@
 <li>内存资源占⽤；  </li>
 <li>对端⼝资源的占⽤，⼀个 TCP 连接⾄少消耗⼀个本地端⼝；可能无端口剩余, 无法创建新连接.</li>
 </ol>
-<p>​	<strong>解决办法</strong>: 打开系统的TIMEWAIT重用和快速回收</p>
+<p><strong>解决办法</strong>: 打开系统的TIMEWAIT重用和快速回收</p>
 <ul>
 <li>修改TIME_WAIT连接状态的上限值</li>
 </ul>
@@ -493,7 +493,7 @@
         aria-expanded="true"
       >
         internet
-        <span class="list-group-count">(12)</span>
+        <span class="list-group-count">(10)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -508,10 +508,10 @@
     
       
       
-        <a href="/2022/10/10/internet/Frame/" title="Frame"
+        <a href="/2022/10/10/internet/Overview/" title="Overview"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">Frame</span>
+          <span class="category-post">Overview</span>
         </a>
       
     
@@ -521,15 +521,6 @@
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">interview</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2022/10/10/internet/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" title="计算机网络"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">计算机网络</span>
         </a>
       
     
@@ -611,7 +602,7 @@
         aria-expanded="true"
       >
         TCP&amp;IP
-        <span class="list-group-count">(5)</span>
+        <span class="list-group-count">(4)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -647,15 +638,6 @@
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">TCP</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2022/10/10/internet/TCP&amp;IP/readme/" title="readme"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">readme</span>
         </a>
       
     

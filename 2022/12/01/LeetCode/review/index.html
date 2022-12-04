@@ -16,26 +16,22 @@
   <meta name="author" content="Epoch">
   <meta name="keywords" content="Epoch Blog">
   
-    <meta name="description" content="Frame： 从输入网址到显示网页内容， 期间的过程流程 输入网址(URL) 根据URL获取服务器域名和服务器上的资源， 根据这些生成数据包。  目的地——DNS服务器解析服务器域名成IP， 接受目标。     DNS服务器可以根据域名解析成网络IP， 用于定位数据包发送的目的地址。  建立友谊——TCP三次握手    建立浏览器和服务器的连接，通过TCP三次握手  下一站——MAC地址    在">
+    <meta name="description" content="二叉树动态规划0-1背包 416. 分割等和子集 1049. 最后一块石头的重量 II  完全背包组合无序、内外循环无要求  279. 完全平方数 322. 零钱兑换 518. 零钱兑换 II  排列有序 外：容积， 内：物品。  139. 单词拆分 377. 组合总和 Ⅳ  数组十大排序 912. 排序数组  常用 快速排序 堆排序 归并排序  其他 冒泡排序 插入排序 选择排序  void i">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Frame">
-<meta property="og:url" content="https://messenger1th.github.io/2022/10/10/internet/Frame/index.html">
+<meta property="og:title" content="review">
+<meta property="og:url" content="https://messenger1th.github.io/2022/12/01/LeetCode/review/index.html">
 <meta property="og:site_name" content="Epoch">
-<meta property="og:description" content="Frame： 从输入网址到显示网页内容， 期间的过程流程 输入网址(URL) 根据URL获取服务器域名和服务器上的资源， 根据这些生成数据包。  目的地——DNS服务器解析服务器域名成IP， 接受目标。     DNS服务器可以根据域名解析成网络IP， 用于定位数据包发送的目的地址。  建立友谊——TCP三次握手    建立浏览器和服务器的连接，通过TCP三次握手  下一站——MAC地址    在">
+<meta property="og:description" content="二叉树动态规划0-1背包 416. 分割等和子集 1049. 最后一块石头的重量 II  完全背包组合无序、内外循环无要求  279. 完全平方数 322. 零钱兑换 518. 零钱兑换 II  排列有序 外：容积， 内：物品。  139. 单词拆分 377. 组合总和 Ⅳ  数组十大排序 912. 排序数组  常用 快速排序 堆排序 归并排序  其他 冒泡排序 插入排序 选择排序  void i">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://messenger1th.github.io/2022/10/10/internet/Frame/7.jpg">
-<meta property="og:image" content="https://messenger1th.github.io/2022/10/10/internet/Frame/image-20220603111327553.png">
-<meta property="og:image" content="https://messenger1th.github.io/2022/10/10/internet/Frame/image-20220603112009333.png">
-<meta property="article:published_time" content="2022-10-10T12:00:09.757Z">
-<meta property="article:modified_time" content="2022-11-20T10:33:57.726Z">
+<meta property="article:published_time" content="2022-12-01T04:25:51.303Z">
+<meta property="article:modified_time" content="2022-12-01T04:30:09.606Z">
 <meta property="article:author" content="Epoch">
 <meta property="article:tag" content="Epoch Blog">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://messenger1th.github.io/2022/10/10/internet/Frame/7.jpg">
   
   
   
-  <title>Frame - Epoch</title>
+  <title>review - Epoch</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -188,7 +184,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Frame"></span>
+            <span id="subtitle" data-typed-text="review"></span>
           
         </div>
 
@@ -199,8 +195,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-10-10 20:00" pubdate>
-          2022年10月10日 晚上
+        <time datetime="2022-12-01 12:25" pubdate>
+          2022年12月1日 中午
         </time>
       </span>
     
@@ -211,7 +207,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.3k 字
+          912 字
         
       </span>
     
@@ -222,7 +218,7 @@
         
         
         
-          22 分钟
+          16 分钟
         
       </span>
     
@@ -270,80 +266,95 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Frame</h1>
+            <h1 style="display: none">review</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="Frame：-从输入网址到显示网页内容，-期间的过程"><a href="#Frame：-从输入网址到显示网页内容，-期间的过程" class="headerlink" title="Frame： 从输入网址到显示网页内容， 期间的过程"></a>Frame： 从输入网址到显示网页内容， 期间的过程</h1><h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><ol>
-<li><p><strong>输入网址(URL)</strong></p>
-<p>根据URL获取服务器域名和服务器上的资源， 根据这些生成数据包。</p>
-</li>
-<li><p><strong>目的地——DNS服务器解析服务器域名成IP， 接受目标</strong>。</p>
-</li>
-</ol>
-<p>  DNS服务器可以根据域名解析成网络IP， 用于定位数据包发送的目的地址。</p>
-<ol start="3">
-<li><strong>建立友谊——TCP三次握手</strong></li>
-</ol>
-<p>  建立浏览器和服务器的连接，通过TCP三次握手</p>
-<ol start="4">
-<li><strong>下一站——MAC地址</strong></li>
-</ol>
-<p>  在知道最终目的地后，但不知道具体的走哪条路（下一站）， 便广播<code>ARP</code>协议报文，在子网内询问IP地址对应的Mac地址</p>
-<ol start="5">
-<li><strong>启程——网卡</strong></li>
-</ol>
-<p>  知道下一站后，就开始寻路了。 在网卡的控制下， 将数字信号转化为电信号通过网线传输。</p>
-<ol start="6">
-<li><strong>指路者——交换机</strong></li>
-</ol>
-<p>  电信号到达网络接口，交换机进行接收，转换成数字信号。解析并通过<code>FCS</code>校验后，放入缓冲区，查询Mac地址表找网络对应端口发送。</p>
-<ol start="7">
-<li><strong>出境大门——路由器</strong></li>
-</ol>
-<p>  数据包经过交换机到达路由器。查询路由表中IP对应的<strong>下一站对应的Mac地址</strong>，继续转发。</p>
-<ol start="8">
-<li><strong>到啦！——服务器接收</strong></li>
-</ol>
-<p>  服务器接收到HTTP请求后，解析数据包， 去除MAC,IP，TCP头部，获取HTTP数据，回复HTTP响应报文。</p>
-<ol start="9">
-<li><strong>收到啦！——浏览器接收</strong></li>
-</ol>
-<p>  浏览器接收到HTTP响应报文。</p>
-<ol start="10">
-<li><strong>显示</strong></li>
-</ol>
-<p>  浏览器读取内容， 解析HTML，生成DOM树，解析CSS，处理JS交互，浏览器和客户端交互。</p>
-<ol start="11">
-<li><strong>再见！——四次挥手，断开TCP连接</strong></li>
-</ol>
-<h2 id="网络构成模型"><a href="#网络构成模型" class="headerlink" title="网络构成模型"></a>网络构成模型</h2><p><img src="/2022/10/10/internet/Frame/7.jpg" srcset="/img/loading.gif" lazyload alt="OSI 参考模型与 TCP/IP 的关系"></p>
-<h2 id="细节部分"><a href="#细节部分" class="headerlink" title="细节部分"></a>细节部分</h2><h3 id="DNS查询"><a href="#DNS查询" class="headerlink" title="DNS查询"></a>DNS查询</h3><p>域名是由<code>.</code>来区分的， 如<code>www.google.com</code>。 因此， 域名也是分层的，对应不同的DNS服务器，一层一层询问，直到查询到IP。</p>
-<p><strong>域名的层级关系类似一个树状结构</strong>：</p>
-<ul>
-<li>根 DNS 服务器（.）</li>
-<li>顶级域 DNS 服务器（.com）</li>
-<li>权威 DNS 服务器（google.com）</li>
+                <h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><h2 id="动态规划"><a href="#动态规划" class="headerlink" title="动态规划"></a>动态规划</h2><h3 id="0-1背包"><a href="#0-1背包" class="headerlink" title="0-1背包"></a>0-1背包</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/partition-equal-subset-sum/">416. 分割等和子集</a></li>
+<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/last-stone-weight-ii/">1049. 最后一块石头的重量 II</a></li>
 </ul>
-<img src="/2022/10/10/internet/Frame/image-20220603111327553.png" srcset="/img/loading.gif" lazyload alt="image-20220603111327553" style="zoom:50%;">
+<h3 id="完全背包"><a href="#完全背包" class="headerlink" title="完全背包"></a>完全背包</h3><h4 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h4><p>无序、内外循环无要求</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/perfect-squares/">279. 完全平方数</a></li>
+<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/coin-change/">322. 零钱兑换</a></li>
+<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/coin-change-2/">518. 零钱兑换 II</a></li>
+</ul>
+<h3 id="排列"><a href="#排列" class="headerlink" title="排列"></a>排列</h3><p>有序</p>
+<p>外：容积， 内：物品。</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/word-break/">139. 单词拆分</a></li>
+<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/combination-sum-iv/">377. 组合总和 Ⅳ</a></li>
+</ul>
+<h2 id="数组十大排序"><a href="#数组十大排序" class="headerlink" title="数组十大排序"></a>数组十大排序</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/sort-an-array/">912. 排序数组</a></p>
+</blockquote>
+<h3 id="常用"><a href="#常用" class="headerlink" title="常用"></a>常用</h3><ul>
+<li>快速排序</li>
+<li>堆排序</li>
+<li>归并排序</li>
+</ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ul>
+<li>冒泡排序</li>
+<li>插入排序</li>
+<li>选择排序</li>
+</ul>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">insertSort</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums)</span> </span>&#123;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; nums.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>; ++i) &#123;
+        <span class="hljs-type">int</span> val = nums[i + <span class="hljs-number">1</span>];
+        <span class="hljs-type">int</span> j = i + <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">while</span> (j &gt; <span class="hljs-number">0</span> &amp;&amp; nums[j - <span class="hljs-number">1</span>] &gt; val) &#123;
+            nums[j] = nums[j - <span class="hljs-number">1</span>];
+            --j;
+        &#125;
+        nums[j] = val;
+    &#125;
+&#125;
 
-<p>当然， 查询DNS服务器之前，会查询缓存。</p>
-<p><strong>浏览器缓存 –&gt; 操作系统缓存 –&gt; hosts文件 –&gt; DNS服务器</strong>。</p>
-<h3 id="协议栈"><a href="#协议栈" class="headerlink" title="协议栈"></a>协议栈</h3><p>通过 DNS 获取到 IP 后，就可以把 HTTP 的传输工作交给操作系统中的<strong>协议栈</strong>。</p>
-<p>协议栈的内部分为几个部分，分别承担不同的工作。上下关系是有一定的规则的，上面的部分会向下面的部分委托工作，下面的部分收到委托的工作并执行。</p>
-<p><img src="/2022/10/10/internet/Frame/image-20220603112009333.png" srcset="/img/loading.gif" lazyload alt="image-20220603112009333"></p>
-<p>应用程序（浏览器）通过调用 Socket 库，来委托协议栈工作。协议栈的上半部分有两块，分别是负责收发数据的 TCP 和 UDP 协议，这两个传输协议会接受应用层的委托执行收发数据的操作。</p>
-<p>协议栈的下面一半是用 IP 协议控制网络包收发操作，在互联网上传数据时，数据会被切分成一块块的网络包，而将网络包发送给对方的操作就是由 IP 负责的。</p>
-<p>此外 IP 中还包括 <code>ICMP</code> 协议和 <code>ARP</code> 协议。</p>
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">selectSort</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums)</span> </span>&#123;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; nums.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>; ++i) &#123;
+        <span class="hljs-type">int</span> minIndex = i;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = i + <span class="hljs-number">1</span>; j &lt; nums.<span class="hljs-built_in">size</span>(); ++j) &#123;
+            <span class="hljs-keyword">if</span> (nums[j] &lt; nums[minIndex]) &#123;
+                minIndex = j;
+            &#125;
+        &#125;
+        <span class="hljs-built_in">swap</span>(nums[minIndex], nums[i]);
+    &#125;
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">bubbleSort</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums)</span> </span>&#123;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = nums.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; --i) &#123;
+        <span class="hljs-type">bool</span> isSorted = <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; i; ++j) &#123;
+            <span class="hljs-keyword">if</span> (nums[j] &gt; nums[j + <span class="hljs-number">1</span>]) &#123;
+                <span class="hljs-built_in">swap</span>(nums[j], nums[j + <span class="hljs-number">1</span>]);
+                isSorted = <span class="hljs-literal">false</span>;
+            &#125;
+        &#125;
+        <span class="hljs-keyword">if</span> (isSorted) &#123;
+            <span class="hljs-keyword">break</span>;
+        &#125;
+    &#125;
+&#125;</code></pre></div>
+
 <ul>
-<li><code>ICMP</code> 用于告知网络包传送过程中产生的错误以及各种控制信息。</li>
-<li><code>ARP</code> 用于根据 IP 地址查询相应的以太网 MAC 地址。</li>
+<li>希尔排序</li>
+<li>基数排序</li>
+<li>桶排序</li>
+<li>计数排序</li>
 </ul>
-<p>IP 下面的网卡驱动程序负责控制网卡硬件，而最下面的网卡则负责完成实际的收发操作，也就是对网线中的信号执行发送和接收操作。</p>
-<p><strong>HTTP基于TCP协议传输。</strong></p>
-<h3 id="Mac地址"><a href="#Mac地址" class="headerlink" title="Mac地址"></a>Mac地址</h3><p>类似DNS查询IP，获取Mac地址时， 操作系统会把ARP查询结果缓存。</p>
-<p>MAC 地址在以太网内进行<strong>两个设备</strong>之间的包传输。转发的过程中，源IP地址和目标IP地址是不会变的，源MAC地址和目标MAC地址是会变化的。</p>
+<h2 id="链表排序"><a href="#链表排序" class="headerlink" title="链表排序"></a>链表排序</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/7WHec2/">剑指 Offer II 077. 链表排序</a></p>
+</blockquote>
+<ul>
+<li>插入排序</li>
+<li>归并排序</li>
+</ul>
+<h2 id="结构实现"><a href="#结构实现" class="headerlink" title="结构实现"></a>结构实现</h2><ul>
+<li>堆</li>
+</ul>
 
                 
               </div>
@@ -362,7 +373,7 @@
     
       <span class="category-chain">
         
-  <a href="/categories/internet/" class="category-chain-item">internet</a>
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
   
   
 
@@ -382,8 +393,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Frame</div>
-      <div>https://messenger1th.github.io/2022/10/10/internet/Frame/</div>
+      <div>review</div>
+      <div>https://messenger1th.github.io/2022/12/01/LeetCode/review/</div>
     </div>
     <div class="license-meta">
       
@@ -395,7 +406,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年10月10日</div>
+          <div>2022年12月1日</div>
         </div>
       
       
@@ -427,18 +438,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/10/10/internet/HTTP/Http/" title="Http">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Http</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/10/10/C++/More%20Effective%20C++/" title="More Effective C++">
-                        <span class="hidden-mobile">More Effective C++</span>
+                      <a href="/2022/11/22/articles/Process%20Communication/" title="Process Communication">
+                        <span class="hidden-mobile">Process Communication</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -471,17 +476,17 @@
     
     <div class="category row nomargin-x">
       <a class="category-item 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="internet"
-        id="heading-c3581516868fb3b71746931cac66390e" role="tab" data-toggle="collapse" href="#collapse-c3581516868fb3b71746931cac66390e"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="LeetCode"
+        id="heading-071fda8ffed879b16c3308d2133bac46" role="tab" data-toggle="collapse" href="#collapse-071fda8ffed879b16c3308d2133bac46"
         aria-expanded="true"
       >
-        internet
-        <span class="list-group-count">(12)</span>
+        LeetCode
+        <span class="list-group-count">(29)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-c3581516868fb3b71746931cac66390e"
-           role="tabpanel" aria-labelledby="heading-c3581516868fb3b71746931cac66390e">
+      <div class="category-collapse collapse show" id="collapse-071fda8ffed879b16c3308d2133bac46"
+           role="tabpanel" aria-labelledby="heading-071fda8ffed879b16c3308d2133bac46">
         
         
           
@@ -491,28 +496,208 @@
     
       
       
-        <a href="/2022/10/10/internet/Frame/" title="Frame"
+        <a href="/2022/10/10/LeetCode/Advanced%20Data%20Structure&amp;Algorithm/" title="Advanced Data Structure&amp;Algorithm"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Advanced Data Structure&amp;Algorithm</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/BackTracking/" title="BackTracking"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">BackTracking</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/Binary%20Operation/" title="Binary Operation"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Binary Operation</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/Binary%20Tree/" title="Binary Tree"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Binary Tree</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/Design&amp;Implement/" title="Design&amp;Implement"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Design&amp;Implement</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/Divide&amp;Conquer/" title="Divide&amp;Conquer"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Divide&amp;Conquer</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/Double%20Pointer/" title="Double Pointer"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Double Pointer</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/11/16/LeetCode/Graph/" title="Graph"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Graph</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/Greedy/" title="Greedy"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Greedy</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/LinkedList/" title="LinkedList"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">LinkedList</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/Math/" title="Math"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Math</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/Milestone/" title="Milestone"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Milestone</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/Others/" title="Others"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Others</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/Scan%20Line/" title="Scan Line"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Scan Line</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/SlidingWindow/" title="SlidingWindow"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">SlidingWindow</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/Sort/" title="Sort"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Sort</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/Stack&amp;Queue/" title="Stack&amp;Queue"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Stack&amp;Queue</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/String/" title="String"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">String</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/Template/" title="Template"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Template</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/10/10/LeetCode/prefix/" title="prefix"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">prefix</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2022/12/01/LeetCode/review/" title="review"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">Frame</span>
+          <span class="category-post">review</span>
         </a>
       
     
       
       
-        <a href="/2022/10/10/internet/interview/" title="interview"
+        <a href="/2022/10/10/LeetCode/%E5%B8%B8%E7%94%A8%E7%AE%97%E6%B3%95/" title="常用算法"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">interview</span>
+          <span class="category-post">常用算法</span>
         </a>
       
     
       
       
-        <a href="/2022/10/10/internet/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" title="计算机网络"
+        <a href="/2022/10/10/LeetCode/%E5%B8%B8%E8%A7%81%E9%A2%98%E7%9B%AE%E7%B3%BB%E5%88%97/" title="常见题目系列"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">计算机网络</span>
+          <span class="category-post">常见题目系列</span>
         </a>
       
     
@@ -525,17 +710,17 @@
     
     <div class="category-sub row nomargin-x">
       <a class="category-subitem collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="HTTP"
-        id="heading-293c9ea246ff9985dc6f62a650f78986" role="tab" data-toggle="collapse" href="#collapse-293c9ea246ff9985dc6f62a650f78986"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Dynamic Programming"
+        id="heading-ed8cda5bb8b98f18b3a3377e4edc67f9" role="tab" data-toggle="collapse" href="#collapse-ed8cda5bb8b98f18b3a3377e4edc67f9"
         aria-expanded="false"
       >
-        HTTP
-        <span class="list-group-count">(4)</span>
+        Dynamic Programming
+        <span class="list-group-count">(6)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse " id="collapse-293c9ea246ff9985dc6f62a650f78986"
-           role="tabpanel" aria-labelledby="heading-293c9ea246ff9985dc6f62a650f78986">
+      <div class="category-collapse collapse " id="collapse-ed8cda5bb8b98f18b3a3377e4edc67f9"
+           role="tabpanel" aria-labelledby="heading-ed8cda5bb8b98f18b3a3377e4edc67f9">
         
         
           
@@ -544,110 +729,55 @@
     
       
       
-        <a href="/2022/10/10/internet/HTTP/Http/" title="Http"
+        <a href="/2022/10/10/LeetCode/Dynamic%20Programming/Dynamic%20Programming/" title="Dynamic Programming"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">Http</span>
+          <span class="category-post">Dynamic Programming</span>
         </a>
       
     
       
       
-        <a href="/2022/10/10/internet/HTTP/RSA%E4%B8%8EECDHE/" title="RSA与ECDHE"
+        <a href="/2022/10/10/LeetCode/Dynamic%20Programming/%E5%8D%95%E4%B8%B2/" title="单串"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">RSA与ECDHE</span>
+          <span class="category-post">单串</span>
         </a>
       
     
       
       
-        <a href="/2022/10/10/internet/HTTP/%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/" title="加密算法"
+        <a href="/2022/10/10/LeetCode/Dynamic%20Programming/%E5%8F%8C%E4%B8%B2/" title="双串"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">加密算法</span>
+          <span class="category-post">双串</span>
         </a>
       
     
       
       
-        <a href="/2022/10/10/internet/HTTP/%E5%9B%BE%E8%A7%A3HTTP-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" title="图解HTTP-读书笔记"
+        <a href="/2022/10/10/LeetCode/Dynamic%20Programming/%E7%8A%B6%E6%80%81%E6%9C%BA/" title="状态机"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">图解HTTP-读书笔记</span>
-        </a>
-      
-    
-  </div>
-
-        
-      </div>
-    </div>
-  
-    
-    
-    
-    <div class="category-sub row nomargin-x">
-      <a class="category-subitem collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="TCP&amp;IP"
-        id="heading-acca60c65a1878adaf9780d6bc5b93c6" role="tab" data-toggle="collapse" href="#collapse-acca60c65a1878adaf9780d6bc5b93c6"
-        aria-expanded="false"
-      >
-        TCP&amp;IP
-        <span class="list-group-count">(5)</span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
-      
-      <div class="category-collapse collapse " id="collapse-acca60c65a1878adaf9780d6bc5b93c6"
-           role="tabpanel" aria-labelledby="heading-acca60c65a1878adaf9780d6bc5b93c6">
-        
-        
-          
-  <div class="category-post-list">
-    
-    
-      
-      
-        <a href="/2022/10/10/internet/TCP&amp;IP/IP/" title="IP"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">IP</span>
+          <span class="category-post">状态机</span>
         </a>
       
     
       
       
-        <a href="/2022/10/10/internet/TCP&amp;IP/Question/" title="Question"
+        <a href="/2022/10/10/LeetCode/Dynamic%20Programming/%E7%9F%A9%E9%98%B5/" title="矩阵"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">Question</span>
+          <span class="category-post">矩阵</span>
         </a>
       
     
       
       
-        <a href="/2022/10/10/internet/TCP&amp;IP/TCP/" title="TCP"
+        <a href="/2022/10/10/LeetCode/Dynamic%20Programming/%E8%83%8C%E5%8C%85/" title="背包"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">TCP</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2022/10/10/internet/TCP&amp;IP/readme/" title="readme"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">readme</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2022/10/10/internet/TCP&amp;IP/%E5%9B%BE%E8%A7%A3TCP&amp;IP/" title="图解TCP&amp;IP"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">图解TCP&amp;IP</span>
+          <span class="category-post">背包</span>
         </a>
       
     

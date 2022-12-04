@@ -16,16 +16,16 @@
   <meta name="author" content="Epoch">
   <meta name="keywords" content="Epoch Blog">
   
-    <meta name="description" content="TCP握手为什么是三次原因一：确保双方能够发送和接受syn和ack数据包，并同步seq数据。 在网络中，由于丢包的存在，发出一个数据包，在没有收到应答的情况下，无法确定对方是否收到。 因此，要确认一个数据包对方收到了，对于发送方来说，只有收到接收方的ACK确认包。 请求建立连接  发送方发送syn包用于发起连接。 接收方发送ack包用于同意连接建立。  即，发送和确认，一来一回。保证了一个数据包被">
+    <meta name="description" content="TCP握手为什么是三次原因一：避免历史连接  RFC 793: The principle reason for the three-way handshake is to prevent old duplicate connection initiations from causing confusion.  假设一个syn在发送时延时，发送方认为接收方没有接收到该包。即认为该包失效，重发syn">
 <meta property="og:type" content="article">
 <meta property="og:title" content="interview">
 <meta property="og:url" content="https://messenger1th.github.io/2022/10/10/internet/interview/index.html">
 <meta property="og:site_name" content="Epoch">
-<meta property="og:description" content="TCP握手为什么是三次原因一：确保双方能够发送和接受syn和ack数据包，并同步seq数据。 在网络中，由于丢包的存在，发出一个数据包，在没有收到应答的情况下，无法确定对方是否收到。 因此，要确认一个数据包对方收到了，对于发送方来说，只有收到接收方的ACK确认包。 请求建立连接  发送方发送syn包用于发起连接。 接收方发送ack包用于同意连接建立。  即，发送和确认，一来一回。保证了一个数据包被">
+<meta property="og:description" content="TCP握手为什么是三次原因一：避免历史连接  RFC 793: The principle reason for the three-way handshake is to prevent old duplicate connection initiations from causing confusion.  假设一个syn在发送时延时，发送方认为接收方没有接收到该包。即认为该包失效，重发syn">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://messenger1th.github.io/2022/10/10/internet/interview/Users/Alias/AppData/Roaming/Typora/typora-user-images/image-20220923153127072.png">
 <meta property="article:published_time" content="2022-10-10T12:00:09.777Z">
-<meta property="article:modified_time" content="2022-10-10T12:00:09.777Z">
+<meta property="article:modified_time" content="2022-12-03T13:06:21.672Z">
 <meta property="article:author" content="Epoch">
 <meta property="article:tag" content="Epoch Blog">
 <meta name="twitter:card" content="summary_large_image">
@@ -209,7 +209,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          5.1k 字
+          7k 字
         
       </span>
     
@@ -220,7 +220,7 @@
         
         
         
-          86 分钟
+          118 分钟
         
       </span>
     
@@ -273,17 +273,7 @@
             
               <div class="markdown-body">
                 
-                <h2 id="TCP握手为什么是三次"><a href="#TCP握手为什么是三次" class="headerlink" title="TCP握手为什么是三次"></a>TCP握手为什么是三次</h2><p><strong>原因一：确保双方能够发送和接受<code>syn</code>和<code>ack</code>数据包，并同步<code>seq</code>数据。</strong></p>
-<p>在网络中，由于丢包的存在，发出一个数据包，在没有收到应答的情况下，无法确定对方是否收到。</p>
-<p>因此，要确认一个数据包对方收到了，对于发送方来说，只有收到接收方的ACK确认包。</p>
-<p><strong>请求建立连接</strong></p>
-<ul>
-<li>发送方发送<code>syn</code>包用于发起连接。</li>
-<li>接收方发送<code>ack</code>包用于同意连接建立。</li>
-</ul>
-<p>即，发送和确认，一来一回。保证了一个数据包被接受。</p>
-<p>对于主动发起方和被动发起方来说，都需要一来一回的过程。本来是四次握手，但由于第二次握手时的ack和（原来是）第三次握手的<code>syn</code>合并成了一次，总共也就是一次握手。</p>
-<p><strong>原因二：避免历史连接</strong></p>
+                <h2 id="TCP握手为什么是三次"><a href="#TCP握手为什么是三次" class="headerlink" title="TCP握手为什么是三次"></a>TCP握手为什么是三次</h2><p><strong>原因一：避免历史连接</strong></p>
 <blockquote>
 <p>RFC 793: <em>The principle reason for the three-way handshake is to prevent old duplicate connection initiations from causing confusion.</em></p>
 </blockquote>
@@ -295,6 +285,16 @@
 <li>主动发起方接收到该<code>ack+syn</code>，认识到该连接过期（序列号过期或超时），便发送<code>RST</code>给被动发起方。</li>
 <li>被动发起方接到<code>RST</code>，退出<code>SYN_RCVD</code>状态，避免了历史连接。</li>
 </ol>
+<p><strong>原因二：确保双方能够发送和接受<code>syn</code>和<code>ack</code>数据包，并同步<code>seq</code>数据。</strong></p>
+<p>在网络中，由于丢包的存在，发出一个数据包，在没有收到应答的情况下，无法确定对方是否收到。</p>
+<p>因此，要确认一个数据包对方收到了，对于发送方来说，只有收到接收方的ACK确认包。</p>
+<p><strong>请求建立连接</strong></p>
+<ul>
+<li>发送方发送<code>syn</code>包用于发起连接。</li>
+<li>接收方发送<code>ack</code>包用于同意连接建立。</li>
+</ul>
+<p>即，发送和确认，一来一回。保证了一个数据包被接受。</p>
+<p>对于主动发起方和被动发起方来说，都需要一来一回的过程。本来是四次握手，但由于第二次握手时的ack和（原来是）第三次握手的<code>syn</code>合并成了一次，总共也就是一次握手。</p>
 <p><strong>原因三：避免资源浪费</strong></p>
 <p>如果只有两次握手，即每收到一个 <code>SYN</code> 就只能先主动建立一个连接，这会造成什么情况呢？</p>
 <p>消息滞留情况下，服务器重复接受无用的连接请求 <code>SYN</code> 报文，而造成重复分配资源。</p>
@@ -304,9 +304,93 @@
 <p><code>FIN</code>发送方，表示自己不在发送数据但可以接收数据。</p>
 <p>通常来说，双方的数据不是同时发送完成的，因此FIN和ACK一般是分开发送。</p>
 <p>特定情况下（TCP延迟应答开启+无数据发送或第二次<code>FIN</code>到达），便可缩短成三次握手。见<a target="_blank" rel="noopener" href="https://xiaolincoding.com/network/3_tcp/tcp_three_fin.html#tcp-%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B">4.22 TCP 四次挥手，可以变成三次吗？ | 小林coding (xiaolincoding.com)</a></p>
+<h2 id="TCP重传机制"><a href="#TCP重传机制" class="headerlink" title="TCP重传机制"></a>TCP重传机制</h2><p>TCP有多种重传机制</p>
+<ul>
+<li>超时重传</li>
+<li>快速重传</li>
+<li>SACK、D-SACK</li>
+</ul>
+<p><strong>超时重传</strong>：发送后开始定时，超过RTO后即重传。</p>
+<p><strong>快速重传</strong>：当多次收到重复的ack时，说明该包出问题了，马上重传。但这仅仅是重传一个数据包，S-ACK解决了这个问题。</p>
+<p><strong>S-ACK</strong>：TCP头部多用一个范围来表示接收到的数据，可以让发送方清楚地知道哪些需要重传。</p>
+<p>D-SACK并不是一种重传机制，而是用于S-ACK机制来让发送方查明包的情况，比如根据S-ACK和ACK的值，以及自己是否重发的情况来确定该包是</p>
+<ul>
+<li>包丢了</li>
+<li>包延时</li>
+<li>被复制了</li>
+</ul>
+<h2 id="TCP滑动窗口"><a href="#TCP滑动窗口" class="headerlink" title="TCP滑动窗口"></a>TCP滑动窗口</h2><p>发送方和接收方分别维护一个窗口，用于同时传输多个数据包，加快传输速度，降低网络时延的影响。</p>
+<p><strong>发送方</strong>：</p>
+<ul>
+<li><code>SND.WND</code> 发送窗口大小（<strong>大小由接收方在TCP的Window字段指定</strong>）</li>
+<li><code>SND.UNA</code>发送但未确认的第一个数据包的第一个字节。</li>
+<li><code>SND.NXT</code>下一个数据包的起始位置</li>
+</ul>
+<p><strong>接收方</strong></p>
+<ul>
+<li><code>RCV.WND</code>：表示接收窗口的大小，它会通告给发送方。</li>
+<li><code>RCV.NXT</code>：是一个指针，它指向期望从发送方发送来的下一个数据字节的序列号。</li>
+</ul>
+<h2 id="TCP流量控制"><a href="#TCP流量控制" class="headerlink" title="TCP流量控制"></a>TCP流量控制</h2><p>操作系统在系统内存不够用时，可能缩减TCP缓存，因此可能涉及到一些问题。</p>
+<p><strong>TCP规定不能同时减少缓存和缩减窗口</strong>：优先缩减窗口让发送方知道，再减少缓存，否则发送方发送过大的数据会导致丢包。</p>
+<p><strong>窗口关闭</strong>：当接收方窗口为0时，发送方不再发送。但如果发送方的Window恢复的报文丢失，就会导致发送方一致等待，因此，发送方通常零窗口通知时，启动计时器，时间到了就发送窗口刺探报文来确认窗口大小，多次尝试都是0的话，可能就发送RST（看具体TCP实现）</p>
+<p><strong>糊涂窗口综合征</strong>：发送太多小数据，导致利用率太低。解决方式</p>
+<ol>
+<li>让接收方不通告小窗口给发送方</li>
+<li>让发送方避免发送小数据</li>
+</ol>
+<p><strong>接收方</strong>：「窗口大小」小于 min( MSS，缓存空间&#x2F;2 ) ，也就是小于 MSS 与 1&#x2F;2 缓存大小中的最小值时，就会向发送方通告窗口为 <code>0</code></p>
+<p><strong>发送方</strong>：使用 Nagle 算法（Linux默认打开，socket中设置<code>TCP_NODELAY</code>设置），该算法的思路是延时处理，只有满足下面两个条件中的任意一个条件，才可以发送数据：</p>
+<ul>
+<li>条件一：要等到窗口大小 &gt;&#x3D; <code>MSS</code> 并且 数据大小 &gt;&#x3D; <code>MSS</code>；</li>
+<li>条件二：收到之前发送数据的 <code>ack</code> 回包；</li>
+</ul>
+<p><strong>接收方得满足「不通告小窗口给发送方」+ 发送方开启 Nagle 算法，才能避免糊涂窗口综合症</strong>。</p>
+<h2 id="TCP拥塞控制"><a href="#TCP拥塞控制" class="headerlink" title="TCP拥塞控制"></a>TCP拥塞控制</h2><p>流量控制是发送方和接收方的控制，拥塞控制是用于整个网络的顺畅，控制自己的数据包的发送。</p>
+<p><strong>慢启动</strong>：<strong>当发送方每收到一个 ACK，拥塞窗口 cwnd 的大小就会加 1。</strong></p>
+<p>整体来说，cwnd大致上随时间指数增长的。</p>
+<p>有一个叫慢启动门限 <code>ssthresh</code> （slow start threshold）状态变量。</p>
+<ul>
+<li>当 <code>cwnd</code> &lt; <code>ssthresh</code> 时，使用慢启动算法。</li>
+<li>当 <code>cwnd</code> &gt;&#x3D; <code>ssthresh</code> 时，就会使用「拥塞避免算法」。</li>
+</ul>
+<p><strong>拥塞控制</strong>：<strong>每当收到一个 ACK 时，cwnd 增加 1&#x2F;cwnd。</strong></p>
+<p>整体来说，cwnd大致上随时间线性增长。</p>
+<p>网络不会通知网络状况，但可以通过丢包来猜测大致网络状况。比如，丢包就认为是网络拥塞。</p>
+<p>当网络出现拥塞，也就是会发生数据包重传，重传机制主要有两种：</p>
+<ul>
+<li>超时重传</li>
+<li>快速重传</li>
+</ul>
+<p><strong>超时重传的处理</strong></p>
+<ul>
+<li><code>ssthresh</code> 设为 <code>cwnd/2</code>，</li>
+<li><code>cwnd</code> 重置为 <code>1</code> （是恢复为 cwnd 初始化值，我这里假定 cwnd 初始化值 1）</li>
+</ul>
+<p><strong>快速重传的处理</strong></p>
+<ul>
+<li><code>cwnd = cwnd/2</code> ，也就是设置为原来的一半;</li>
+<li><code>ssthresh = cwnd</code>;</li>
+<li>进入快速恢复算法</li>
+</ul>
+<p>快速恢复算法如下</p>
+<ul>
+<li><code>cwnd = ssthresh + 3</code> （ 3 的意思是确认有 3 个数据包被收到了）</li>
+<li>重传丢失的数据包</li>
+<li>如果再收到重复的 ACK，那么 cwnd 增加 1；</li>
+<li>如果收到新数据的 ACK 后，把 cwnd 设置为第一步中的 ssthresh 的值，原因是该 ACK 确认了新的数据，说明从 duplicated ACK 时的数据都已收到，该恢复过程已经结束，可以回到恢复之前的状态了，也即再次进入拥塞避免状态；</li>
+</ul>
+<h2 id="tcp-tw-reuse为什么默认关闭"><a href="#tcp-tw-reuse为什么默认关闭" class="headerlink" title="tcp_tw_reuse为什么默认关闭"></a><code>tcp_tw_reuse</code>为什么默认关闭</h2><p><code>tcp_tw_reuse</code>的用处是：将处time_wait的<code>socket</code>用于建立新连接，而<code>time_wait</code>的时间是2MSL。</p>
+<p>没有了有<code>time_wait</code>的等待，就有可能回绕和历史连接中的数据落在当前连接的窗口内，读到错误数据。</p>
+<p>此外，如果没有<code>time_wait</code>,也就是收到<code>fin</code>报文发送<code>ack</code>后就立刻关闭连接，有可能因为延迟或丢包导致对方无法正常关闭。</p>
+<p>因此，<code>tcp_tw_reuse</code>默认的关闭主要是</p>
+<ul>
+<li>防止历史连接中的数据，被后面相同四元组的连接错误的接收</li>
+<li>保证「被动关闭连接」的一方，能被正确的关闭</li>
+</ul>
 <h2 id="TCP和UDP的区别"><a href="#TCP和UDP的区别" class="headerlink" title="TCP和UDP的区别"></a>TCP和UDP的区别</h2><p>我觉得TCP和UDP最大的区别就是，应用场景。</p>
 <p>对于交易支付这种依赖可靠性的传输，需要用到TCP。对于视频这种对于延迟有较低要求的场景，需要用到UDP。</p>
-<p>针对TCP的可靠，UDP的低延迟，展开对区别的描述。</p>
+<p><strong>按照应用场景分</strong>，针对TCP的可靠，UDP的低延迟，展开对区别的描述。</p>
 <p><strong>TCP可靠性</strong></p>
 <p>可靠意味着对于文件要完整地无差错到达。</p>
 <ol>
@@ -467,7 +551,11 @@
 <p>这样，就算泄露了服务器私钥。以前的通信，还需要客户端的私钥才能破解，保证了<strong>前向安全</strong>性。</p>
 <h2 id="HTTP发展史"><a href="#HTTP发展史" class="headerlink" title="HTTP发展史"></a>HTTP发展史</h2><h3 id="HTTP1-0"><a href="#HTTP1-0" class="headerlink" title="HTTP1.0"></a>HTTP1.0</h3><p>是一份参考文档，并未强制标准。定义了HTTP的部分规范。</p>
 <p>直接由明文传输，不安全，无状态信息，一个请求需要TCP握手挥手，效率很低。</p>
-<h3 id="HTTP-x2F-1-1"><a href="#HTTP-x2F-1-1" class="headerlink" title="HTTP&#x2F;1.1"></a>HTTP&#x2F;1.1</h3><p>对HTTP&#x2F;1.0进行了连接的优化，有了HTTP长连接, mo’ren，多个请求可用同一个TCP连接。HTTP&#x2F;1.0默认不开启，需要在头部字段开启。</p>
+<h3 id="HTTP-x2F-1-1"><a href="#HTTP-x2F-1-1" class="headerlink" title="HTTP&#x2F;1.1"></a>HTTP&#x2F;1.1</h3><p>对HTTP&#x2F;1.0进行了连接的优化，</p>
+<ul>
+<li>有了HTTP长连接，默认开启。</li>
+<li>多个请求可用同一个TCP连接。HTTP&#x2F;1.0默认不开启，需要在头部字段开启。</li>
+</ul>
 <p>同时，理论上支持管道传输，无需上一个请求的回应即可进行下一个请求，但实际上默认不开启，浏览器基本不支持。</p>
 <h3 id="HTTP2"><a href="#HTTP2" class="headerlink" title="HTTP2"></a>HTTP2</h3><p>HTTP2基于HTTPS，默认开启SSL&#x2F;TLS。安全性有了保障。</p>
 <p>HTTP2使用HPACK算法，通信双方都有一张固定静态表、维护一张动态表、使用Huffman编码对头部压缩优化。</p>
@@ -591,8 +679,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/10/10/internet/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" title="计算机网络">
-                        <span class="hidden-mobile">计算机网络</span>
+                      <a href="/2022/10/10/LeetCode/Dynamic%20Programming/Dynamic%20Programming/" title="Dynamic Programming">
+                        <span class="hidden-mobile">Dynamic Programming</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -630,7 +718,7 @@
         aria-expanded="true"
       >
         internet
-        <span class="list-group-count">(12)</span>
+        <span class="list-group-count">(10)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -645,10 +733,10 @@
     
       
       
-        <a href="/2022/10/10/internet/Frame/" title="Frame"
+        <a href="/2022/10/10/internet/Overview/" title="Overview"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">Frame</span>
+          <span class="category-post">Overview</span>
         </a>
       
     
@@ -658,15 +746,6 @@
            class="list-group-item list-group-item-action
            active">
           <span class="category-post">interview</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2022/10/10/internet/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" title="计算机网络"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">计算机网络</span>
         </a>
       
     
@@ -748,7 +827,7 @@
         aria-expanded="false"
       >
         TCP&amp;IP
-        <span class="list-group-count">(5)</span>
+        <span class="list-group-count">(4)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -784,15 +863,6 @@
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">TCP</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2022/10/10/internet/TCP&amp;IP/readme/" title="readme"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">readme</span>
         </a>
       
     

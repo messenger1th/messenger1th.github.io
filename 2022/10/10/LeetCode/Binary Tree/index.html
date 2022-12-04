@@ -24,7 +24,7 @@
 <meta property="og:description" content="树：Tree遍历 前序遍历 中序遍历 后序遍历 层序遍历 递归和迭代的写法     后序结果可由前序改变入栈顺序，翻转结果数组得来。**但这种方法不是真正意义上的后序遍历:左—&gt;右-&gt;中** 但是其实遍历本来就要用root节点做媒介，也先访问了root节点。  遍历题目前中后序 递归和迭代的写法.   144. 二叉树的前序遍历 94. 二叉树的中序遍历 145. 二叉树的后序遍历">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-10-10T12:00:09.777Z">
-<meta property="article:modified_time" content="2022-10-10T12:00:09.777Z">
+<meta property="article:modified_time" content="2022-11-30T13:09:57.474Z">
 <meta property="article:author" content="Epoch">
 <meta property="article:tag" content="Epoch Blog">
 <meta name="twitter:card" content="summary_large_image">
@@ -293,6 +293,7 @@
 </ul>
 <h3 id="遍历应用"><a href="#遍历应用" class="headerlink" title="遍历应用"></a>遍历应用</h3><ul>
 <li><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/sum-root-to-leaf-numbers/">129. 求根节点到叶节点数字之和</a></li>
+<li><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/inorder-successor-in-bst/">285. 二叉搜索树中的中序后继</a></li>
 </ul>
 <h3 id="层序遍历"><a href="#层序遍历" class="headerlink" title="层序遍历"></a>层序遍历</h3><ul>
 <li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/populating-next-right-pointers-in-each-node/">116. 填充每个节点的下一个右侧节点指针</a></li>
@@ -390,7 +391,7 @@
 <li><p><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/longest-univalue-path/">687. 最长同值路径</a></p>
 </li>
 </ul>
-<h4 id="285-二叉搜索树中的中序后继"><a href="#285-二叉搜索树中的中序后继" class="headerlink" title="285. 二叉搜索树中的中序后继"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/inorder-successor-in-bst/">285. 二叉搜索树中的中序后继</a></h4><h4 id="426-将二叉搜索树转化为排序的双向链表"><a href="#426-将二叉搜索树转化为排序的双向链表" class="headerlink" title="426. 将二叉搜索树转化为排序的双向链表"></a><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/convert-binary-search-tree-to-sorted-doubly-linked-list/">426. 将二叉搜索树转化为排序的双向链表</a></h4><h4 id="113-路径总和-II"><a href="#113-路径总和-II" class="headerlink" title="113. 路径总和 II"></a><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/path-sum-ii/">113. 路径总和 II</a></h4><h4 id="437-路径总和-III"><a href="#437-路径总和-III" class="headerlink" title="437. 路径总和 III"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/path-sum-iii/">437. 路径总和 III</a></h4><h4 id="572-另一棵树的子树"><a href="#572-另一棵树的子树" class="headerlink" title="572. 另一棵树的子树"></a><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/subtree-of-another-tree/">572. 另一棵树的子树</a></h4><h4 id="669-修剪二叉搜索树"><a href="#669-修剪二叉搜索树" class="headerlink" title="669. 修剪二叉搜索树"></a><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/balance-a-binary-search-tree/">669. 修剪二叉搜索树</a></h4><h4 id="156-上下翻转二叉树"><a href="#156-上下翻转二叉树" class="headerlink" title="156. 上下翻转二叉树"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-upside-down/">156. 上下翻转二叉树</a></h4><h4 id="814-二叉树剪枝"><a href="#814-二叉树剪枝" class="headerlink" title="814. 二叉树剪枝"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-pruning/">814. 二叉树剪枝</a></h4><blockquote>
+<h4 id="426-将二叉搜索树转化为排序的双向链表"><a href="#426-将二叉搜索树转化为排序的双向链表" class="headerlink" title="426. 将二叉搜索树转化为排序的双向链表"></a><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/convert-binary-search-tree-to-sorted-doubly-linked-list/">426. 将二叉搜索树转化为排序的双向链表</a></h4><h4 id="113-路径总和-II"><a href="#113-路径总和-II" class="headerlink" title="113. 路径总和 II"></a><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/path-sum-ii/">113. 路径总和 II</a></h4><h4 id="437-路径总和-III"><a href="#437-路径总和-III" class="headerlink" title="437. 路径总和 III"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/path-sum-iii/">437. 路径总和 III</a></h4><h4 id="572-另一棵树的子树"><a href="#572-另一棵树的子树" class="headerlink" title="572. 另一棵树的子树"></a><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/subtree-of-another-tree/">572. 另一棵树的子树</a></h4><h4 id="669-修剪二叉搜索树"><a href="#669-修剪二叉搜索树" class="headerlink" title="669. 修剪二叉搜索树"></a><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/balance-a-binary-search-tree/">669. 修剪二叉搜索树</a></h4><h4 id="156-上下翻转二叉树"><a href="#156-上下翻转二叉树" class="headerlink" title="156. 上下翻转二叉树"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-upside-down/">156. 上下翻转二叉树</a></h4><h4 id="814-二叉树剪枝"><a href="#814-二叉树剪枝" class="headerlink" title="814. 二叉树剪枝"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-pruning/">814. 二叉树剪枝</a></h4><blockquote>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/binary-tree-cameras/">968. 监控二叉树</a>  类似这题，用返回值告诉子节点状态. <em>Greedy</em></li>
 </ul>
@@ -722,6 +723,15 @@
     
       
       
+        <a href="/2022/12/01/LeetCode/review/" title="review"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">review</span>
+        </a>
+      
+    
+      
+      
         <a href="/2022/10/10/LeetCode/%E5%B8%B8%E7%94%A8%E7%AE%97%E6%B3%95/" title="常用算法"
            class="list-group-item list-group-item-action
            ">
@@ -735,15 +745,6 @@
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">常见题目系列</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2022/10/10/LeetCode/%E9%87%8D%E7%82%B9%E5%9B%9E%E9%A1%BE/" title="重点回顾"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">重点回顾</span>
         </a>
       
     
