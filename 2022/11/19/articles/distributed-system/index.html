@@ -27,7 +27,7 @@
 <meta property="og:image" content="https://messenger1th.github.io/2022/11/19/articles/distributed-system/30c2c70721c12f9c140358fbdc5f2282.png">
 <meta property="og:image" content="https://messenger1th.github.io/2022/11/19/articles/distributed-system/d528bae6fcec2357ba2eb8f324ad9fd5.png">
 <meta property="article:published_time" content="2022-11-19T10:47:57.795Z">
-<meta property="article:modified_time" content="2022-11-20T10:36:09.955Z">
+<meta property="article:modified_time" content="2022-12-06T07:28:39.843Z">
 <meta property="article:author" content="Epoch">
 <meta property="article:tag" content="Epoch Blog">
 <meta name="twitter:card" content="summary_large_image">
@@ -211,7 +211,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.8k 字
+          4.7k 字
         
       </span>
     
@@ -222,7 +222,7 @@
         
         
         
-          80 分钟
+          79 分钟
         
       </span>
     
@@ -368,7 +368,6 @@
 <li>由N个节点和至少W个节点写入成功，则失败的最多为 N - W个，而读取要求是 W+R  &gt; N即， R  &gt; N - W，这就保证了读取的R个数据中至少包含一个最新的数据。</li>
 <li>而W &gt; N &#x2F; 2 是为了节点们只能同时决策一个请求，用于串行化。</li>
 </ul>
-<p><strong>从上述过程不能知道，Raft协议就是Quorum机制的一个实现，其中R 和 W 都是⌊N &#x2F; 2⌋ + 1。</strong></p>
 <h2 id="共识：Consensus"><a href="#共识：Consensus" class="headerlink" title="共识：Consensus"></a>共识：Consensus</h2><p>共识指的是分布式中服务器对一个数据达成一致。</p>
 <p>共识算法指的是分布式系统同步数据，达成共识的方式。</p>
 <p>共识可以解决分布式系统的一些困难，如</p>
@@ -450,7 +449,6 @@
 <p>多个虚拟节点就更好的均匀了哈希环。</p>
 <p>除此之外，还可以根据不同服务器的性能，给不同服务器分别不同的虚拟节点个数，性能更高的分配更多的虚拟节点，更好地实现负载均衡。</p>
 <p>因此，<strong>带虚拟节点的一致性哈希方法不仅适合节点规模会发生变化的场景，而且适合硬件配置不同的节点的场景</strong>。</p>
-<h2 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h2><p>TODO</p>
 
                 
               </div>
@@ -583,7 +581,7 @@
         aria-expanded="true"
       >
         articles
-        <span class="list-group-count">(10)</span>
+        <span class="list-group-count">(9)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -628,15 +626,6 @@
            class="list-group-item list-group-item-action
            ">
           <span class="category-post">Counting Sort</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2022/10/10/articles/Git/" title="Git"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">Git</span>
         </a>
       
     
