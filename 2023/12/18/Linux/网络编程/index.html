@@ -1,0 +1,1051 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/girl.png">
+  <link rel="icon" href="/img/girl.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Epoch">
+  <meta name="keywords" content="Epoch Blog">
+  
+    <meta name="description" content="网络编程基本socket模型 IO多路复用I&#x2F;O多路复用实际上是将等待IO请求的责任交给了内核，内核管理所有已经建立连接的socket，当程序调用查询函数时返回给程序去处理。  select&#x2F;pollselect 实现多路复用的方式是，将已连接的 Socket 都放到一个文件描述符集合，然后调用 select 函数将文件描述符集合拷贝到内核里，让内核来检查是否有网络事件产生，检">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络编程">
+<meta property="og:url" content="https://messenger1th.github.io/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Epoch">
+<meta property="og:description" content="网络编程基本socket模型 IO多路复用I&#x2F;O多路复用实际上是将等待IO请求的责任交给了内核，内核管理所有已经建立连接的socket，当程序调用查询函数时返回给程序去处理。  select&#x2F;pollselect 实现多路复用的方式是，将已连接的 Socket 都放到一个文件描述符集合，然后调用 select 函数将文件描述符集合拷贝到内核里，让内核来检查是否有网络事件产生，检">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/tcp_socket.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%98%BB%E5%A1%9E%20I_O.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%20I_O%20.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E5%BC%82%E6%AD%A5%20I_O.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E5%8D%95Reactor%E5%8D%95%E8%BF%9B%E7%A8%8B.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E5%8D%95Reactor%E5%A4%9A%E7%BA%BF%E7%A8%8B.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E4%B8%BB%E4%BB%8EReactor%E5%A4%9A%E7%BA%BF%E7%A8%8B.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Proactor-1677323195307-10.png">
+<meta property="article:published_time" content="2023-12-18T11:03:14.655Z">
+<meta property="article:modified_time" content="2023-12-18T11:03:14.655Z">
+<meta property="article:author" content="Epoch">
+<meta property="article:tag" content="Epoch Blog">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://messenger1th.github.io/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/tcp_socket.png">
+  
+  
+  
+  <title>网络编程 - Epoch</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"messenger1th.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Epoch</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/messenger1th">
+                <i class="iconfont icon-github-fill"></i>
+                GitHub
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="网络编程"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-18 19:03" pubdate>
+          2023年12月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          125 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">网络编程</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="网络编程"><a href="#网络编程" class="headerlink" title="网络编程"></a>网络编程</h1><h2 id="基本socket模型"><a href="#基本socket模型" class="headerlink" title="基本socket模型"></a>基本socket模型</h2><p><img src="/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/tcp_socket.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="IO多路复用"><a href="#IO多路复用" class="headerlink" title="IO多路复用"></a>IO多路复用</h2><p>I&#x2F;O多路复用实际上是将等待IO请求的责任交给了内核，内核管理所有已经建立连接的socket，当程序调用查询函数时返回给程序去处理。</p>
+<p><img src="/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h3 id="select-x2F-poll"><a href="#select-x2F-poll" class="headerlink" title="select&#x2F;poll"></a>select&#x2F;poll</h3><p>select 实现多路复用的方式是，将已连接的 Socket 都放到一个<strong>文件描述符集合</strong>，然后调用 select 函数将文件描述符集合<strong>拷贝</strong>到内核里，让内核来检查是否有网络事件产生，检查的方式很粗暴，就是通过<strong>遍历</strong>文件描述符集合的方式，当检查到有事件产生后，将此 Socket 标记为可读或可写， 接着再把整个文件描述符集合<strong>拷贝</strong>回用户态里，然后用户态还需要再通过<strong>遍历</strong>的方法找到可读或可写的 Socket，然后再对其处理。</p>
+<p>所以，对于 select 这种方式，需要进行 <strong>2 次「遍历」文件描述符集合</strong>，一次是在内核态里，一个次是在用户态里 ，而且还会发生 <strong>2 次「拷贝」文件描述符集合</strong>，先从用户空间传入内核空间，由内核修改后，再传出到用户空间中。</p>
+<p>select 使用固定长度的 BitsMap，表示文件描述符集合，而且所支持的文件描述符的个数是有限制的，在 Linux 系统中，由内核中的 FD_SETSIZE 限制， 默认最大值为 <code>1024</code>，只能监听 0~1023 的文件描述符。</p>
+<p>poll 不再用 BitsMap 来存储所关注的文件描述符，取而代之用<strong>动态数组，以链表形式来组织</strong>，突破了 select 的文件描述符个数限制，当然还会受到系统文件描述符限制。</p>
+<p>但是 poll 和 select 并没有太大的本质区别，<strong>都是使用「线性结构」存储进程关注的 Socket 集合，因此都需要遍历文件描述符集合来找到可读或可写的 Socket，时间复杂度为 O(n)，而且也需要在用户态与内核态之间拷贝文件描述符集合</strong>，这种方式随着并发数上来，性能的损耗会呈指数级增长。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>select</th>
+<th>poll</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>组织方式</td>
+<td>固定长度的 BitsMap</td>
+<td>动态数组</td>
+</tr>
+<tr>
+<td>检查方式</td>
+<td>遍历</td>
+<td>遍历</td>
+</tr>
+<tr>
+<td>时间复杂度</td>
+<td>O(n)</td>
+<td>O(n)</td>
+</tr>
+<tr>
+<td>文件描述符</td>
+<td>最大1024</td>
+<td>无限制</td>
+</tr>
+</tbody></table>
+<h3 id="epoll"><a href="#epoll" class="headerlink" title="epoll"></a>epoll</h3><p>epoll的基本流程如下</p>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> s = socket(AF_INET, SOCK_STREAM, <span class="hljs-number">0</span>);
+bind(s, ...);
+listen(s, ...)
+
+<span class="hljs-type">int</span> epfd = epoll_create(...);
+epoll_ctl(epfd, ...); <span class="hljs-comment">//将所有需要监听的socket添加到epfd中</span>
+
+<span class="hljs-keyword">while</span>(<span class="hljs-number">1</span>) &#123;
+    <span class="hljs-type">int</span> n = epoll_wait(...);
+    <span class="hljs-keyword">for</span>(接收到数据的socket)&#123;
+        <span class="hljs-comment">//处理</span>
+    &#125;
+&#125;</code></pre></div>
+
+<p>epoll 通过两个方面，很好解决了 select&#x2F;poll 的问题。</p>
+<ol>
+<li>epoll 在内核里使用<strong>红黑树来跟踪进程所有待检测的文件描述字</strong>，把需要监控的 socket 通过 <code>epoll_ctl()</code> 函数加入内核中的红黑树里，红黑树是个高效的数据结构，增删改一般时间复杂度是 <code>O(logn)</code>。而 select&#x2F;poll 内核里没有类似 epoll 红黑树这种保存所有待检测的 socket 的数据结构，所以 select&#x2F;poll 每次操作时都传入整个 socket 集合给内核，而 epoll 因为在内核维护了红黑树，可以保存所有待检测的 socket ，所以只需要传入一个待检测的 socket，减少了内核和用户空间大量的数据拷贝和内存分配。</li>
+<li>epoll 使用<strong>事件驱动</strong>的机制，内核里<strong>维护了一个链表来记录就绪事件</strong>，当某个 socket 有事件发生时，通过<strong>回调函数</strong>内核会将其加入到这个就绪事件列表中，当用户调用 <code>epoll_wait()</code> 函数时，只会返回有事件发生的文件描述符的个数，不需要像 select&#x2F;poll 那样轮询扫描整个 socket 集合，大大提高了检测的效率。</li>
+</ol>
+<h4 id="边缘触发和水平触发"><a href="#边缘触发和水平触发" class="headerlink" title="边缘触发和水平触发"></a>边缘触发和水平触发</h4><p><strong>边缘触发</strong>模式时，当被监控的 Socket 描述符上有可读事件发生时，<strong>服务器端只会从 epoll_wait 中苏醒一次</strong>，即使进程没有调用 read 函数从内核读取数据，也依然只苏醒一次，因此我们程序要保证一次性将内核缓冲区的数据读取完；</p>
+<p><strong>水平触发</strong>模式时，当被监控的 Socket 上有可读事件发生时，<strong>服务器端不断地从 epoll_wait 中苏醒，直到内核缓冲区数据被 read 函数读完才结束</strong>，目的是告诉我们有数据需要读取；</p>
+<p>select和poll只能工作在水平触发模式。</p>
+<p><strong>epoll可以工作在水平触发和边缘触发，但处在边缘触发模式时，最好搭配非阻塞IO，否则可能阻塞在某一个连接上而无法处理其他连接。</strong>举一个例子，我们一般是通过<code>epoll_wait</code>获取当前需要业务处理的fd，用一个<code>while</code>循环读取数据，如果是非阻塞IO，读完数据会返回一个<code>EAGIAIN</code>错误，表示当前没有数据可以读取；如果是阻塞IO，没有数据也不会返回，而是阻塞等待到有数据可以读取，这样本来负责所有连接的线程现在只能阻塞等待一个连接的业务了。以上是<code>read</code>的情况，<code>write</code>同理。</p>
+<p>所以，epoll处于边缘触发时，最好搭配非阻塞IO。</p>
+<p>此外，Linux 手册关于 select 的内容中有如下说明：</p>
+<blockquote>
+<p>Under Linux, select() may report a socket file descriptor as “ready for reading”, while nevertheless a subsequent read blocks. This could for example happen when data has arrived but upon examination has wrong checksum and is discarded. There may be other circumstances in which a file descriptor is spuriously reported as ready. Thus it may be safer to use O_NONBLOCK on sockets that should not block.</p>
+</blockquote>
+<p>即就算多路复用返回了事件，事件也不一定是可读写的，比如数据到达了，但经检查后发现数据错误丢弃。</p>
+<p>如果使用阻塞 I&#x2F;O， 那么在调用 read&#x2F;write 时则会发生程序阻塞，因此最好搭配非阻塞 I&#x2F;O，以便应对极少数的特殊情况。</p>
+<p><strong>总的来说，使用IO多路复用时，尽量使用非阻塞IO。</strong></p>
+<p>select&#x2F;poll和epoll区别如下</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>select&#x2F;poll</th>
+<th>epoll</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>组织方式</td>
+<td>线性结构</td>
+<td>红黑树</td>
+</tr>
+<tr>
+<td>检查方式</td>
+<td>遍历</td>
+<td>索引</td>
+</tr>
+<tr>
+<td>时间复杂度</td>
+<td>O(n)</td>
+<td>O(log n)</td>
+</tr>
+<tr>
+<td>触发方式</td>
+<td>仅水平触发</td>
+<td>可水平触发可边缘触发</td>
+</tr>
+</tbody></table>
+<h2 id="IO：阻塞-非阻塞-同步-异步"><a href="#IO：阻塞-非阻塞-同步-异步" class="headerlink" title="IO：阻塞\非阻塞\同步\异步"></a>IO：阻塞\非阻塞\同步\异步</h2><p>在前面我们知道了，I&#x2F;O 是分为两个过程的：</p>
+<ol>
+<li>数据准备的过程</li>
+<li>数据从内核空间拷贝到用户进程缓冲区的过程</li>
+</ol>
+<p>阻塞和非阻塞都是同步IO，区别就在与是否在第一个步骤「数据准备」。</p>
+<ul>
+<li>阻塞IO会在「数据准备」的过程中阻塞等待，无法执行。</li>
+<li>非阻塞IO会在数据未准备时，返回一个特殊值，表示还未准备好，可以执行其他命令。</li>
+</ul>
+<p>阻塞IO流程如下</p>
+<p><img src="/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%98%BB%E5%A1%9E%20I_O.png" srcset="/img/loading.gif" lazyload alt="阻塞 I/O"></p>
+<p>非阻塞IO流程如下</p>
+<p><img src="/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E9%9D%9E%E9%98%BB%E5%A1%9E%20I_O%20.png" srcset="/img/loading.gif" lazyload alt="非阻塞 I/O"></p>
+<blockquote>
+<p>如果 socket 设置了 <code>O_NONBLOCK</code> 标志，那么就表示使用的是非阻塞 I&#x2F;O 的方式访问，而不做任何设置的话，默认是阻塞 I&#x2F;O。</p>
+</blockquote>
+<p>同步IO是在第二步骤「数据从内核空间拷贝到用户进程缓冲区的过程」阻塞，而<strong>异步 I&#x2F;O</strong> 是「内核数据准备好」和「数据从内核态拷贝到用户态」这<strong>两个过程都不用等待</strong>。</p>
+<p>当我们发起 <code>aio_read</code> （异步 I&#x2F;O） 之后，就立即返回，内核自动将数据从内核空间拷贝到用户空间，这个拷贝过程同样是异步的，内核自动完成的，和前面的同步操作不一样，<strong>应用程序并不需要主动发起拷贝动作</strong>。</p>
+<p>异步IO流程如下</p>
+<p><img src="/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E5%BC%82%E6%AD%A5%20I_O.png" srcset="/img/loading.gif" lazyload alt="异步 I/O"></p>
+<h2 id="高性能网络模式"><a href="#高性能网络模式" class="headerlink" title="高性能网络模式"></a>高性能网络模式</h2><p>高性能网络模式都基于于epoll实现，搭配一定的多线程、多进程。</p>
+<h3 id="Reactor"><a href="#Reactor" class="headerlink" title="Reactor"></a>Reactor</h3><p>Reactor就是使用epoll接受请求的线程，处理连接请求，当读写事件到来，通常会将具体操作分发给其他线程。</p>
+<p>常用的架构有</p>
+<ul>
+<li>单 Reactor 单线程 &#x2F; 多进程</li>
+<li>单 Reactor 多线程 &#x2F; 多进程</li>
+<li>多 Reactor 多线程 &#x2F; 多进程</li>
+</ul>
+<h4 id="单-Reactor-单线程-x2F-多进程"><a href="#单-Reactor-单线程-x2F-多进程" class="headerlink" title="单 Reactor 单线程 &#x2F; 多进程"></a>单 Reactor 单线程 &#x2F; 多进程</h4><p><img src="/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E5%8D%95Reactor%E5%8D%95%E8%BF%9B%E7%A8%8B.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>在这个架构中，Reactor负责接收请求，同时接收请求后需要自己负责处理，并没有用到其他线程或进程。实际上就是接收后调用对应对象的成员函数。</p>
+<p><strong>优点</strong>：单 Reactor 单进程的方案因为全部工作都在同一个进程内完成，所以实现起来比较简单，不需要考虑进程间通信，也不用担心多进程竞争。</p>
+<p><strong>缺点</strong></p>
+<ol>
+<li>无法充分利用 多核 CPU 的性能</li>
+<li>Handler 对象在业务处理时，整个进程是无法处理其他连接的事件的，如果业务处理耗时比较长，那么就造成响应的延迟</li>
+</ol>
+<p>所以，单 Reactor 单进程的方案<strong>不适用计算机密集型的场景，只适用于业务处理非常快速的场景</strong>。</p>
+<p>Redis 是由 C 语言实现的，在 Redis 6.0 版本之前采用的正是「单 Reactor 单进程」的方案，因为 Redis 业务处理主要是在内存中完成，操作的速度是很快的，性能瓶颈不在 CPU 上，所以 Redis 对于命令的处理是单进程的方案。</p>
+<h4 id="单-Reactor-多线程-x2F-多进程"><a href="#单-Reactor-多线程-x2F-多进程" class="headerlink" title="单 Reactor 多线程 &#x2F; 多进程"></a>单 Reactor 多线程 &#x2F; 多进程</h4><p>鉴于单线程的缺点，便有了多线程的方案，<strong>单 Reactor 多线程</strong>的方案如下。</p>
+<p><img src="/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E5%8D%95Reactor%E5%A4%9A%E7%BA%BF%E7%A8%8B.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>的Reactor负责接收请求，对于建立连接是需要自己完成的。</p>
+<p>而对于具体业务的处理，是通过通知线程池，通知完就可以接着监听事务了。让线程池内的线程去处理具体的业务逻辑。</p>
+<p><strong>通知的方式</strong>可以是</p>
+<ul>
+<li>需要处理的连接的信息发送给线程安全的队列，并使用条件变量通知一个线程，线程池中的一个线程拿到并执行。</li>
+<li>每个线程一个线程安全的队列，通过哈希等分配函数进行具体的分配。</li>
+</ul>
+<p>聊完单 Reactor 多线程的方案，接着来看看<strong>单 Reactor 多进程</strong>的方案。</p>
+<p>事实上，单 Reactor 多进程相比单 Reactor 多线程实现起来很麻烦，主要因为要考虑子进程 &lt;-&gt; 父进程的双向通信，并且父进程还得知道子进程要将数据发送给哪个客户端。</p>
+<p>而多线程间可以共享数据，虽然要额外考虑并发问题，但是这远比进程间通信的复杂度低得多，因此实际应用中也看不到单 Reactor 多进程的模式。</p>
+<p>另外，「单 Reactor」的模式还有个问题，<strong>因为一个 Reactor 对象承担所有事件的监听和响应，而且只在主线程中运行，在面对瞬间高并发的场景时，容易成为性能的瓶颈的地方</strong>。</p>
+<h4 id="多-Reactor-多线程-x2F-多进程"><a href="#多-Reactor-多线程-x2F-多进程" class="headerlink" title="多 Reactor 多线程 &#x2F; 多进程"></a>多 Reactor 多线程 &#x2F; 多进程</h4><p>要解决「单 Reactor」的问题，就是将「单 Reactor」实现成「多 Reactor」，这样就产生了第 <strong>多 Reactor 多线程 &#x2F; 进程</strong>的方案，架构图如下。</p>
+<p><img src="/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/%E4%B8%BB%E4%BB%8EReactor%E5%A4%9A%E7%BA%BF%E7%A8%8B.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>多Reactor实际上就是不同的Reactor承担不同的任务，有用与连接的Reactor，和两个负责业务处理的reactor。</p>
+<p>对于连接请求，会在MainReactor处建立连接，连接建立完成则从MainReactor中移除，加入SubReactor，进行实际的业务处理。</p>
+<p>大名鼎鼎的两个开源软件 <strong>Netty</strong> 和 <strong>Memcache</strong> 都采用了<strong>「多 Reactor 多线程」</strong>的方案。</p>
+<p>采用了「多 Reactor 多进程」方案的开源软件是 Nginx，不过方案与标准的多 Reactor 多进程有些差异。</p>
+<p>具体差异表现在主进程中仅仅用来初始化 socket，并没有创建 mainReactor 来 accept 连接，而是由子进程的 Reactor 来 accept 连接，通过锁来控制一次只有一个子进程进行 accept（防止出现惊群现象），子进程 accept 新连接后就放到自己的 Reactor 进行处理，不会再分配给其他子进程。</p>
+<h3 id="Proactor"><a href="#Proactor" class="headerlink" title="Proactor"></a>Proactor</h3><p>前面提到的 Reactor 是非阻塞同步网络模式，而 <strong>Proactor 是异步网络模式</strong>。</p>
+<p>不仅仅数据准备的过程不需要等待，数据从内核拷贝到用户区也不用等待，这些过程都由内核管理。</p>
+<p>Proactor模式流程如下</p>
+<p><img src="/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/Proactor-1677323195307-10.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ul>
+<li>首先用户线程负责初始化Proactor并且创建对应的处理对象。</li>
+<li>当有通知时，内核直接调用注册好的回调函数。</li>
+</ul>
+<p>可惜的是，在 Linux 下的异步 I&#x2F;O 是不完善的， <code>aio</code> 系列函数是由 POSIX 定义的异步操作接口，不是真正的操作系统级别支持的，而是在用户空间模拟出来的异步，并且仅仅支持基于本地文件的 aio 异步操作，网络编程中的 socket 是不支持的，这也使得基于 Linux 的高性能网络程序都是使用 Reactor 方案。</p>
+<p>而 Windows 里实现了一套完整的支持 socket 的异步编程接口，这套接口就是 <code>IOCP</code>，是由操作系统级别实现的异步 I&#x2F;O，真正意义上异步 I&#x2F;O，因此在 Windows 里实现高性能网络程序可以使用效率更高的 Proactor 方案。</p>
+<h2 id="API"><a href="#API" class="headerlink" title="API"></a>API</h2><p>更详细的API介绍见每个函数的man手册。</p>
+<p><strong>大小端转换API</strong>:</p>
+<p>n: network 网络</p>
+<p>h: host  （本地）主机</p>
+<p>l: unsigned long</p>
+<p>s: unsigned short</p>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">uint32_t</span> <span class="hljs-title function_">htonl</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> hostlong)</span>;
+<span class="hljs-type">uint16_t</span> <span class="hljs-title function_">htons</span><span class="hljs-params">(<span class="hljs-type">uint16_t</span> hostshort)</span>;
+<span class="hljs-type">uint32_t</span> <span class="hljs-title function_">ntohl</span><span class="hljs-params">(<span class="hljs-type">uint32_t</span> netlong)</span>;
+<span class="hljs-type">uint16_t</span> <span class="hljs-title function_">ntohs</span><span class="hljs-params">(<span class="hljs-type">uint16_t</span> netshort)</span>;</code></pre></div>
+
+
+
+<p><strong>IP地址转换API</strong></p>
+<p>计算机认识到的是二进制（转换结果是无符号整型但会被计算机视作二进制），而更具可读性的是点分十进制。</p>
+<p>因此存在两者之间的转换。</p>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;arpa/inet.h&gt;</span></span>
+
+<span class="hljs-type">int</span> <span class="hljs-title function_">inet_aton</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* cp, <span class="hljs-keyword">struct</span> in_addr* inp)</span>; <span class="hljs-comment">//直接传inp的指针作为结果，返回值表示是否成功。</span>
+<span class="hljs-comment">//（inp实际指向一个struct, struct中仅含一个in_addr_t(即uint32_t) 成员）</span>
+
+<span class="hljs-type">in_addr_t</span> <span class="hljs-title function_">inet_addr</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* strptr)</span>; <span class="hljs-comment">//将点分十进制转成二进制（in_addr_in实际上是一个unsigned int）</span>
+<span class="hljs-type">char</span>* <span class="hljs-title function_">inet_ntoa</span><span class="hljs-params">(<span class="hljs-keyword">struct</span> in_addr in)</span>; <span class="hljs-comment">//将网络字节序转化为address(IP字符串)。</span>
+<span class="hljs-comment">//注意该函数返回的char*指向的是内部的静态资源，之前的指针会指向当前转换的结果。即，该函数不可重入。</span>
+
+
+<span class="hljs-comment">//以上都是IPv4，以下是根据参数来转换IPv4还是IPv6。</span>
+<span class="hljs-type">int</span> <span class="hljs-title function_">inet_pton</span><span class="hljs-params">(<span class="hljs-type">int</span> af, <span class="hljs-type">const</span> <span class="hljs-type">char</span>* src, <span class="hljs-type">void</span>* dst)</span>;
+<span class="hljs-type">const</span> <span class="hljs-type">char</span>* <span class="hljs-title function_">inet_ntop</span><span class="hljs-params">(<span class="hljs-type">int</span> af, <span class="hljs-type">const</span> <span class="hljs-type">void</span>* src, <span class="hljs-type">char</span>* dst, <span class="hljs-type">socklen_t</span> cnt)</span>;</code></pre></div>
+
+<p><strong>注意：由于是转换到网络字节序，因此转换时还存在大小端的转换。</strong></p>
+<p><strong>Socket API</strong></p>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">socket</span><span class="hljs-params">(<span class="hljs-type">int</span> domain, <span class="hljs-type">int</span> type, <span class="hljs-type">int</span> protocol)</span>;
+
+<span class="hljs-comment">//client part</span>
+<span class="hljs-type">int</span> <span class="hljs-title function_">connect</span><span class="hljs-params">(<span class="hljs-type">int</span> sockfd, <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> sockaddr* addr, <span class="hljs-type">socklen_t</span> addrlen)</span>;
+
+<span class="hljs-comment">//server part</span>
+<span class="hljs-type">int</span> <span class="hljs-title function_">bind</span><span class="hljs-params">(<span class="hljs-type">int</span> sockfd, <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> sockaddr* addr, <span class="hljs-type">socklen_t</span> addrlen)</span>;
+<span class="hljs-type">int</span> <span class="hljs-title function_">listen</span><span class="hljs-params">(<span class="hljs-type">int</span> sockfd, <span class="hljs-type">int</span> backlog)</span>;
+<span class="hljs-type">int</span> <span class="hljs-title function_">accept</span><span class="hljs-params">(<span class="hljs-type">int</span> sockfd, <span class="hljs-keyword">struct</span> sockaddr* addr, <span class="hljs-type">socklen_t</span> addrlen)</span>;</code></pre></div>
+
+
+
+<p><strong>数据读写</strong></p>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-comment">//TCP part</span>
+<span class="hljs-type">ssize_t</span> <span class="hljs-title function_">recv</span><span class="hljs-params">(<span class="hljs-type">int</span> sockfd, <span class="hljs-type">void</span>* buf, <span class="hljs-type">size_t</span> len, <span class="hljs-type">int</span> flags)</span>;
+<span class="hljs-type">ssize_t</span> <span class="hljs-title function_">send</span><span class="hljs-params">(<span class="hljs-type">int</span> sockfd, <span class="hljs-type">const</span> <span class="hljs-type">void</span>* buf, <span class="hljs-type">size_t</span> len, <span class="hljs-type">int</span> flags)</span>;
+
+<span class="hljs-comment">//UDP part</span>
+<span class="hljs-type">ssize_t</span> <span class="hljs-title function_">recvfrom</span><span class="hljs-params">(<span class="hljs-type">int</span> sockfd, <span class="hljs-type">void</span>* buf, <span class="hljs-type">size_t</span> len, <span class="hljs-type">int</span> flags, <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> sockaddr* src_addr, <span class="hljs-type">socklen_t</span> addrlen)</span>;
+<span class="hljs-type">ssize_t</span> <span class="hljs-title function_">sendto</span><span class="hljs-params">(<span class="hljs-type">int</span> sockfd, <span class="hljs-type">const</span> <span class="hljs-type">void</span>* buf, <span class="hljs-type">size_t</span> len, <span class="hljs-type">int</span> flags, <span class="hljs-type">const</span> <span class="hljs-keyword">struct</span> sockaddr* dest_addr, <span class="hljs-type">socklen_t</span> addrlen)</span>;</code></pre></div>
+
+<p>TODO: Out of Band</p>
+<p><strong>Socket设置</strong></p>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">getsockopt</span><span class="hljs-params">(<span class="hljs-type">int</span> sockfd, <span class="hljs-type">int</span> level, <span class="hljs-type">int</span> optname,<span class="hljs-type">void</span> *optval, <span class="hljs-type">socklen_t</span> *optlen)</span>;
+<span class="hljs-type">int</span> <span class="hljs-title function_">setsockopt</span><span class="hljs-params">(<span class="hljs-type">int</span> sockfd, <span class="hljs-type">int</span> level, <span class="hljs-type">int</span> optname, <span class="hljs-type">const</span> <span class="hljs-type">void</span> *optval, <span class="hljs-type">socklen_t</span> optlen)</span>;</code></pre></div>
+
+<p>相关参数：</p>
+<div class="code-wrapper"><pre><code class="hljs c">SO_REUSEADDR; <span class="hljs-comment">//复用处于Time_Wait阶段的Socket，或者直接修改内核参数/proc/sys/ipv4/tcp_tw_reuse</span>
+SO_RCVBUF; <span class="hljs-comment">//设置receive buffer</span>
+SO_SNDBUF; <span class="hljs-comment">//设置send buff</span>
+SO_RCVLOWAT; <span class="hljs-comment">//缓冲大小到达该阈值才通知可读</span>
+SO_SNDLOWAD; <span class="hljs-comment">//同上，但可写。</span>
+SO_LINGER； <span class="hljs-comment">//控制TCP关闭时的行为。</span></code></pre></div>
+
+
+
+<p><strong>网络信息API</strong></p>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-keyword">struct</span> hostent *<span class="hljs-title function_">gethostbyname</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *name)</span>;
+
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/socket.h&gt;</span>       <span class="hljs-comment">/* for AF_INET */</span></span>
+<span class="hljs-keyword">struct</span> hostent *<span class="hljs-title function_">gethostbyaddr</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">void</span> *addr,</span>
+<span class="hljs-params">                              <span class="hljs-type">socklen_t</span> len, <span class="hljs-type">int</span> type)</span>;
+
+<span class="hljs-comment">//可重入版本</span>
+<span class="hljs-type">int</span> <span class="hljs-title function_">gethostent_r</span><span class="hljs-params">(</span>
+<span class="hljs-params">               <span class="hljs-keyword">struct</span> hostent *ret, <span class="hljs-type">char</span> *buf, <span class="hljs-type">size_t</span> buflen,</span>
+<span class="hljs-params">               <span class="hljs-keyword">struct</span> hostent **result, <span class="hljs-type">int</span> *h_errnop)</span>;
+
+<span class="hljs-type">int</span> <span class="hljs-title function_">gethostbyaddr_r</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">void</span> *addr, <span class="hljs-type">socklen_t</span> len, <span class="hljs-type">int</span> type,</span>
+<span class="hljs-params">                    <span class="hljs-keyword">struct</span> hostent *ret, <span class="hljs-type">char</span> *buf, <span class="hljs-type">size_t</span> buflen,</span>
+<span class="hljs-params">                    <span class="hljs-keyword">struct</span> hostent **result, <span class="hljs-type">int</span> *h_errnop)</span>;
+
+<span class="hljs-comment">//如下查询man手册即可。</span>
+getservbyname();
+getservbyport();
+getaddrinfo();
+getnameinfo();</code></pre></div>
+
+
+
+<p><strong>错误信息</strong></p>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">char</span>* <span class="hljs-title">strerror</span><span class="hljs-params">(<span class="hljs-type">int</span> errnum)</span></span>; <span class="hljs-comment">//将错误码转成字符串。</span>
+<span class="hljs-function"><span class="hljs-type">const</span> <span class="hljs-type">char</span> *<span class="hljs-title">gai_strerror</span><span class="hljs-params">(<span class="hljs-type">int</span> errcode)</span></span>; <span class="hljs-comment">//getaddrinfo, getnameinfo的错误码转成字符串。</span>
+...</code></pre></div>
+
+
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://xiaolincoding.com/os/8_network_system/selete_poll_epoll.html#%E6%9C%80%E5%9F%BA%E6%9C%AC%E7%9A%84-socket-%E6%A8%A1%E5%9E%8B">I&#x2F;O 多路复用：select&#x2F;poll&#x2F;epoll</a></li>
+<li><a target="_blank" rel="noopener" href="https://xiaolincoding.com/os/8_network_system/reactor.html">高性能网络模式：Reactor 和 Proactor</a></li>
+<li>《Linux高性能服务器编程》</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>网络编程</div>
+      <div>https://messenger1th.github.io/2023/12/18/Linux/网络编程/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Epoch</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/12/18/MySQL/Buffer%20Pool/" title="Buffer Pool">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Buffer Pool</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/12/18/Linux/Virtual%20Memory/" title="Virtual Memory">
+                        <span class="hidden-mobile">Virtual Memory</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Linux"
+        id="heading-edc9f0a5a5d57797bf68e37364743831" role="tab" data-toggle="collapse" href="#collapse-edc9f0a5a5d57797bf68e37364743831"
+        aria-expanded="true"
+      >
+        Linux
+        <span class="list-group-count">(6)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-edc9f0a5a5d57797bf68e37364743831"
+           role="tabpanel" aria-labelledby="heading-edc9f0a5a5d57797bf68e37364743831">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/12/18/Linux/Ext%20File%20System/" title="Ext File System"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Ext File System</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Linux/Physical%20Memory/" title="Physical Memory"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Physical Memory</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Linux/Process/" title="Process"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Process</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Linux/Slub/" title="Slub"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Slub</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Linux/Virtual%20Memory/" title="Virtual Memory"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Virtual Memory</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" title="网络编程"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">网络编程</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

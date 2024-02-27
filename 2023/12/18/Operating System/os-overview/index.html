@@ -1,0 +1,1041 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/girl.png">
+  <link rel="icon" href="/img/girl.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Epoch">
+  <meta name="keywords" content="Epoch Blog">
+  
+    <meta name="description" content="Operating System硬件结构CPU缓存一致性由于内存和CPU读写速度的差异，为了加速内存中数据的读写，CPU引入了缓存体系。 缓存的速度比内存快很多很多，将需要读写的数据读取到缓存中，下一次就无须再去内存中寻找。 但缓存也是内存数据的一份副本，也就存在着数据不一致的情况，需要保证数据同步。 写直达（Write Through）：每次需要写缓存中的数据时就修改内存的数据，使其同步。对于读">
+<meta property="og:type" content="article">
+<meta property="og:title" content="os-overview">
+<meta property="og:url" content="https://messenger1th.github.io/2023/12/18/Operating%20System/os-overview/index.html">
+<meta property="og:site_name" content="Epoch">
+<meta property="og:description" content="Operating System硬件结构CPU缓存一致性由于内存和CPU读写速度的差异，为了加速内存中数据的读写，CPU引入了缓存体系。 缓存的速度比内存快很多很多，将需要读写的数据读取到缓存中，下一次就无须再去内存中寻找。 但缓存也是内存数据的一份副本，也就存在着数据不一致的情况，需要保证数据同步。 写直达（Write Through）：每次需要写缓存中的数据时就修改内存的数据，使其同步。对于读">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Operating%20System/os-overview/MESI%E5%8D%8F%E8%AE%AE.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Operating%20System/os-overview/%20MESI%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2%E8%A1%A8%E6%A0%BC.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Operating%20System/os-overview/10-%E8%BF%9B%E7%A8%8B%E4%B8%83%E4%B8%AD%E7%8A%B6%E6%80%81.jpg">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Operating%20System/os-overview/I_O%20%E4%B8%AD%E6%96%AD.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Operating%20System/os-overview/DRM%20I_O%20%E8%BF%87%E7%A8%8B.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Operating%20System/os-overview/%E4%BC%A0%E7%BB%9F%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Operating%20System/os-overview/mmap%20%252B%20write%20%E9%9B%B6%E6%8B%B7%E8%B4%9D.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Operating%20System/os-overview/senfile-3%E6%AC%A1%E6%8B%B7%E8%B4%9D.png">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Operating%20System/os-overview/senfile-%E9%9B%B6%E6%8B%B7%E8%B4%9D.png">
+<meta property="article:published_time" content="2023-12-18T11:03:14.774Z">
+<meta property="article:modified_time" content="2023-12-18T11:03:14.774Z">
+<meta property="article:author" content="Epoch">
+<meta property="article:tag" content="Epoch Blog">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://messenger1th.github.io/2023/12/18/Operating%20System/os-overview/MESI%E5%8D%8F%E8%AE%AE.png">
+  
+  
+  
+  <title>os-overview - Epoch</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"messenger1th.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Epoch</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/messenger1th">
+                <i class="iconfont icon-github-fill"></i>
+                GitHub
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="os-overview"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-18 19:03" pubdate>
+          2023年12月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          8.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          143 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">os-overview</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Operating-System"><a href="#Operating-System" class="headerlink" title="Operating System"></a>Operating System</h1><h2 id="硬件结构"><a href="#硬件结构" class="headerlink" title="硬件结构"></a>硬件结构</h2><h3 id="CPU缓存一致性"><a href="#CPU缓存一致性" class="headerlink" title="CPU缓存一致性"></a>CPU缓存一致性</h3><p>由于内存和CPU读写速度的差异，为了加速内存中数据的读写，CPU引入了缓存体系。</p>
+<p>缓存的速度比内存快很多很多，将需要读写的数据读取到缓存中，下一次就无须再去内存中寻找。</p>
+<p>但缓存也是内存数据的一份副本，也就存在着数据不一致的情况，需要保证数据同步。</p>
+<p><strong>写直达（Write Through）：</strong>每次需要写缓存中的数据时就修改内存的数据，使其同步。对于读来说，不仅没有加速，反而还多了写缓存的过程。显然效率不高。</p>
+<p><strong>写回（write back）</strong>：为了防止频繁将缓存的数据写回内存，就引入了写回的的方法。</p>
+<ul>
+<li>写数据，且数据已经存储在cache block中时，则无须直接修改内存，而是仅修改cache block中的数据，并标记该cache block为脏。</li>
+</ul>
+<p>但由于现代CPU基本上都是多核CPU，就又涉及到多缓存的一致性问题。要保证多缓存的一致性，就要做到两点要求。</p>
+<ul>
+<li><strong>写传播（Write Propagation）</strong>：一个核心写数据时，需要同步到其他核的缓存中。</li>
+<li><strong>事务串行化（Transaction Serialization）</strong>：所有核心的数据变化是一致的，即顺序一致性。</li>
+</ul>
+<p>要实现写传播，常用<strong>总线嗅探（Bus Snooping）</strong>实现。</p>
+<p>要实现事务串行化，要做到以下两点，常用<strong>MESI协议</strong>实现。</p>
+<ul>
+<li>CPU 核心对于 Cache 中数据的操作，需要同步给其他 CPU 核心；</li>
+<li>要引入「锁」的概念，如果两个 CPU 核心里有相同数据的 Cache，那么对于这个 Cache 数据的更新，只有拿到了「锁」，才能进行对应的数据更新。</li>
+</ul>
+<h4 id="MESI协议"><a href="#MESI协议" class="headerlink" title="MESI协议"></a>MESI协议</h4><p>MESI协议定义了一个CPU核心的四种状态，和每个状态对于本核心读写、其他核心读写的四种操作的行为。</p>
+<ul>
+<li><em>Modified</em>，已修改</li>
+<li><em>Exclusive</em>，独占</li>
+<li><em>Shared</em>，共享</li>
+<li><em>Invalidated</em>，已失效。</li>
+</ul>
+<p>其中，已修改和独占都是仅当前缓存存有该数据。</p>
+<p>整个过程可以用有限状态机（finite-state machine）表示</p>
+<p><img src="/2023/12/18/Operating%20System/os-overview/MESI%E5%8D%8F%E8%AE%AE.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>每个状态对于不同的行为产生的变化如下表。</p>
+<p><img src="/2023/12/18/Operating%20System/os-overview/%20MESI%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2%E8%A1%A8%E6%A0%BC.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<h2 id="编译过程"><a href="#编译过程" class="headerlink" title="编译过程"></a>编译过程</h2><ol>
+<li>编译预处理</li>
+<li>编译</li>
+<li>汇编</li>
+<li>链接</li>
+</ol>
+<h2 id="为什么要有虚拟内存？"><a href="#为什么要有虚拟内存？" class="headerlink" title="为什么要有虚拟内存？"></a>为什么要有虚拟内存？</h2><h3 id="绝对物理地址：单片机"><a href="#绝对物理地址：单片机" class="headerlink" title="绝对物理地址：单片机"></a>绝对物理地址：单片机</h3><p>从单片机说起，单片机的程序是直接编译，烧进单片机的，一旦需要更改程序，就得重新编译，烧录。</p>
+<p>编译后的程序，直接写在单片机的内存ROM中，必要的话，还可以手动更改ROM内容，这些都是直接操作绝对物理地址。</p>
+<h3 id="虚拟内存"><a href="#虚拟内存" class="headerlink" title="虚拟内存"></a>虚拟内存</h3><p>而现代操作系统会将物理地址和程序操纵的地址解耦开，让<strong>MMU</strong>（memory manage unit）去管理。程序请求操作内存，则MMU查找对应的物理地址。</p>
+<p>那么问题来了，操作系统是如何处理虚拟内存和物理内存的关系呢？</p>
+<h4 id="内存分段"><a href="#内存分段" class="headerlink" title="内存分段"></a>内存分段</h4><p>程序是由若干个逻辑分段组成的，如可由代码分段、数据分段、栈段、堆段组成。<strong>不同的段是有不同的属性的，所以就用分段（*Segmentation*）的形式把这些段分离出来。</strong>分段机制下的虚拟地址由两部分组成，<strong>段选择因子</strong>和<strong>段内偏移量</strong>。</p>
+<p>可以看出这样分配是一大块分配的，很不利于动态分配内存。这样分配内存存在以下问题</p>
+<ul>
+<li>段间内存碎片：段与段之间的内存由于不够分配给一个段而无法使用。</li>
+<li>内存交换效率低：为了解决内存碎片问题，就有了将段内容复制到硬盘，再从硬盘读入到新内存中的过程。</li>
+</ul>
+<h4 id="内存分页"><a href="#内存分页" class="headerlink" title="内存分页"></a>内存分页</h4><p><strong>分页是把整个虚拟和物理内存空间切成一段段固定尺寸的大小</strong>。这样一个连续并且尺寸固定的内存空间，我们叫<strong>页</strong>（<em>Page</em>）。在 Linux 下，每一页的大小为 <code>4KB</code>。</p>
+<ul>
+<li>程序请求内存时，以页为单位。这样页间的碎片就不会超过一个页大小。</li>
+</ul>
+<p>但由于页也需要页表管理，占用不少额外空间用于管理页表。就衍生出<strong>多级页表</strong>。</p>
+<p>对于一级页表来说，如果没有用到该项，而无需为其分配二级页表，虽然在页表全部使用的情况下多占用了一级页表的空间，但多数情况下可以节省内存。</p>
+<p>此外，由于采用了多级页表这种寻址时间来换空间的做法，势必会导致查表耗时更长。于是衍生出<strong>缓存机制</strong>。</p>
+<p>在CPU芯片中加入<strong>TLB</strong>（<em>Translation Lookaside Buffer</em>），根据程序的空间局部性原理，缓存的命中率通常不低。</p>
+<h4 id="段页式管理"><a href="#段页式管理" class="headerlink" title="段页式管理"></a>段页式管理</h4><p>顾名思义就是分段和分页结合使用</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>总的来说，虚拟内存有如下优势</p>
+<ol>
+<li>对于程序来说，只需关心自己的那部分内存，无需关系物理内存，内存管理交给操作系统。进程之间的内存也不会互相影响。算是程序和物理地址解耦的一种方式。</li>
+<li>此外，由于页表的存在，虚拟内存和物理内存之间存在一层代理。对于那些非法的访问、特殊权限等可以做一些控制。</li>
+<li>虚拟内存还可以节省空间。并不是所有程序都在使用其所有空间，对于那些暂时不用的部分，可以暂时换出到硬盘。</li>
+</ol>
+<h2 id="栈和堆的区别"><a href="#栈和堆的区别" class="headerlink" title="栈和堆的区别"></a>栈和堆的区别</h2><p>栈和堆都是分配内存的方式，其中</p>
+<ul>
+<li>栈主要用于一些局部变量，函数传参等程序一般需求，因此栈由编译器管理更方便。</li>
+<li>堆主要用于程序特殊需要，因此需要手动管理（当然有垃圾回收的语言不用）。</li>
+</ul>
+<p>从实现原理上来说</p>
+<ul>
+<li>栈一般是<strong>静态分配</strong>的（alloca函数动态分配），分配时<strong>大小确定</strong>，<strong>向下、低地址方向</strong>增长，需要多少内存直接移动栈指针即可，也就<strong>没有内存碎片</strong>的问题。</li>
+<li>堆是<strong>动态管理</strong>的，由<strong>链表</strong>实现，也就可能<strong>产生内存碎片</strong>问题，<strong>向上、低地址增长</strong>。</li>
+</ul>
+<p>从效率上来说，</p>
+<ul>
+<li>栈是一般程序都需要的，因此会有优化，如专门的寄存器和指令</li>
+<li>堆是C&#x2F;C++语言调用相关函数再经操作系统分配，机制复杂，效率不及栈。</li>
+</ul>
+<p>从分配大小来看，</p>
+<ul>
+<li>栈受限于操作系统指定的参数</li>
+<li>堆受限于操作系统的虚拟内存</li>
+</ul>
+<h2 id="线程和进程的区别"><a href="#线程和进程的区别" class="headerlink" title="线程和进程的区别"></a>线程和进程的区别</h2><p><strong>线程是CPU调度的最小单位，而进程资源分配的最小单位，不同进程的资源是独立的。</strong></p>
+<p>进程拥有资源，由PCB控制。所以，线程基于进程。一个进程可以有多个线程，线程共享进程的大部分资源，独有自己的寄存器和栈等资源。</p>
+<p>从调度角度来说，切换进程需要替换进程的绝大部分资源，消耗较多。而切换线程，仅仅需要切换独有的那部分寄存器和栈等资源。</p>
+<p>在Linux系统下，线程实际上是一种进程，用的相同结构<code>task_struct</code>表示线程和进程，只不过多个线程共享<strong>地址空间、文件系统、打开的文件、信号处理函数</strong>，但独有<strong>寄存器和栈</strong>来保证执行的相对独立。实际上，进程的创建是通过一个系统调用<code>clone</code>来实现的，而线程底层也是通过<code>clone</code>来实现。</p>
+<div class="code-wrapper"><pre><code class="hljs c">clone(CLONE_VM | CLONE_FS | CLONE_FILES | CLONE_SIGHAND, <span class="hljs-number">0</span>);</code></pre></div>
+
+<p>只不过指明了需要与其他线程共享的四个参数。</p>
+<h2 id="进程调度"><a href="#进程调度" class="headerlink" title="进程调度"></a>进程调度</h2><h3 id="常见算法"><a href="#常见算法" class="headerlink" title="常见算法"></a>常见算法</h3><ul>
+<li>先来先服务（<em>First Come First Severd, FCFS</em>）算法</li>
+<li>最短作业优先调度算法</li>
+<li>高响应比优先调度算法</li>
+<li>时间片轮转调度算法</li>
+<li>最高优先级调度算法</li>
+<li>多级反馈队列调度算法</li>
+</ul>
+<h3 id="Linux下的进程调度"><a href="#Linux下的进程调度" class="headerlink" title="Linux下的进程调度"></a>Linux下的进程调度</h3><h4 id="调度类"><a href="#调度类" class="headerlink" title="调度类"></a>调度类</h4><p>Linux将进程调度抽象成模块，称为调度类（Sched Class）。如何选择调度类，有一定的顺序。</p>
+<p>顺序遍历实际上意味着调度类之间存在优先级关系，Linux 总共实现了5种调度类，按照优先级有高到底排序依次为：</p>
+<ol>
+<li><p><code>stop_sched_class</code>  Stop 是特殊的调度类，内核使用该调度类来停止 CPU. 该调度类用来强行停止CPU 上的其他任务，由于该调度类的优先级最高，因此一旦生效就将抢占任何当前正在运行的任务，并且在运行过程中自己不会被抢占。</p>
+<p>该调度类只有在SMP架构的系统中存在，内核使用该调度类来完成负载均衡与CPU热插拔等工作。</p>
+</li>
+<li><p><code>dl_sched_class</code>  有些任务必须在指定时间窗口内完成。例如视频的编码与解码，CPU 必须以特定频率完成对应的数据处理；</p>
+<p>这类任务是优先级最高的用户任务，CPU 应该首先满足。</p>
+<p>Deadline 调度类用来调度这类任务，dl 便是单词 Deadline 的缩写，因此该调度类的优先级仅仅低于 Stop 调度类。</p>
+</li>
+<li><p><code>rt_sched_class</code>  在本节开头我们提到，实时任务（Real-time Task）对响应时间要求更高，例如编辑器软件，它可能由于等待用户输入长期处于睡眠之中，但一旦用户有输入动作，我们就期望编辑器能够立马响应，而不是等系统完成其它任务之后才开始反应，这一点对用户体验十分重要。</p>
+<p>RT 调度类用来调度这类任务，该调度类的优先级低于 DL.</p>
+</li>
+<li><p><code>fair_sched_class</code>  Fair 调度类用来调度绝大多数用户任务，CFS 实现的就是这种调度类，其核心逻辑是根据任务的优先级公平地分配 CPU 时间。我们会在后续章节中详细讨论 CFS 的实现细节。</p>
+</li>
+<li><p><code>idle_sched_class</code>  与 Stop 类似，Idle 调度类也是仅供内核使用的特殊调度类，其优先级最低，只有在没有任何用户任务时才会用到。内核会为每个 CPU 绑定一个内核线程（kthread）来完成该任务，该线程会在队列无事可做的情况下启动该任务，并将 CPU 的功耗降到最低。</p>
+</li>
+</ol>
+<p>每一个调度类都实现了<code>pick_next_task</code>，用于选择下一个调度的进程。</p>
+<p><strong>对于每个调度类，都有对应的调度策略。</strong></p>
+<h4 id="调度策略"><a href="#调度策略" class="headerlink" title="调度策略"></a>调度策略</h4><ol>
+<li>Stop 调度类  Stop 调度类中只有一个任务可供执行，不需要定义任何调度策略。</li>
+<li>DL （Deadline）调度类 DL 只实现了一种调度策略：<code>SCHED_DEADLINE</code>, 用来调度优先级最高的用户任务。</li>
+<li>RT （Real-Time） RT 提供了两种调度策略：<code>SCHED_FIFO</code> 与 <code>SCHED_RR,</code>对于使用 <code>SCHED_FIFO</code> 的任务，其会一直运行到主动放弃CPU; 而对于 <code>SCHED_RR</code> 的任务，如果多个任务的优先级相同，则大家会按照一定的时间配额来交替运行，即使一个任务一直处于可运行状态，在使用完自己的时间切片之后也会被抢占，然后被放入队列的尾巴等待下次机会。</li>
+<li>Fair CFS 实现了三种调度策略：<ul>
+<li><code>SCHED_NORMAL</code>: 被用于绝大多数用户进程</li>
+<li><code>SCHED_BATCH</code>: 适用于没有用户交互行为的后台进程，用户对该类进程的响应时间要求不高，但对吞吐量要求较高，因此调度器会在完成所有 <code>SCHED_NORMAL</code> 的任务之后让该类任务不受打扰地跑上一段时间，这样能够最大限度地利用缓存。</li>
+<li><code>SCHED_IDLE</code>: 这类调度策略被用于系统中优先级最低的任务，只有在没有任何其他任务可运行时，调度器才会将运行该类任务。</li>
+</ul>
+</li>
+<li>Idle 同 Stop 一样，Idle 调度类也没有实现调度策略，注意不要将这类调度类与 CFS 中的 <code>SCHED_IDLE</code> 混淆。</li>
+</ol>
+<p>每个进程在创建时都会指定一个调度策略，从而自动归结到某个调度类下。</p>
+<p>我们可以通过 <code>/proc/&lt;pid&gt;/sched</code> 中的内容来查看进程的调度策略。</p>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">define</span> SCHED_NORMAL 0</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> SCHED_FIFO 1</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> SCHED_RR 2</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> SCHED_BATCH 3</span>
+<span class="hljs-comment">/* SCHED_ISO: reserved but not implemented yet */</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> SCHED_IDLE 5</span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> SCHED_DEADLINE 6</span></code></pre></div>
+
+<p>从上述描述不难看出，只有RT和CFS进程会参与调度的逻辑，Linux也提供了系统调用来修改进程优先级。</p>
+<div class="code-wrapper"><pre><code class="hljs c">nice(); <span class="hljs-comment">//修改静态优先级，作用于CFS</span>
+sched_setscheduler(); <span class="hljs-comment">//修改动态优先级和调度策略，用于实时进程。</span></code></pre></div>
+
+<h4 id="运行队列"><a href="#运行队列" class="headerlink" title="运行队列"></a>运行队列</h4><p>运行队列（run queue）rq 是系统可运行任务的容器，调度器的很多工作都是围绕着 rq 来进行的，调度类 <code>struct sched_class</code> 所申明的函数中，绝大多数函数都与 rq 相关。<strong>在系统中，每个 CPU 都有一个自己的 rq, 这样可以避免多个 CPU 访问同一个 rq 时产生的并发问题，提升调度器效率。</strong></p>
+<p>每个rq都包含上述5个调度类，按照调度类优先级选取进程进行调度。</p>
+<h4 id="Linux-RT调度"><a href="#Linux-RT调度" class="headerlink" title="Linux RT调度"></a>Linux RT调度</h4><p>Linux实时进程的调度依赖于实时优先级。Linux提供两种实时进程的调度策略，分别是SCHED_FIFO和SCHED_RR。</p>
+<p><strong>SCHED_FIFO</strong></p>
+<ul>
+<li>一直执行，直到它阻塞或者显式释放，不依赖时间片，一直执行。</li>
+<li>只能被更高优先级的实时进程抢占。</li>
+<li>多个同级的进程会轮流运行。</li>
+</ul>
+<p><strong>SCHED_RR</strong></p>
+<ul>
+<li>类似SCHED_FIFO，但分配时间片。</li>
+</ul>
+<h4 id="Linux-CFS调度"><a href="#Linux-CFS调度" class="headerlink" title="Linux CFS调度"></a>Linux CFS调度</h4><p>Linux CFS的设计理念是，每个进程都是完全公平的，他们的虚拟运行时间应该尽可能的相等，虚拟时间根据nice值的比例来分配。CFS分配运行时间不是按照时间片来分配的，而是每个进程运行一段时间，循环轮转，选择运行最少（虚拟运行时间最少）的进程作为下一个运行进程。CFS将nice值作为比列的分配标准，越低的nice值能够获得更高的使用权重。</p>
+<p><strong>时间记账</strong>：Linux使用一个变量<code>vruntime</code>记录虚拟运行时长。vruntime的更改是由系统定时器周期性调用<code>update_curr()</code>实现。</p>
+<p><strong>进程选择</strong>：CFS采用红黑树数据结构，按照<code>vruntime</code>大小给进程排序。红黑树用一个变量记录最小<code>vruntime</code>的进程。</p>
+<p>进程插入：插入动作发生在进程创建或是进程唤醒时。</p>
+<p>进程删除：删除动作发生在进程阻塞或是进程终止时。</p>
+<p><strong>休眠和唤醒</strong>：</p>
+<p>休眠：当进程等待一些事件，例如等待文件I&#x2F;O、硬件事件、获取锁、磁盘read时，进程会把自己标记成休眠，然后从红黑树移除，加入等待队列。</p>
+<p>唤醒：进程设置为可执行状态，然后再从等待队列中加入红黑树。</p>
+<h2 id="上下文切换"><a href="#上下文切换" class="headerlink" title="上下文切换"></a>上下文切换</h2><img src="/2023/12/18/Operating%20System/os-overview/10-进程七中状态.jpg" srcset="/img/loading.gif" lazyload alt="七种状态变迁" style="zoom:67%;">
+
+<p>进程的五种主要状态</p>
+<ul>
+<li>创建状态</li>
+<li>就绪状态</li>
+<li>阻塞状态</li>
+<li>运行状态</li>
+<li>结束状态</li>
+</ul>
+<h3 id="进程上下文切换"><a href="#进程上下文切换" class="headerlink" title="进程上下文切换"></a>进程上下文切换</h3><p>进程是分配资源的最小单位，因而不同进程拥有不同的</p>
+<ul>
+<li>在用户空间中的：虚拟内存（堆栈、全局变量、数据块、代码块）。</li>
+<li>在内核空间中的：内核堆栈、寄存器、PC、进程标识信息、进程现场信息、进程控制信息等。</li>
+</ul>
+<p>切换时，需要把交换信息保存在进程的PCB中，恢复时取出。</p>
+<h3 id="线程上下文切换"><a href="#线程上下文切换" class="headerlink" title="线程上下文切换"></a>线程上下文切换</h3><p>线程是CPU调度的最小单位，依托进程存在，同一个进程下的线程共享</p>
+<ul>
+<li>虚拟内存、全局变量等资源</li>
+</ul>
+<p>线程切换时，无需更改以上资源，而线程独有的</p>
+<ul>
+<li>栈、寄存器、私有数据等</li>
+</ul>
+<p>需要切换。</p>
+<h3 id="在Linux下，线程和进程的都是用task-struct表示，为什么进程需要更大的花销呢？"><a href="#在Linux下，线程和进程的都是用task-struct表示，为什么进程需要更大的花销呢？" class="headerlink" title="在Linux下，线程和进程的都是用task_struct表示，为什么进程需要更大的花销呢？"></a>在Linux下，线程和进程的都是用task_struct表示，为什么进程需要更大的花销呢？</h3><p>没错，线程和进程的都是用task_struct表示，而该结构体大部分都是指针和一些小变量，没有数组等很大花销的变量，那么又是什么导致进程花销大呢？</p>
+<p>问题出在<strong>虚拟内存</strong>上。Linux下，</p>
+<ul>
+<li>虚拟内存存在多级页表，切换是需要花一定时间的。</li>
+<li>除此之外，由于进程切换需要切换整个虚拟内存，因此，CPU的TLB缓存也是需要全部更新的。</li>
+</ul>
+<p>而线程之间是共享虚拟内存的，就不存在这些花销。</p>
+<p>此外，由于进程和线程切换都存在内核态的切换，也是一笔不小的花销。也因此，衍生出<strong>协程</strong>这个概念。</p>
+<p><strong>协程是轻量级的线程，协程之间的切换全程在用户态进行，也就没有内核态切换的花销。</strong></p>
+<h2 id="死锁的条件和预防"><a href="#死锁的条件和预防" class="headerlink" title="死锁的条件和预防"></a>死锁的条件和预防</h2><h3 id="四个必要条件"><a href="#四个必要条件" class="headerlink" title="四个必要条件"></a>四个必要条件</h3><ol>
+<li>互斥条件（在多线程环境中，由于共享资源，可能发生race condition情况，通常采用加互斥锁来解决。因而有了互斥条件）</li>
+<li>占有并请求。（占有一个共享资源并请求另一个资源）</li>
+<li>不可剥夺。（在使用资源后才主动释放资源）</li>
+<li>环路等待。</li>
+</ol>
+<h3 id="预防"><a href="#预防" class="headerlink" title="预防"></a>预防</h3><p>破坏四个必要条件之一即可。比如</p>
+<ol>
+<li>最常见的，破坏环路等待：给资源编号，资源按顺序获取。</li>
+<li>破坏占有并请求：请求不到需要的资源就释放已经占有的资源。</li>
+</ol>
+<h2 id="IO：阻塞-非阻塞-同步-异步"><a href="#IO：阻塞-非阻塞-同步-异步" class="headerlink" title="IO：阻塞\非阻塞\同步\异步"></a>IO：阻塞\非阻塞\同步\异步</h2><p>在前面我们知道了，I&#x2F;O 是分为两个过程的：</p>
+<ol>
+<li>数据准备的过程</li>
+<li>数据从内核空间拷贝到用户进程缓冲区的过程</li>
+</ol>
+<p>阻塞 I&#x2F;O 会阻塞在「过程 1 」和「过程 2」，而非阻塞 I&#x2F;O 和基于非阻塞 I&#x2F;O 的多路复用只会阻塞在「过程 2」，所以这三个都可以认为是同步 I&#x2F;O。</p>
+<p>异步 I&#x2F;O 则不同，「过程 1 」和「过程 2 」都不会阻塞。</p>
+<h2 id="网络系统"><a href="#网络系统" class="headerlink" title="网络系统"></a>网络系统</h2><h3 id="DMA技术"><a href="#DMA技术" class="headerlink" title="DMA技术"></a>DMA技术</h3><p>在没有DMA(<em><strong>Direct Memory Access</strong></em>)技术前，I&#x2F;O需要CPU参与，而由于没有数据处理，实际上就没有必要让CPU参与，因此DMA技术就诞生了。</p>
+<p><strong>无DMA流程图</strong></p>
+<p><img src="/2023/12/18/Operating%20System/os-overview/I_O%20%E4%B8%AD%E6%96%AD.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p><strong>含DMA<img src="/2023/12/18/Operating%20System/os-overview/DRM%20I_O%20%E8%BF%87%E7%A8%8B.png" srcset="/img/loading.gif" lazyload alt="img"></strong></p>
+<h3 id="零拷贝"><a href="#零拷贝" class="headerlink" title="零拷贝"></a>零拷贝</h3><p>在 Linux 系统中，传统的访问方式是通过 <code>write()</code> 和 <code>read()</code> 两个系统调用实现的，通过 <code>read()</code> 函数读取文件到到缓存区中，然后通过 <code>write()</code>方法把缓存中的数据输出到网络端口，伪代码如下：</p>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-built_in">read</span>(file_fd, tmp_buf, len);
+<span class="hljs-built_in">write</span>(socket_fd, tmp_buf, len);</code></pre></div>
+
+<p>从网络中获取到的数据，需要从磁盘复制到内核，内核复制到内存两个过程，而发送数据需要将用户态数据复制到内核态，再从内核状态复制到网卡发送。</p>
+<p><img src="/2023/12/18/Operating%20System/os-overview/%E4%BC%A0%E7%BB%9F%E6%96%87%E4%BB%B6%E4%BC%A0%E8%BE%93.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>经历了4次拷贝，不仅存在无用拷贝的情况，还有内核态和用户态切换的开销。</p>
+<p>就引出了零拷贝技术。零拷贝技术实现的方式通常有 2 种：</p>
+<ul>
+<li>mmap + write</li>
+<li>sendfile</li>
+</ul>
+<h4 id="mmap-write"><a href="#mmap-write" class="headerlink" title="mmap + write"></a>mmap + write</h4><p>在前面我们知道，<code>read()</code> 系统调用的过程中会把内核缓冲区的数据拷贝到用户的缓冲区里，于是为了减少这一步开销，我们可以用 <code>mmap()</code> 替换 <code>read()</code> 系统调用函数。</p>
+<div class="code-wrapper"><pre><code class="hljs cpp">buf = <span class="hljs-built_in">mmap</span>(file, len);
+<span class="hljs-built_in">write</span>(sockfd, buf, len);</code></pre></div>
+
+<p><code>mmap()</code> 系统调用函数会直接把内核缓冲区里的数据「<strong>映射</strong>」到用户空间，这样，操作系统内核与用户空间就不需要再进行任何的数据拷贝操作。</p>
+<p><img src="/2023/12/18/Operating%20System/os-overview/mmap%20%252B%20write%20%E9%9B%B6%E6%8B%B7%E8%B4%9D.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>我们可以得知，通过使用 <code>mmap()</code> 来代替 <code>read()</code>， 可以减少一次数据拷贝的过程。</p>
+<p>但这还不是最理想的零拷贝，因为仍然需要通过 CPU 把内核缓冲区的数据拷贝到 socket 缓冲区里，而且仍然需要 4 次上下文切换，因为系统调用还是 2 次。</p>
+<h4 id="sendfile"><a href="#sendfile" class="headerlink" title="sendfile"></a>sendfile</h4><p>在 Linux 内核版本 2.1 中，提供了一个专门发送文件的系统调用函数 <code>sendfile()</code>，函数形式如下：</p>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/socket.h&gt;</span></span>
+<span class="hljs-type">ssize_t</span> <span class="hljs-title function_">sendfile</span><span class="hljs-params">(<span class="hljs-type">int</span> out_fd, <span class="hljs-type">int</span> in_fd, <span class="hljs-type">off_t</span> *offset, <span class="hljs-type">size_t</span> count)</span>;</code></pre></div>
+
+<p>它的前两个参数分别是目的端和源端的文件描述符，后面两个参数是源端的偏移量和复制数据的长度，返回值是实际复制数据的长度。</p>
+<p>首先，它可以替代前面的 <code>read()</code> 和 <code>write()</code> 这两个系统调用，这样就可以减少一次系统调用，也就减少了 2 次上下文切换的开销。</p>
+<p>其次，该系统调用，可以直接把内核缓冲区里的数据拷贝到 socket 缓冲区里，不再拷贝到用户态，这样就只有 2 次上下文切换，和 3 次数据拷贝。如下图：</p>
+<p><img src="/2023/12/18/Operating%20System/os-overview/senfile-3%E6%AC%A1%E6%8B%B7%E8%B4%9D.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>但是这还不是真正的零拷贝技术，如果网卡支持 SG-DMA（<em>The Scatter-Gather Direct Memory Access</em>）技术（和普通的 DMA 有所不同），我们可以进一步减少通过 CPU 把内核缓冲区里的数据拷贝到 socket 缓冲区的过程。</p>
+<p>你可以在你的 Linux 系统通过下面这个命令，查看网卡是否支持 scatter-gather 特性：</p>
+<div class="code-wrapper"><pre><code class="hljs bash">$ ethtool -k eth0 | grep scatter-gather
+scatter-gather: on</code></pre></div>
+
+<p>于是，从 Linux 内核 <code>2.4</code> 版本开始起，对于支持网卡支持 SG-DMA 技术的情况下， <code>sendfile()</code> 系统调用的过程发生了点变化，具体过程如下：</p>
+<ul>
+<li>第一步，通过 DMA 将磁盘上的数据拷贝到内核缓冲区里；</li>
+<li>第二步，缓冲区描述符和数据长度传到 socket 缓冲区，这样网卡的 SG-DMA 控制器就可以直接将内核缓存中的数据拷贝到网卡的缓冲区里，此过程不需要将数据从操作系统内核缓冲区拷贝到 socket 缓冲区中，这样就减少了一次数据拷贝；</li>
+</ul>
+<p>所以，这个过程之中，只进行了 2 次数据拷贝，如下图：</p>
+<p><img src="/2023/12/18/Operating%20System/os-overview/senfile-%E9%9B%B6%E6%8B%B7%E8%B4%9D.png" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>这就是所谓的<strong>零拷贝（<em>Zero-copy</em>）技术，因为我们没有在内存层面去拷贝数据，也就是说全程没有通过 CPU 来搬运数据，所有的数据都是通过 DMA 来进行传输的。</strong>。</p>
+<p>零拷贝技术的文件传输方式相比传统文件传输的方式，减少了 2 次上下文切换和数据拷贝次数，<strong>只需要 2 次上下文切换和数据拷贝次数，就可以完成文件的传输，而且 2 次的数据拷贝过程，都不需要通过 CPU，2 次都是由 DMA 来搬运。</strong></p>
+<p>所以，总体来看，<strong>零拷贝技术可以把文件传输的性能提高至少一倍以上</strong>。</p>
+<h4 id="使用零拷贝技术的项目"><a href="#使用零拷贝技术的项目" class="headerlink" title="使用零拷贝技术的项目"></a>使用零拷贝技术的项目</h4><ul>
+<li>Kafka</li>
+<li>Nginx</li>
+<li>Tomcat</li>
+</ul>
+<h3 id="Page-Cache"><a href="#Page-Cache" class="headerlink" title="Page Cache"></a>Page Cache</h3><p>类似CPU cache，Page Cache算是磁盘和内存之间的缓存。ageCache 的优点主要是两个：</p>
+<ul>
+<li>缓存最近被访问的数据；</li>
+<li>预读功能；</li>
+</ul>
+<p><strong>但是，在传输大文件（GB 级别的文件）的时候，PageCache 会不起作用，那就白白浪费 DMA 多做的一次数据拷贝，造成性能的降低，即使使用了 PageCache 的零拷贝也会损失性能</strong></p>
+<p>绕开 PageCache 的 I&#x2F;O 叫直接 I&#x2F;O，使用 PageCache 的 I&#x2F;O 则叫缓存 I&#x2F;O。通常，对于磁盘，异步 I&#x2F;O 只支持直接 I&#x2F;O。</p>
+<p>于是，<strong>在高并发的场景下，针对大文件的传输的方式，应该使用「异步 I&#x2F;O + 直接 I&#x2F;O」来替代零拷贝技术</strong>。</p>
+<p>所以，传输文件的时候，我们要根据文件的大小来使用不同的方式：</p>
+<ul>
+<li>传输大文件的时候，使用「异步 I&#x2F;O + 直接 I&#x2F;O」；</li>
+<li>传输小文件的时候，则使用「零拷贝技术」；</li>
+</ul>
+<p>在 nginx 中，我们可以用如下配置，来根据文件的大小来使用不同的方式：</p>
+<div class="code-wrapper"><pre><code class="hljs text">location /video/ &#123; 
+    sendfile on; 
+    aio on; 
+    directio 1024m; 
+&#125;</code></pre></div>
+
+<p>当文件大小大于 <code>directio</code> 值后，使用「异步 I&#x2F;O + 直接 I&#x2F;O」，否则使用「零拷贝技术」。</p>
+<h3 id="I-x2F-O多路复用"><a href="#I-x2F-O多路复用" class="headerlink" title="I&#x2F;O多路复用"></a>I&#x2F;O多路复用</h3><h3 id="高性能网络模式"><a href="#高性能网络模式" class="headerlink" title="高性能网络模式"></a>高性能网络模式</h3><h4 id="Reactor"><a href="#Reactor" class="headerlink" title="Reactor"></a>Reactor</h4><h4 id="Preactor"><a href="#Preactor" class="headerlink" title="Preactor"></a>Preactor</h4><h4 id="一致性哈希"><a href="#一致性哈希" class="headerlink" title="一致性哈希"></a>一致性哈希</h4>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Operating-System/" class="category-chain-item">Operating System</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>os-overview</div>
+      <div>https://messenger1th.github.io/2023/12/18/Operating System/os-overview/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Epoch</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/12/18/Others/Idea/" title="Idea">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Idea</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/12/18/Operating%20System/Cache%20Coherence/" title="Cache Coherence">
+                        <span class="hidden-mobile">Cache Coherence</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Operating System"
+        id="heading-64d354dc5879cf570ce7b4ef676e75bd" role="tab" data-toggle="collapse" href="#collapse-64d354dc5879cf570ce7b4ef676e75bd"
+        aria-expanded="true"
+      >
+        Operating System
+        <span class="list-group-count">(3)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-64d354dc5879cf570ce7b4ef676e75bd"
+           role="tabpanel" aria-labelledby="heading-64d354dc5879cf570ce7b4ef676e75bd">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/12/18/Operating%20System/Cache%20Coherence/" title="Cache Coherence"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Cache Coherence</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Operating%20System/File%20System/" title="File System"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">File System</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Operating%20System/os-overview/" title="os-overview"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">os-overview</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

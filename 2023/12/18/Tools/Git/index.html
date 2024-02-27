@@ -1,0 +1,931 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/girl.png">
+  <link rel="icon" href="/img/girl.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Epoch">
+  <meta name="keywords" content="Epoch Blog">
+  
+    <meta name="description" content="Git 配置用户签名（首次需要设置，否则提交时报错） 初始化本地库  命令 初始化本地库(会在当前目录生成.git的文件夹)  git init  连接远程仓库  git remote add origin xxxxx&#x2F;&#x2F;x为remoteRepo的SSH或者https git clone xxxxx&#x2F;&#x2F;克隆会直接连接 git remote -v&#x2F;&#x2F;查看远程仓库地址 查看状态  git status">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git">
+<meta property="og:url" content="https://messenger1th.github.io/2023/12/18/Tools/Git/index.html">
+<meta property="og:site_name" content="Epoch">
+<meta property="og:description" content="Git 配置用户签名（首次需要设置，否则提交时报错） 初始化本地库  命令 初始化本地库(会在当前目录生成.git的文件夹)  git init  连接远程仓库  git remote add origin xxxxx&#x2F;&#x2F;x为remoteRepo的SSH或者https git clone xxxxx&#x2F;&#x2F;克隆会直接连接 git remote -v&#x2F;&#x2F;查看远程仓库地址 查看状态  git status">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-12-18T11:03:14.805Z">
+<meta property="article:modified_time" content="2024-01-22T12:46:12.463Z">
+<meta property="article:author" content="Epoch">
+<meta property="article:tag" content="Epoch Blog">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Git - Epoch</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"messenger1th.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Epoch</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/messenger1th">
+                <i class="iconfont icon-github-fill"></i>
+                GitHub
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Git"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-18 19:03" pubdate>
+          2023年12月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          58 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Git</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h1><ol>
+<li>配置用户签名（首次需要设置，否则提交时报错）</li>
+<li>初始化本地库</li>
+</ol>
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><ol>
+<li><p>初始化本地库(会在当前目录生成<code>.git</code>的文件夹)</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git init</code></pre></div>
+</li>
+<li><p>连接远程仓库</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git remote add origin xxxxx//x为remoteRepo的SSH或者https
+git clone xxxxx//克隆会直接连接
+git remote -v//查看远程仓库地址</code></pre></div></li>
+<li><p>查看状态</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git status</code></pre></div>
+</li>
+<li><p>将文件加入追踪&#x2F;删除追踪</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git add filename //单个文件
+git add . //所有文件
+git rm --cached filename //去除对文件的追踪</code></pre></div>
+</li>
+<li><p>提交本地库</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git commit -m &quot;desription of this version.&quot; //&quot;&quot;中是对这次提交的版本的描述
+//git会输出 [main xxxxxxx] //xx为版本号前七位</code></pre></div>
+</li>
+<li><p>查看版本信息</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git reflog //版本号为前七位 
+git log  //详细信息</code></pre></div>
+</li>
+<li><p>版本设置（会修改本地文件）</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git reset --soft xxxxxxx //回退版本，但保留文件修改到untracked
+git reset --mixed xxxxxxx //回退版本，但保留文件修改到tracked
+git reset --hard xxxxxxx //--hard 强制回退到xxxxxx版本，并丢失数据，慎重！！！</code></pre></div></li>
+</ol>
+<h2 id="远程"><a href="#远程" class="headerlink" title="远程"></a>远程</h2><p>所有带push的才会修改远程，否则只是修改本地。例如<code>git remote remove [ref]</code>仅仅删除本地引用。</p>
+<ol>
+<li><p>推送到远程</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git push</code></pre></div>
+</li>
+<li><p>推送到远程并设置默认推送</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git push origin main # 将本地的main分支推送的远程的main分支
+
+git push -u origin main # 将本地的main分支推送的远程的main分支并设置默认推送。
+    # 设置默认推送后，可以直接使用
+    git push
+    
+git push origin &lt;local_branch&gt;:&lt;remote_branch&gt; # 将本地指定分支推送到远程指定分支</code></pre></div>
+</li>
+<li><p>推送到远程（本地当前分支和远程要分支不一致的情况）</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git push origin [local_branch]:[remote_branch]</code></pre></div>
+</li>
+<li><p>删除远程分支</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git push -d [remote_branch] #方式1
+git push origin :remote_branch #将空推送到远程分支，即删除。</code></pre></div>
+</li>
+<li><p>拉取远端分支到本地</p>
+ <div class="code-wrapper"><pre><code class="hljs SHELL">git fetch [origin] [remote_branch]</code></pre></div>
+</li>
+<li><p>根据远端分支创建本地分支（得先fetch）</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git checkout -b [local_branch] [origin]/[remote_branch]</code></pre></div></li>
+</ol>
+<h2 id="分支"><a href="#分支" class="headerlink" title="分支"></a>分支</h2><blockquote>
+<p>可以并行开发多个功能，提高开发效率。</p>
+<p>开发失败不会互相影响</p>
+</blockquote>
+<ol>
+<li><p>查看分支</p>
+<div class="code-wrapper"><pre><code class="hljs shell">git branch -v</code></pre></div>
+</li>
+<li><p>创建分支</p>
+<div class="code-wrapper"><pre><code class="hljs mipsasm">git <span class="hljs-keyword">branch </span>[name] <span class="hljs-comment"># 仅创建分支。</span>
+git checkout -<span class="hljs-keyword">b </span>[<span class="hljs-keyword">branch_name] </span><span class="hljs-comment">#创建并切换到新分支</span></code></pre></div>
+</li>
+<li><p>切换分支</p>
+<div class="code-wrapper"><pre><code class="hljs shell">git checkout [name]</code></pre></div>
+</li>
+<li><p>合并分支</p>
+   <div class="code-wrapper"><pre><code class="hljs shell">git merge [name] //将name分支合并到当前分支</code></pre></div>
+</li>
+<li><p>删除分支</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git branch -D localBranchName</code></pre></div>
+</li>
+<li><p>修改当前所在分支名字</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git branch -m &lt;new_branch_name&gt;</code></pre></div></li>
+</ol>
+<h3 id="分支冲突"><a href="#分支冲突" class="headerlink" title="分支冲突"></a>分支冲突</h3><blockquote>
+<p>原因：被合并的分支与当前分支在同一文件的同一位置有不同修改)</p>
+</blockquote>
+<p><strong>解决步骤</strong></p>
+<div class="code-wrapper"><pre><code class="hljs shell">手动操作文件，解决冲突。
+git add conflictFile //将冲突文件加入追踪
+git commit -m &quot;version description&quot; //最后不加文件名，直接默认commit到当前分支。</code></pre></div>
+
+<p>被合并的分支中冲突文件保持原状态。</p>
+<h2 id="协作"><a href="#协作" class="headerlink" title="协作"></a>协作</h2><h3 id="团队协作"><a href="#团队协作" class="headerlink" title="团队协作"></a>团队协作</h3><ol>
+<li><p>初始化项目库</p>
+</li>
+<li><p>将自己的分支交到代码托管平台如<code>github</code></p>
+<div class="code-wrapper"><pre><code class="hljs shell">git push &lt;remote name&gt; &lt;local branch&gt;</code></pre></div>
+</li>
+<li><p>将远程库克隆\拉取到本地</p>
+<div class="code-wrapper"><pre><code class="hljs shell">git clone
+git pull</code></pre></div></li>
+</ol>
+<h3 id="友情协作"><a href="#友情协作" class="headerlink" title="友情协作"></a>友情协作</h3><ol>
+<li>协助者<code>fork</code>项目到自己远程库。</li>
+<li>协助者将远程库<code>clone</code>到本地</li>
+<li>协助者进行本地修改后，<code>commit</code>本地分支，再<code>push</code>到自己远程库，提交<code>pull request</code>请求。经团队管理员审核后<code>merge</code>成功。</li>
+</ol>
+<h2 id="远程和本地交互"><a href="#远程和本地交互" class="headerlink" title="远程和本地交互"></a>远程和本地交互</h2><ol>
+<li><p>本地远程连接</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git remote add origin xxxxx//x为remoteRepo的SSH或者https
+git clone xxxxx//克隆会直接连接
+git remote -v//查看远程仓库地址</code></pre></div>
+</li>
+<li><p>给<code>remote repo</code>创建别名 、查看别名</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git remote add alaisName xxxx //xxx为项目地址
+git remote -v //查看别名</code></pre></div>
+</li>
+<li><p>将本地当前分支<code>push</code>到<code>remote repo</code></p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git push origin/address remoteBranch //origin是当前git对应github的项目</code></pre></div>
+</li>
+<li><p>将远程分支<code>pull</code>到当前分支</p>
+ <div class="code-wrapper"><pre><code class="hljs shell">git pull origin/address remoteBranch // origin是当前git对应github的项目</code></pre></div></li>
+</ol>
+<h2 id="重要命令"><a href="#重要命令" class="headerlink" title="重要命令"></a>重要命令</h2><h3 id="git-add-lt-file-gt"><a href="#git-add-lt-file-gt" class="headerlink" title="git add &lt;file&gt;..."></a><code>git add &lt;file&gt;...</code></h3><p>将工作目录中未追踪的文件加入跟踪，修改了的文件放入暂存区。</p>
+<h3 id="git-restore-lt-file-gt"><a href="#git-restore-lt-file-gt" class="headerlink" title="git restore &lt;file&gt;..."></a><code>git restore &lt;file&gt;...</code></h3><ul>
+<li><code>git restore</code> 在不指定<code>--staged</code>时，会将工作区的较于上一次提交的更改移除。<strong>会造成数据丢失</strong>。</li>
+<li><code>git restore --staged</code>会将暂存区的更改放回到工作区。可以看作是<code>git add</code>的undo。</li>
+</ul>
+<h3 id="git-reset"><a href="#git-reset" class="headerlink" title="git reset"></a><code>git reset</code></h3><ul>
+<li><code>--soft</code> 将已经commit的数据回滚到staged状态，相当与已经运行了<code>git add</code>.</li>
+<li><code>--mixed</code>默认， 将已经commit的数据回滚到unstaged状态，相当与修改了但未<code>git add</code>，可以看作是<code>git add</code>的undo。</li>
+<li><code>--hard</code><strong>会造成数据丢失</strong>，将已经commit的数据回滚到上一个<code>commit</code>的状态。</li>
+<li><code>--merge &lt;commit_sha&gt;</code>取消merge，回到<code>&lt;commit_sha&gt;</code>的状态。</li>
+</ul>
+<p><code>git reset -- &lt;file&gt;...</code>要么作用与版本，要么作用与未提交的内容。不能作用于已经提交的某一个文件。</p>
+<h3 id="git-rm"><a href="#git-rm" class="headerlink" title="git rm"></a><code>git rm</code></h3><ul>
+<li><code>git rm &lt;file&gt;...</code> 将文件彻底删除。</li>
+<li><code>git rm --cached &lt;file&gt;...</code> 取消对文件的追踪。</li>
+</ul>
+<h3 id="git-rebase"><a href="#git-rebase" class="headerlink" title="git rebase"></a><code>git rebase</code></h3><p>用于合并分支，但与merge有区别。将指定分支作为base即起点，将本分支的<code>commits</code>重新应用，看起来想是在一个分支上进行合作。</p>
+<p>此外，如果制定<code>-i</code>还能修改这修commits的应用规则，例如多个<code>commit</code>压缩成一个，修改信息等等。</p>
+<h3 id="git-revert"><a href="#git-revert" class="headerlink" title="git revert "></a><code>git revert </code></h3><p>用于回退到某一个节点，但是通过新建一个commit来回滚，原来的记录仍然存在。这样就避免了修改线上已经存在的commit被删除而导致的困惑。</p>
+<p>比较下来，reset一般用于本地，而revert一般用于线上。</p>
+<p>同样的，这个也可能存在文件冲突。</p>
+<h3 id="git-cherry-pick"><a href="#git-cherry-pick" class="headerlink" title="git cherry-pick"></a><code>git cherry-pick</code></h3><p>将其他的commit拿一份过来，不修改拿的地方，应用在当前分支。</p>
+<p>对于多分支的代码库，将代码从一个分支转移到另一个分支是常见需求。这时分两种情况。一种情况是，你需要另一个分支的所有代码变动，那么就采用合并（<code>git merge</code>）。另一种情况是，你只需要部分代码变动（某几个提交），这时可以采用 Cherry pick。</p>
+<h3 id="git-stash"><a href="#git-stash" class="headerlink" title="git stash"></a><code>git stash</code></h3><p>将修改但未commit的（Changes not staged for commit）内容暂存起来到一个栈里头（每个分支独有），方便切换到别的分支。</p>
+<ul>
+<li><p><code>git stash</code> 匿名存储，无法通过<code>git stash list</code>查看。</p>
+</li>
+<li><p><code>git stash list</code> 查看栈内容。</p>
+</li>
+<li><p><code>git stash save &quot;description.&quot;</code> 正常存储。</p>
+</li>
+<li><p><code>git stash pop</code> 将栈顶的内容弹出并应用。</p>
+</li>
+<li><p><code>git stash apply</code> 将堆栈的内容应用，不弹出。</p>
+</li>
+<li><p><code>git stash drop [stash@&#123;?&#125;]</code>从堆栈中移除某个指定的stash</p>
+</li>
+<li><p><code>git stash clear</code>清除栈中的所有内容</p>
+</li>
+<li><p><code>git stash show</code>查看堆栈中<strong>最新保存的stash和当前目录的差异</strong>。 通过 <code>git stash show -p</code> 查看详细的不同。</p>
+</li>
+<li><p><code>git stash branch</code>从最新的stash创建分支。</p>
+</li>
+</ul>
+<h2 id="其他命令"><a href="#其他命令" class="headerlink" title="其他命令"></a>其他命令</h2><p><code>git clean</code> 从工作目录中删除所有没有tracked过的文件。</p>
+<p><code>git stage</code> 等于<code>git add</code>。</p>
+<p><code>bfg --delete-files file_name</code>：从git历史中删除文件</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Tools/" class="category-chain-item">Tools</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Git</div>
+      <div>https://messenger1th.github.io/2023/12/18/Tools/Git/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Epoch</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/12/18/Tools/Cmake%20note/" title="Cmake note">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Cmake note</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/12/18/Tools/Linux%20commands/" title="Linux commands">
+                        <span class="hidden-mobile">Linux commands</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Tools"
+        id="heading-8625e1de7be14c39b1d14dc03d822497" role="tab" data-toggle="collapse" href="#collapse-8625e1de7be14c39b1d14dc03d822497"
+        aria-expanded="true"
+      >
+        Tools
+        <span class="list-group-count">(5)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-8625e1de7be14c39b1d14dc03d822497"
+           role="tabpanel" aria-labelledby="heading-8625e1de7be14c39b1d14dc03d822497">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/12/18/Tools/Cmake%20note/" title="Cmake note"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Cmake note</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Tools/Git/" title="Git"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">Git</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Tools/Linux%20commands/" title="Linux commands"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Linux commands</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Tools/Makefile/" title="Makefile"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Makefile</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Tools/vim/" title="vim"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">vim</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

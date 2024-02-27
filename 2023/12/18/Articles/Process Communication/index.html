@@ -1,0 +1,1077 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/girl.png">
+  <link rel="icon" href="/img/girl.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Epoch">
+  <meta name="keywords" content="Epoch Blog">
+  
+    <meta name="description" content="进程通信线程之间共享全局变量、文件描述符表、堆区资源等。通信较为方便，但进程之间通信需要跨越虚拟内存的鸿沟。 进程之间通信种方式有  管道 消息队列 共享内存 信号量 信号 Socket  接下来分别介绍他们和在Linux下的实现。 管道匿名管道 在Linux下，命令中传递参数用的|就是匿名管道，例如 ps aux | grep mysql  它将前一个命令ps aux的结果传递给下一个命令gre">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Process Communication">
+<meta property="og:url" content="https://messenger1th.github.io/2023/12/18/Articles/Process%20Communication/index.html">
+<meta property="og:site_name" content="Epoch">
+<meta property="og:description" content="进程通信线程之间共享全局变量、文件描述符表、堆区资源等。通信较为方便，但进程之间通信需要跨越虚拟内存的鸿沟。 进程之间通信种方式有  管道 消息队列 共享内存 信号量 信号 Socket  接下来分别介绍他们和在Linux下的实现。 管道匿名管道 在Linux下，命令中传递参数用的|就是匿名管道，例如 ps aux | grep mysql  它将前一个命令ps aux的结果传递给下一个命令gre">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Articles/Process%20Communication/5-%E7%AE%A1%E9%81%93-pipe.jpg">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Articles/Process%20Communication/7-%E7%AE%A1%E9%81%93-pipe-fork-%E5%8D%95%E5%90%91%E9%80%9A%E4%BF%A1.jpg">
+<meta property="og:image" content="https://messenger1th.github.io/2023/12/18/Articles/Process%20Communication/9-%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98.jpg">
+<meta property="article:published_time" content="2023-12-18T11:03:14.536Z">
+<meta property="article:modified_time" content="2023-12-18T11:03:14.536Z">
+<meta property="article:author" content="Epoch">
+<meta property="article:tag" content="Epoch Blog">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://messenger1th.github.io/2023/12/18/Articles/Process%20Communication/5-%E7%AE%A1%E9%81%93-pipe.jpg">
+  
+  
+  
+  <title>Process Communication - Epoch</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"messenger1th.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Epoch</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/messenger1th">
+                <i class="iconfont icon-github-fill"></i>
+                GitHub
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Process Communication"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-18 19:03" pubdate>
+          2023年12月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          111 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Process Communication</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="进程通信"><a href="#进程通信" class="headerlink" title="进程通信"></a>进程通信</h1><p>线程之间共享全局变量、文件描述符表、堆区资源等。通信较为方便，但进程之间通信需要跨越虚拟内存的鸿沟。</p>
+<p>进程之间通信种方式有</p>
+<ol>
+<li>管道</li>
+<li>消息队列</li>
+<li>共享内存</li>
+<li>信号量</li>
+<li>信号</li>
+<li>Socket</li>
+</ol>
+<p>接下来分别介绍他们和在Linux下的实现。</p>
+<h2 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h2><p><strong>匿名管道</strong></p>
+<p>在Linux下，命令中传递参数用的<code>|</code>就是匿名管道，例如</p>
+<div class="code-wrapper"><pre><code class="hljs shell">ps aux | grep mysql</code></pre></div>
+
+<p>它将前一个命令<code>ps aux</code>的结果传递给下一个命令<code>grep mysql</code>作为输入。</p>
+<p><strong>命令管道&#x2F;FIFO</strong></p>
+<p>使用命令<code>mkfifo</code>创建命名管道，也称<code>FIFO</code>，因为符合先入先出的规律。</p>
+<div class="code-wrapper"><pre><code class="hljs shell">mkfifo my_pipe</code></pre></div>
+
+<p>在当前目录下创建一个管道文件<code>my_pipe</code></p>
+<p>可以向这个管道写入数据，例如<code>echo</code></p>
+<div class="code-wrapper"><pre><code class="hljs shell">echo &quot;hello&quot; &gt; my_pipe</code></pre></div>
+
+<p>你操作了后，你会发现命令执行后就停在这了，这是因为管道里的内容没有被读取，只有当管道里的数据被读完后，命令才可以正常退出。</p>
+<p>于是，我们执行另外一个命令来读取这个管道里的数据：</p>
+<div class="code-wrapper"><pre><code class="hljs shell">cat my_pipe
+hello</code></pre></div>
+
+<p>可以看到，管道里的内容被读取出来了，并打印在了终端上，另外一方面，echo 那个命令也正常退出了。</p>
+<p>我们可以看出，<strong>管道这种通信方式效率低，不适合进程间频繁地交换数据</strong>。当然，它的好处，自然就是简单，同时也我们很容易得知管道里的数据已经被另一个进程读取了。</p>
+<p>那么如何在咱们的代码中创建管道呢？</p>
+<p>需要用到下面这个系统调用</p>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">pipe</span><span class="hljs-params">(<span class="hljs-type">int</span> fd[<span class="hljs-number">2</span>])</span>;</code></pre></div>
+
+<p>这里表示创建一个匿名管道，并返回了两个描述符，一个是管道的读取端描述符 <code>fd[0]</code>，另一个是管道的写入端描述符 <code>fd[1]</code>。注意，这个匿名管道是特殊的文件，只存在于内存，不存于文件系统中。</p>
+<p>普通的<code>pipe</code>就只能在单进程里头使用，如下图</p>
+<p><img src="/2023/12/18/Articles/Process%20Communication/5-%E7%AE%A1%E9%81%93-pipe.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>但结合<code>fork</code>即可在父进程和子进程之间通信。</p>
+<p><img src="/2023/12/18/Articles/Process%20Communication/7-%E7%AE%A1%E9%81%93-pipe-fork-%E5%8D%95%E5%90%91%E9%80%9A%E4%BF%A1.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>父进程<strong>Linux示例代码</strong>：父进程写，子进程读为例。</p>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;string&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;unistd.h&gt;</span></span>
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-type">int</span> fd[<span class="hljs-number">2</span>];
+    <span class="hljs-built_in">pipe</span>(fd);
+    <span class="hljs-keyword">auto</span> ret = fork();
+    <span class="hljs-keyword">if</span> (ret == <span class="hljs-number">0</span>) &#123;
+        <span class="hljs-built_in">close</span>(fd[<span class="hljs-number">1</span>]);
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;I&#x27; child.\n&quot;</span>);
+        <span class="hljs-type">char</span> buf[<span class="hljs-number">1024</span>];
+        <span class="hljs-built_in">read</span>(fd[<span class="hljs-number">0</span>], buf, <span class="hljs-number">1024</span>); <span class="hljs-comment">//阻塞在这， 等有数据再读。</span>
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;get messege: %s\n&quot;</span>, buf);
+    &#125; <span class="hljs-keyword">else</span> &#123;
+        <span class="hljs-built_in">close</span>(fd[<span class="hljs-number">0</span>]);
+        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;I&#x27;m parent.\n&quot;</span>);
+        <span class="hljs-built_in">sleep</span>(<span class="hljs-number">5</span>); <span class="hljs-comment">//让读进程阻塞。</span>
+        <span class="hljs-type">const</span> std::string s = <span class="hljs-string">&quot;Hello pipe reader&quot;</span>;
+        <span class="hljs-built_in">write</span>(fd[<span class="hljs-number">1</span>], s.<span class="hljs-built_in">c_str</span>(), s.<span class="hljs-built_in">size</span>());
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+
+<p>实际上，fork出来的子进程的fd是和父进程相同的。因此，父子进程操作的是同一个管道，即<strong>不能同时地双向通信</strong>。要双向通行可以创建两个管道。</p>
+<p>总的来说，对于<strong>匿名管道</strong>，由于没有文件名，只有描述符，仅能通过fork复制fd来实现父子进程通信。</p>
+<p>而<strong>命名管道</strong>则是一个实实在在的文件，有文件名。因此，两个进程可以通过文件名找到该管道来通信。</p>
+<p><strong>值得一提的是，不管是匿名管道还是命名管道，进程写入的数据都是缓存在内核中，另一个进程读取数据时候自然也是从内核中获取，同时通信数据都遵循先进先出原则，不支持 lseek 之类的文件定位操作。</strong></p>
+<p>此外，匿名管道和FIFO读写都是默认阻塞的，如果要使用非阻塞模式，需要在<code>pipe</code>和<code>open</code>的第二个参数指定<code>O_NONBLOCK</code>，并根据返回值和错误号来判断具体情况做后续处理。</p>
+<h2 id="消息队列"><a href="#消息队列" class="headerlink" title="消息队列"></a>消息队列</h2><p>前面提到管道的写方需要阻塞到数据被读取才能够返回，而消息队列则不需要。</p>
+<p>对于写方，只需要写完数据即可。</p>
+<p>对于读方，读取时需要阻塞到数据来临。</p>
+<p><strong>实例代码</strong></p>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-comment">// Message Queue (Writer Process)</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/ipc.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/msg.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">define</span> MAX 10</span>
+  
+<span class="hljs-comment">// structure for message queue</span>
+<span class="hljs-keyword">struct</span> <span class="hljs-title class_">mesg_buffer</span> &#123;
+    <span class="hljs-type">long</span> mesg_type;
+    <span class="hljs-type">char</span> mesg_text[<span class="hljs-number">100</span>];
+&#125; message;
+  
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-type">key_t</span> key;
+    <span class="hljs-type">int</span> msgid;
+  
+    <span class="hljs-comment">// ftok to generate unique key</span>
+    key = <span class="hljs-built_in">ftok</span>(<span class="hljs-string">&quot;progfile&quot;</span>, <span class="hljs-number">65</span>);
+  
+    <span class="hljs-comment">// msgget creates a message queue</span>
+    <span class="hljs-comment">// and returns identifier</span>
+    msgid = <span class="hljs-built_in">msgget</span>(key, <span class="hljs-number">0666</span> | IPC_CREAT);
+    message.mesg_type = <span class="hljs-number">1</span>;
+  
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Write Data : &quot;</span>);
+    <span class="hljs-built_in">fgets</span>(message.mesg_text,MAX,stdin);
+  
+    <span class="hljs-comment">// msgsnd to send message</span>
+    <span class="hljs-built_in">msgsnd</span>(msgid, &amp;message, <span class="hljs-built_in">sizeof</span>(message), <span class="hljs-number">0</span>);
+  
+    <span class="hljs-comment">// display the message</span>
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Data send is : %s \n&quot;</span>, message.mesg_text);
+  
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-comment">// Message Queue (Reader Process)</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/ipc.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/msg.h&gt;</span></span>
+  
+<span class="hljs-comment">// structure for message queue</span>
+<span class="hljs-keyword">struct</span> <span class="hljs-title class_">mesg_buffer</span> &#123;
+    <span class="hljs-type">long</span> mesg_type;
+    <span class="hljs-type">char</span> mesg_text[<span class="hljs-number">100</span>];
+&#125; message;
+  
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-type">key_t</span> key;
+    <span class="hljs-type">int</span> msgid;
+  
+    <span class="hljs-comment">// ftok to generate unique key</span>
+    key = <span class="hljs-built_in">ftok</span>(<span class="hljs-string">&quot;progfile&quot;</span>, <span class="hljs-number">65</span>);
+  
+    <span class="hljs-comment">// msgget creates a message queue</span>
+    <span class="hljs-comment">// and returns identifier</span>
+    msgid = <span class="hljs-built_in">msgget</span>(key, <span class="hljs-number">0666</span> | IPC_CREAT);
+  
+    <span class="hljs-comment">// msgrcv to receive message</span>
+    <span class="hljs-built_in">msgrcv</span>(msgid, &amp;message, <span class="hljs-built_in">sizeof</span>(message), <span class="hljs-number">1</span>, <span class="hljs-number">0</span>);
+  
+    <span class="hljs-comment">// display the message</span>
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Data Received is : %s \n&quot;</span>, 
+                    message.mesg_text);
+  
+    <span class="hljs-comment">// to destroy the message queue</span>
+    <span class="hljs-built_in">msgctl</span>(msgid, IPC_RMID, <span class="hljs-literal">NULL</span>);
+  
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+
+<p>消息队列生命周期随内核，如果没有释放消息队列或者没有关闭操作系统，消息队列会一直存在，而前面提到的匿名管道的生命周期，是随进程的创建而建立，随进程的结束而销毁。</p>
+<p>消息这种模型，两个进程之间的通信就像平时发邮件一样，你来一封，我回一封，可以频繁沟通了。</p>
+<p>但邮件的通信方式存在不足的地方有两点，<strong>一是通信不及时，二是附件也有大小限制</strong>，这同样也是消息队列通信不足的点。</p>
+<p><strong>消息队列不适合比较大数据的传输</strong>，因为在内核中每个消息体都有一个最大长度的限制，同时所有队列所包含的全部消息体的总长度也是有上限。在 Linux 内核中，会有两个宏定义 <code>MSGMAX</code> 和 <code>MSGMNB</code>，它们以字节为单位，分别定义了一条消息的最大长度和一个队列的最大长度。</p>
+<p><strong>消息队列通信过程中，存在用户态与内核态之间的数据拷贝开销</strong>，因为进程写入数据到内核中的消息队列时，会发生从用户态拷贝数据到内核态的过程，同理另一进程读取内核中的消息数据时，会发生从内核态拷贝数据到用户态的过程。</p>
+<h2 id="共享内存"><a href="#共享内存" class="headerlink" title="共享内存"></a>共享内存</h2><p>上面提到，消息队列涉及用户态与内核态之间的数据拷贝，显然这是不必要的。而共享内存的方式，就很好的去除了这个开销。</p>
+<p>现代操作系统的内存采用的是虚拟内存技术，即每个进程的内存相互独立，互不干扰。而虚拟内存就是拿出来一块共享内存来通信。</p>
+<p><img src="/2023/12/18/Articles/Process%20Communication/9-%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98.jpg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<p>示例代码</p>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-comment">// Writer </span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/ipc.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/shm.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;
+  
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+    <span class="hljs-comment">// ftok to generate unique key</span>
+    <span class="hljs-type">key_t</span> key = <span class="hljs-built_in">ftok</span>(<span class="hljs-string">&quot;shmfile&quot;</span>,<span class="hljs-number">65</span>);
+  
+    <span class="hljs-comment">// shmget returns an identifier in shmid</span>
+    <span class="hljs-type">int</span> shmid = <span class="hljs-built_in">shmget</span>(key,<span class="hljs-number">1024</span>,<span class="hljs-number">0666</span>|IPC_CREAT);
+  
+    <span class="hljs-comment">// shmat to attach to shared memory</span>
+    <span class="hljs-type">char</span> *str = (<span class="hljs-type">char</span>*) <span class="hljs-built_in">shmat</span>(shmid,(<span class="hljs-type">void</span>*)<span class="hljs-number">0</span>,<span class="hljs-number">0</span>);
+  
+    cout&lt;&lt;<span class="hljs-string">&quot;Write Data : &quot;</span>;
+    <span class="hljs-built_in">gets</span>(str);
+  
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Data written in memory: %s\n&quot;</span>,str);
+      
+    <span class="hljs-comment">//detach from shared memory </span>
+    <span class="hljs-built_in">shmdt</span>(str);
+  
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-comment">// Reader </span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/ipc.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;sys/shm.h&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>
+<span class="hljs-function"></span>&#123;
+	<span class="hljs-comment">// ftok to generate unique key</span>
+	<span class="hljs-type">key_t</span> key = <span class="hljs-built_in">ftok</span>(<span class="hljs-string">&quot;shmfile&quot;</span>,<span class="hljs-number">65</span>);
+
+	<span class="hljs-comment">// shmget returns an identifier in shmid</span>
+	<span class="hljs-type">int</span> shmid = <span class="hljs-built_in">shmget</span>(key,<span class="hljs-number">1024</span>,<span class="hljs-number">0666</span>|IPC_CREAT);
+
+	<span class="hljs-comment">// shmat to attach to shared memory</span>
+	<span class="hljs-type">char</span> *str = (<span class="hljs-type">char</span>*) <span class="hljs-built_in">shmat</span>(shmid,(<span class="hljs-type">void</span>*)<span class="hljs-number">0</span>,<span class="hljs-number">0</span>);
+
+	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Data read from memory: %s\n&quot;</span>,str);
+	
+	<span class="hljs-comment">//detach from shared memory</span>
+	<span class="hljs-built_in">shmdt</span>(str);
+	
+	<span class="hljs-comment">// destroy the shared memory</span>
+	<span class="hljs-built_in">shmctl</span>(shmid,IPC_RMID,<span class="hljs-literal">NULL</span>);
+	
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+
+<p>共享内存不仅仅可以作为消息通信，还可以作为进程共享其他数据用于通信、同步、互斥等，例如共享内存的锁，信号量等等。</p>
+<h2 id="信号量"><a href="#信号量" class="headerlink" title="信号量"></a>信号量</h2><p>信号量不仅可以用于线程之间通信（原理和使用见[读者写者文章](.&#x2F;reader-writer control)），还可以在进程之间通信。</p>
+<p><strong>信号量其实是一个整型的计数器，主要用于实现进程间的互斥与同步，而不是用于缓存进程间通信的数据</strong>。</p>
+<p>而信号量在进程之间通信主要依赖于共享内存，并强转成对应的类型。</p>
+<p>代码同共享内存和[读者写着文章](.&#x2F;reader-writer control)类似，关键在于分配内存后强转成信号量类型。</p>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-type">sme_t</span> *str = (<span class="hljs-type">sem_t</span>*) <span class="hljs-built_in">shmat</span>(shmid, <span class="hljs-literal">NULL</span>, <span class="hljs-number">0</span>);</code></pre></div>
+
+
+
+<h2 id="信号"><a href="#信号" class="headerlink" title="信号"></a>信号</h2><p>信号和信号量是完全不同的东西，但也可以用于通信。不过，不同与其他方式，信号一般用于异常通信。</p>
+<p>例如，可以在代码中使用system call kill 来关闭一个进程。</p>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> <span class="hljs-title function_">kill</span><span class="hljs-params">(<span class="hljs-type">pid_t</span> pid, <span class="hljs-type">int</span> sig)</span>;</code></pre></div>
+
+<p>或者直接在shell中使用<code>kill</code>。可以通过<code>kill -l</code>查看参数</p>
+<div class="code-wrapper"><pre><code class="hljs shell"> 1) SIGHUP       2) SIGINT       3) SIGQUIT      4) SIGILL       5) SIGTRAP
+ 6) SIGABRT      7) SIGBUS       8) SIGFPE       9) SIGKILL     10) SIGUSR1
+11) SIGSEGV     12) SIGUSR2     13) SIGPIPE     14) SIGALRM     15) SIGTERM
+16) SIGSTKFLT   17) SIGCHLD     18) SIGCONT     19) SIGSTOP     20) SIGTSTP
+21) SIGTTIN     22) SIGTTOU     23) SIGURG      24) SIGXCPU     25) SIGXFSZ
+26) SIGVTALRM   27) SIGPROF     28) SIGWINCH    29) SIGIO       30) SIGPWR
+31) SIGSYS      34) SIGRTMIN    35) SIGRTMIN+1  36) SIGRTMIN+2  37) SIGRTMIN+3
+38) SIGRTMIN+4  39) SIGRTMIN+5  40) SIGRTMIN+6  41) SIGRTMIN+7  42) SIGRTMIN+8
+43) SIGRTMIN+9  44) SIGRTMIN+10 45) SIGRTMIN+11 46) SIGRTMIN+12 47) SIGRTMIN+13
+48) SIGRTMIN+14 49) SIGRTMIN+15 50) SIGRTMAX-14 51) SIGRTMAX-13 52) SIGRTMAX-12
+53) SIGRTMAX-11 54) SIGRTMAX-10 55) SIGRTMAX-9  56) SIGRTMAX-8  57) SIGRTMAX-7
+58) SIGRTMAX-6  59) SIGRTMAX-5  60) SIGRTMAX-4  61) SIGRTMAX-3  62) SIGRTMAX-2
+63) SIGRTMAX-1  64) SIGRTMAX</code></pre></div>
+
+<p>常用的如</p>
+<ul>
+<li>Ctrl+C 产生 <code>SIGINT</code> 信号，表示终止该进程；</li>
+<li>Ctrl+Z 产生 <code>SIGTSTP</code> 信号，表示停止该进程，但还未结束；</li>
+</ul>
+<p>如果进程在后台运行，可以通过 <code>kill</code> 命令的方式给进程发送信号，但前提需要知道运行中的进程 PID 号，例如：</p>
+<ul>
+<li>kill -9 1050 ，表示给 PID 为 1050 的进程发送 <code>SIGKILL</code> 信号，用来立即结束该进程；</li>
+</ul>
+<p>所以，信号事件的来源主要有硬件来源（如键盘 Cltr+C ）和软件来源（如 kill 命令）。</p>
+<p>信号是进程间通信机制中<strong>唯一的异步通信机制</strong>，因为可以在任何时候发送信号给某一进程，一旦有信号产生，我们就有下面这几种，用户进程对信号的处理方式。</p>
+<p><strong>1.执行默认操作</strong>。Linux 对每种信号都规定了默认操作，例如，上面列表中的 SIGTERM 信号，就是终止进程的意思。</p>
+<p><strong>2.捕捉信号</strong>。我们可以为信号定义一个信号处理函数。当信号发生时，我们就执行相应的信号处理函数。</p>
+<p><strong>3.忽略信号</strong>。当我们不希望处理某些信号的时候，就可以忽略该信号，不做任何处理。有两个信号是应用进程无法捕捉和忽略的，即 <code>SIGKILL</code> 和 <code>SEGSTOP</code>，它们用于在任何时候中断或结束某一进程。</p>
+<p>实际上，对于每个进程的信号处理函数，是可以自定义的。使用<code>signal</code>来注册。</p>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-comment">//define my signal handler.</span>
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">sig_handler</span><span class="hljs-params">(<span class="hljs-type">int</span> signum)</span></span>&#123;
+  <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\nInside handler function\n&quot;</span>);
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-built_in">singal</span>(SIGINT, sig_handler); <span class="hljs-comment">// register.</span>
+&#125;</code></pre></div>
+
+<p>实际上，Java虚拟机就用到了这一技巧，使得崩溃的线程不会导致JVM崩溃。</p>
+<h2 id="Socket"><a href="#Socket" class="headerlink" title="Socket"></a>Socket</h2><p>前面提到的种种方式，都是本地通信。要做到与不同主机的通信，就需要用到网络通信，就需要Socket了。</p>
+<p>Socket编程对应两种网络协议，TCP和UDP。创建Socket需要指定相关参数</p>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">socket</span><span class="hljs-params">(<span class="hljs-type">int</span> domain, <span class="hljs-type">int</span> type, <span class="hljs-type">int</span> protocol)</span></span>;</code></pre></div>
+
+<ul>
+<li>domain 参数用来指定协议族，比如 AF_INET 用于 IPV4、AF_INET6 用于 IPV6、AF_LOCAL&#x2F;AF_UNIX 用于本机；</li>
+<li>type 参数用来指定通信特性，比如 SOCK_STREAM 表示的是字节流，对应 TCP、SOCK_DGRAM 表示的是数据报，对应 UDP、SOCK_RAW 表示的是原始套接字；</li>
+<li>protocal 参数原本是用来指定通信协议的，但现在基本废弃。因为协议已经通过前面两个参数指定完成，protocol 目前一般写成 0 即可；</li>
+</ul>
+<p>Socket相关的内容篇幅有点大，就不展开了。以后再写一篇文章吧。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Articles/" class="category-chain-item">Articles</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Process Communication</div>
+      <div>https://messenger1th.github.io/2023/12/18/Articles/Process Communication/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Epoch</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/12/18/Articles/Hash%20Table/" title="Hash Table">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Hash Table</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/12/18/Articles/Compile&amp;Link/" title="Compile&amp;Link">
+                        <span class="hidden-mobile">Compile&amp;Link</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Articles"
+        id="heading-7978b606e7f71e42ee8f9c1b3326fe58" role="tab" data-toggle="collapse" href="#collapse-7978b606e7f71e42ee8f9c1b3326fe58"
+        aria-expanded="true"
+      >
+        Articles
+        <span class="list-group-count">(9)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-7978b606e7f71e42ee8f9c1b3326fe58"
+           role="tabpanel" aria-labelledby="heading-7978b606e7f71e42ee8f9c1b3326fe58">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/12/18/Articles/Binary%20Tree%20Traversal/" title="Binary Tree Traversal"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Binary Tree Traversal</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Articles/Compile&amp;Link/" title="Compile&amp;Link"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Compile&amp;Link</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Articles/Consistency/" title="Consistency"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Consistency</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Articles/Counting%20Sort/" title="Counting Sort"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Counting Sort</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Articles/Hash%20Table/" title="Hash Table"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Hash Table</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Articles/Process%20Communication/" title="Process Communication"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">Process Communication</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Articles/Union-Find/" title="Union-Find"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Union-Find</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Articles/distributed-system/" title="distributed-system"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">distributed-system</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Articles/reader-writer%20control/" title="reader-writer control"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">reader-writer control</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,804 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/girl.png">
+  <link rel="icon" href="/img/girl.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Epoch">
+  <meta name="keywords" content="Epoch Blog">
+  
+    <meta name="description" content="Idea1. epoll中使用哈希表替换红黑树对比来看，从时间来说  红黑树所有操作都是$O(log{n})$；哈希表是$O(1)$，但存在哈希碰撞问题，且扩容时需要复制全表，为$O(n)$。  从空间上看  红黑树是离散结构，不要求连续空间；哈希表是连续空间。  红黑树新增节点只需要分配节点内存；哈希表新增可能涉及扩容，扩容时需要占用更大空间。  树中元素有序，而哈系表元素无序。   为什么操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Idea">
+<meta property="og:url" content="https://messenger1th.github.io/2023/12/18/Others/Idea/index.html">
+<meta property="og:site_name" content="Epoch">
+<meta property="og:description" content="Idea1. epoll中使用哈希表替换红黑树对比来看，从时间来说  红黑树所有操作都是$O(log{n})$；哈希表是$O(1)$，但存在哈希碰撞问题，且扩容时需要复制全表，为$O(n)$。  从空间上看  红黑树是离散结构，不要求连续空间；哈希表是连续空间。  红黑树新增节点只需要分配节点内存；哈希表新增可能涉及扩容，扩容时需要占用更大空间。  树中元素有序，而哈系表元素无序。   为什么操作">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-12-18T11:03:14.787Z">
+<meta property="article:modified_time" content="2023-12-18T11:03:14.788Z">
+<meta property="article:author" content="Epoch">
+<meta property="article:tag" content="Epoch Blog">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Idea - Epoch</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"messenger1th.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Epoch</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/messenger1th">
+                <i class="iconfont icon-github-fill"></i>
+                GitHub
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Idea"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-12-18 19:03" pubdate>
+          2023年12月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          44 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Idea</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Idea"><a href="#Idea" class="headerlink" title="Idea"></a>Idea</h1><h2 id="1-epoll中使用哈希表替换红黑树"><a href="#1-epoll中使用哈希表替换红黑树" class="headerlink" title="1. epoll中使用哈希表替换红黑树"></a>1. epoll中使用哈希表替换红黑树</h2><p>对比来看，从时间来说</p>
+<ul>
+<li>红黑树所有操作都是$O(log{n})$；哈希表是$O(1)$，但存在哈希碰撞问题，且扩容时需要复制全表，为$O(n)$。</li>
+</ul>
+<p>从空间上看</p>
+<ul>
+<li><p>红黑树是离散结构，不要求连续空间；哈希表是连续空间。</p>
+</li>
+<li><p>红黑树新增节点只需要分配节点内存；哈希表新增可能涉及扩容，扩容时需要占用更大空间。</p>
+</li>
+<li><p>树中元素有序，而哈系表元素无序。</p>
+</li>
+</ul>
+<h3 id="为什么操作系统选用epoll而不是哈希表呢？"><a href="#为什么操作系统选用epoll而不是哈希表呢？" class="headerlink" title="为什么操作系统选用epoll而不是哈希表呢？"></a>为什么操作系统选用epoll而不是哈希表呢？</h3><p>作为一个操作系统，需要做到尽量普适和稳定，对于哈希表扩容需要的双倍空间和$O(n)$的时间，是难以接受的。而epoll主要用于高并发场景，稳定性就更重要了，此外，占用双倍内存，对于一个数据量庞大的系统来说，双倍内存的花销也很大，利用率也不够高。</p>
+<h3 id="什么操作系统可能用到哈希表呢？"><a href="#什么操作系统可能用到哈希表呢？" class="headerlink" title="什么操作系统可能用到哈希表呢？"></a>什么操作系统可能用到哈希表呢？</h3><p>如果是哈希表作为存储结构的话，主要解决扩容的时间问题。由于是连续空间，空间问题似乎是不可避免的。</p>
+<p><strong>解决扩容的时间问题原理上是把扩容时间均摊。</strong></p>
+<h4 id="后台线程扩容"><a href="#后台线程扩容" class="headerlink" title="后台线程扩容"></a>后台线程扩容</h4><p>当负载因子（load factor）达到一定阈值时，开启一个后台线程，首先开辟一块更大内存用于扩容，分配好后，操作如下。</p>
+<ul>
+<li>查询时候就查询两个表，查到一个则返回。</li>
+<li>插入时检查两个表是否都是没有，都没有则成功插入。</li>
+<li>删除时需要尝试删除两个表的元素。</li>
+</ul>
+<p>由于是后台线程，需要和用户线程做数据竞争，需要用到锁等同步机制。</p>
+<p>不难发现，扩容的时间均摊出来了，但由于后台线程和用户线程竞争，锁占用花销很高。</p>
+<h4 id="渐进式哈希"><a href="#渐进式哈希" class="headerlink" title="渐进式哈希"></a>渐进式哈希</h4><p>顾名思义，将数据迁移分成多次迁移。不同与后台线程扩容，渐进式哈希不需要锁，扩容时间均摊到了用户的每次请求上。</p>
+<p>渐进式 rehash 步骤如下：</p>
+<ul>
+<li>给「哈希表 2」 分配空间；</li>
+<li><strong>在 rehash 进行期间，每次哈希表元素进行新增、删除、查找或者更新操作时，Redis 除了会执行对应的操作之外，还会顺序将「哈希表 1 」中索引位置上的所有 key-value 迁移到「哈希表 2」 上</strong>；</li>
+<li>随着处理客户端发起的哈希表操作请求数量越多，最终在某个时间点会把「哈希表 1 」的所有 key-value 迁移到「哈希表 2」，从而完成 rehash 操作。</li>
+</ul>
+<p>这样就巧妙地把一次性大量数据迁移工作的开销，分摊到了多次处理请求的过程中，避免了一次性 rehash 的耗时操作。</p>
+<p>具体操作逻辑如下</p>
+<ul>
+<li>查询时候就查询两个表，查到一个则返回。</li>
+<li>插入时检查两个表是否都是没有，都没有则成功插入。</li>
+<li>删除时需要尝试删除两个表的元素。</li>
+</ul>
+<p>当负载因子超过阈值时，就开启rehash。</p>
+<p>当然，如果一些数据迟迟不被用户请求，可能导致一直占用这部分空间无法释放。解决这一问题，可以在负载因子低到一定值的时候，可以让用户线程进行迁移或者请求后台线程迁移（当然需要做数据同步，比如加锁）。</p>
+<h4 id="那么什么情况可能用到哈希表呢？"><a href="#那么什么情况可能用到哈希表呢？" class="headerlink" title="那么什么情况可能用到哈希表呢？"></a>那么什么情况可能用到哈希表呢？</h4><p>解决了时间问题，如果能够接受内存的利用率低，数据无序的情况的话，就可以采用哈希表。总得来说，采用哈希表是一种激进的优化策略，只能适用极小部分场景。</p>
+<h2 id="2-MySQL中使用跳表替换B-树"><a href="#2-MySQL中使用跳表替换B-树" class="headerlink" title="2. MySQL中使用跳表替换B+树"></a>2. MySQL中使用跳表替换B+树</h2><p>由于MySQL是基于磁盘的，而磁盘的开销是主导的，所以重点落在减少磁盘IO上。</p>
+<p>B+树的特性就是一个节点有多个子节点，叶子节点存储数据。</p>
+<p>在Innodb中，一个节点就是一个页面，如果是叶子节点就存放数据，如果是非叶子节点就存放索引数据。</p>
+<p>不难发现，B+树查找数据实际上就跟层高有关，有多少层，就需要经过多少个页面。</p>
+<p>Innodb每次读取都是以页面为单位。读取时将页面加载到内存中进行操作，时机合适再写页面回磁盘。</p>
+<p>我们以阶数M表示B+数一个节点最多有M个子节点。</p>
+<p>假设M为5，我们发现，查找下一个页面时，都会找到5个子节点中的一个，进入这个子节点进行下一层的查找，即排除了这快数据里头的$\frac{4}{5}$，而和这5个子节点比较的过程是在内存进行的，开销远不及磁盘IO。这样，就实现了一次磁盘IO，排除了大部分数据的效果。如果是红黑树，是一次磁盘IO，仅仅排除$\frac{1}{2}$。</p>
+<p><strong>那跳表怎么做到一个页面，排除更大比例数据的效果呢</strong>？</p>
+<p>答案是，修改层高函数，减小升层概率。</p>
+<p>假如升层概率是$\frac{1}{2}$，则上一层的数据是下一层的一半，每次磁盘IO能够排除一半的数据。</p>
+<p>假如升层概率是$\frac{1}{4}$，则上一层的数据是下一层的$\frac{1}{4}$，每次磁盘IO就能够排除$\frac{3}{4}$的数据。</p>
+<p>假如升层概率是$\frac{1}{m}$，则上一层的数据是下一层的$\frac{1}{m}$，每次磁盘IO就能够排除$\frac{m-1}{m}$的数据。</p>
+<p>不难发现，升层概率就类似于B+树的阶数。能够起到同样奇妙的效果。</p>
+<p>除了减小升层概率之外，可以类比MySQL的页面那样，一个页面存放多条记录，记录由slot管理，页面内不同slot间使用二分查找加速。</p>
+<p>此外，由于跳表本身结构简单，没有B+树复杂的旋转操作。</p>
+<h2 id="3-Redis为什么使用跳表而不使用B-树或红黑树呢"><a href="#3-Redis为什么使用跳表而不使用B-树或红黑树呢" class="headerlink" title="3. Redis为什么使用跳表而不使用B+树或红黑树呢?"></a>3. Redis为什么使用跳表而不使用B+树或红黑树呢?</h2><p>redis支持多种数据结构，里面有个有序集合，也叫ZSET。内部实现就是跳表。那为什么要用跳表而不用B+树等结构呢?</p>
+<p>Redis是基于内存的，<strong>无需考虑磁盘IO，所以层高就不再是劣势。</strong>同时，由于加层概率是1&#x2F;4，所以判断一次可以排除1&#x2F;4的数据，而B+树如果阶数大的话，一次能够排除的数据量少，效率就更低。</p>
+<p><strong>从内存占用上来比较，比平衡树更灵活一些</strong>。平衡树每个节点包含 2 个<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E6%8C%87%E9%92%88&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:2619230497%7D">指针</a>（分别指向左右子树），而跳表每个节点包含的指针数目平均为 1&#x2F;(1-p)，具体取决于参数 p 的大小。如果像 Redis里的实现一样，取 p&#x3D;1&#x2F;4，那么平均每个节点包含 1.33 个指针，比平衡树更有优势。</p>
+<p>并且前面也提到B+树是有一系列合并拆分操作的，换成红黑树或者其他AVL树的话也是各种旋转，目的也是为了保持树的平衡。</p>
+<p>在平衡树上，我们找到指定范围的小值之后，还需要以<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E4%B8%AD%E5%BA%8F%E9%81%8D%E5%8E%86&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:2619230497%7D">中序遍历</a>的顺序继续寻找其它不超过大值的节点。如果不对平衡树进行一定的改造，这里的中序遍历并不容易实现。而在跳表上进行范围查找就非常简单，只需要在找到小值之后，对第 1 层<a target="_blank" rel="noopener" href="https://www.zhihu.com/search?q=%E9%93%BE%E8%A1%A8&search_source=Entity&hybrid_search_source=Entity&hybrid_search_extra=%7B%22sourceType%22:%22answer%22,%22sourceId%22:2619230497%7D">链表</a>进行若干步的遍历就可以实现。</p>
+<p>而跳表插入数据时，只需要随机一下，就知道自己要不要往上加索引，根本不用考虑前后结点的感受，也就少了旋转平衡的开销。</p>
+<p>总结下来：</p>
+<ul>
+<li>层高不再是劣势，查找比较次数更少。</li>
+<li>内存占用更少</li>
+<li>无需旋转平衡的开支。</li>
+<li>范围查找操作更简单。</li>
+<li>编码实现、调试简单。</li>
+</ul>
+<p>所以选择的是跳表。</p>
+<h2 id="4-优化MySQL特殊情况下的加锁粒度"><a href="#4-优化MySQL特殊情况下的加锁粒度" class="headerlink" title="4. 优化MySQL特殊情况下的加锁粒度"></a>4. 优化MySQL特殊情况下的加锁粒度</h2>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Others/" class="category-chain-item">Others</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Idea</div>
+      <div>https://messenger1th.github.io/2023/12/18/Others/Idea/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Epoch</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年12月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/12/18/Redis/Data%20Structure%20Impl/" title="Data Structure Impl">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Data Structure Impl</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/12/18/Operating%20System/os-overview/" title="os-overview">
+                        <span class="hidden-mobile">os-overview</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Others"
+        id="heading-52ef9633d88a7480b3a938ff9eaa2a25" role="tab" data-toggle="collapse" href="#collapse-52ef9633d88a7480b3a938ff9eaa2a25"
+        aria-expanded="true"
+      >
+        Others
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-52ef9633d88a7480b3a938ff9eaa2a25"
+           role="tabpanel" aria-labelledby="heading-52ef9633d88a7480b3a938ff9eaa2a25">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/12/18/Others/Idea/" title="Idea"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">Idea</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/12/18/Others/%E6%8E%A8%E8%8D%90%E6%96%87%E7%AB%A0/" title="推荐文章"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">推荐文章</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

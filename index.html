@@ -208,6 +208,5119 @@
                 
 
 
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2024/02/24/Golang/Memory/" target="_self">
+          Memory
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/24/Golang/Memory/" target="_self">
+        <div>
+          Golang内存内存分配概况内存分配的算法有很多种，比如  线性分配器 空闲链表分配器  线性分配器类似栈的分配，直接移动内存指针，简单高效， 缺点是  但无法回收中间部分的内存。 要回收的话，需要通过拷贝来回收，常用回收方法有 标记压缩（Mark-Compact） 复制回收（Copying GC） 分代回收（Generational GC）    线性分配器需要与具有拷贝特性的垃圾回收算法配合，
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-02-24 22:00" pubdate>
+              2024-02-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Golang/" class="category-chain-item">Golang</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2024/02/24/Golang/GC/" target="_self">
+          GC
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2024/02/24/Golang/GC/" target="_self">
+        <div>
+          垃圾回收简介Golang的垃圾回收策略为：并发三色标记法+混合写屏障机制。 三色标记法是一种标记-清除法的实现，三色标记法在并发的时候会存在漏标问题，也就是可能存在资源泄露，可以通过插入写或者删除写屏障来避免。（还有内存碎片的问题，通过TCMalloc解决） 但实际上，还有栈上的对象需要考虑，栈对象可能设计频繁的轻量操作，对这些操作来说，屏障会带来不小的成本。所以Golang引入了混合写屏障，这样
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2024-02-24 21:42" pubdate>
+              2024-02-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Golang/" class="category-chain-item">Golang</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Tools/Makefile/" target="_self">
+          Makefile
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Tools/Makefile/" target="_self">
+        <div>
+          Makefile 方便编译、管理工程   命名：Makefile 规则：  app: sub.o add.o mult.o div.o main.o 	gcc sub.o add.o mult.o div.o main.o -o  app  sub.o:sub.c 	gcc -c sub.c -o sub.o  add.o:add.c 	gcc -c add.c -o add.o 	 mult.o
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Tools/" class="category-chain-item">Tools</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Tools/vim/" target="_self">
+          vim
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Tools/vim/" target="_self">
+        <div>
+          vim命令撤销重做   按键 作用    u undo (常用)   [Ctrl]+r redo (常用)   . 不要怀疑！这就是小数点！意思是重复前一个动作的意思。 如果你想要重复删除、重复贴上等等动作，按下小数点『.』就好了！ (常用)。注意，对移动无效。   移动可长按，达到持续移动的效果。    小幅移动     h 左移一个字符   j 下移一行   k 上移一行   l 右移一个字符
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Tools/" class="category-chain-item">Tools</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Tools/Cmake%20note/" target="_self">
+          Cmake note
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Tools/Cmake%20note/" target="_self">
+        <div>
+          CMake说明cmake的定义是什么 ？—–高级编译配置工具 当多个人用不同的语言或者编译器开发一个项目，最终要输出一个可执行文件或者共享库（dll，so等等）这时候神器就出现了—–CMake！ 所有操作都是通过编译CMakeLists.txt来完成的—简单 官 方网站是 www.cmake.org，可以通过访问官方网站获得更多关于 cmake 的信息 学习CMake的目的，为将来处理大型的C&#
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Tools/" class="category-chain-item">Tools</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Tools/Git/" target="_self">
+          Git
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Tools/Git/" target="_self">
+        <div>
+          Git 配置用户签名（首次需要设置，否则提交时报错） 初始化本地库  命令 初始化本地库(会在当前目录生成.git的文件夹)  git init  连接远程仓库  git remote add origin xxxxx//x为remoteRepo的SSH或者https git clone xxxxx//克隆会直接连接 git remote -v//查看远程仓库地址 查看状态  git status
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Tools/" class="category-chain-item">Tools</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Tools/Linux%20commands/" target="_self">
+          Linux commands
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Tools/Linux%20commands/" target="_self">
+        <div>
+          Linux 命令使用前置知识文件相关Linux系统中是通过link的数量来控制文件删除的，只有当一个文件不存在任何link的时候，这个文件才会被删除。 一般来说，每个文件都有2个link计数器:i_count 和 i_nlink，也就是说：Linux系统中只有i_nlink及i_count都为0的时候，这个文件才会真正被删除。  i_count表示当前文件使用者（或被调用）的数量 i_nlink表
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Tools/" class="category-chain-item">Tools</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Redis/Persistence/" target="_self">
+          Persistence
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Redis/Persistence/" target="_self">
+        <div>
+          持久化Redis提供了2种持久化的方式，「 AOF 日志」和 「 RDB 快照」。 这两种计数都会各用一个日志文件记录信息，但形式的内容不同。  AOF文件记录操作命令 RDB的文件内容是二进制数据。  AOF日志AOF全称Append only file，每一条命令以追加形式写入到一个文件。重启Redis时，读取这个文件以达到恢复的作用。注意，只会记录写操作，因为读操作不改变数据。  文件内容这
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Redis/" class="category-chain-item">Redis</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Redis/Distributed%20Lock/" target="_self">
+          Distributed Lock
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Redis/Distributed%20Lock/" target="_self">
+        <div>
+          
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Redis/" class="category-chain-item">Redis</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Redis/Key%20Evication/" target="_self">
+          Key Evication
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Redis/Key%20Evication/" target="_self">
+        <div>
+          淘汰策略Redis是可以设置key的过期时间的，这些key会被存储到一个过期字典（expires dict）中，也就是说「过期字典」保存了数据库中所有 key 的过期时间。 typedef struct redisDb &#123;     dict *dict;    /* 数据库键空间，存放着所有的键值对 */     dict *expires; /* 键的过期时间 */     ....
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Redis/" class="category-chain-item">Redis</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Redis/Data%20Structure/" target="_self">
+          Data Structure
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Redis/Data%20Structure/" target="_self">
+        <div>
+          Redis中常用数据结构 String List Hash Set Zet   String实现原理string有3种编码模式   INT：当字符串是数字，并且小于 long long时。 EMBSTR：字符串长度小于等于阈值。 RAW：上面的条件都不满足时，才用raw。  INT如果一个字符串对象保存的是整数值， 并且这个整数值可以用 long 类型来表示， 那么字符串对象会将整数值保存在字符串
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Redis/" class="category-chain-item">Redis</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Others/%E6%8E%A8%E8%8D%90%E6%96%87%E7%AB%A0/" target="_self">
+          推荐文章
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Others/%E6%8E%A8%E8%8D%90%E6%96%87%E7%AB%A0/" target="_self">
+        <div>
+          推荐连接池大小设置：数据库连接池到底应该设多大？这次直接从100ms优化到3ms！
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Others/" class="category-chain-item">Others</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Redis/Cache/" target="_self">
+          Cache
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Redis/Cache/" target="_self">
+        <div>
+          缓存缓存雪崩由于缓存一般是会设置过期时间，所以，缓存大量同时失效就会出现问题。 即，缓存血崩是指缓存大量失效或者Redis故障，导致大量请求到了数据库上。 缓存雪崩原因  缓存大量同时失效 Redis宕机  针对不同原因，有不同的解决方式 缓存大量同时失效 分散设置过期时间，尽量均匀在时间线上。 加互斥锁，保证只有一个请求来构建缓存，记得最好设置过期时间。 双key策略：主key设置过期时间，备用
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Redis/" class="category-chain-item">Redis</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Redis/Cluster/" target="_self">
+          Cluster
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Redis/Cluster/" target="_self">
+        <div>
+          集群
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Redis/" class="category-chain-item">Redis</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Redis/Data%20Structure%20Impl/" target="_self">
+          Data Structure Impl
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Redis/Data%20Structure%20Impl/" target="_self">
+        <div>
+          数据结构实现 以7.0.10版为例。  层级数据库在Redis中，数据库以redisDB对象存在，定义如下： typedef struct redisDb &#123;     dict *dict;                 /* The keyspace for this DB */     dict *expires;              /* Timeout of keys w
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Redis/" class="category-chain-item">Redis</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Others/Idea/" target="_self">
+          Idea
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Others/Idea/" target="_self">
+        <div>
+          Idea1. epoll中使用哈希表替换红黑树对比来看，从时间来说  红黑树所有操作都是$O(log{n})$；哈希表是$O(1)$，但存在哈希碰撞问题，且扩容时需要复制全表，为$O(n)$。  从空间上看  红黑树是离散结构，不要求连续空间；哈希表是连续空间。  红黑树新增节点只需要分配节点内存；哈希表新增可能涉及扩容，扩容时需要占用更大空间。  树中元素有序，而哈系表元素无序。   为什么操作
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Others/" class="category-chain-item">Others</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Operating%20System/os-overview/" target="_self">
+          os-overview
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Operating%20System/os-overview/" target="_self">
+        <div>
+          Operating System硬件结构CPU缓存一致性由于内存和CPU读写速度的差异，为了加速内存中数据的读写，CPU引入了缓存体系。 缓存的速度比内存快很多很多，将需要读写的数据读取到缓存中，下一次就无须再去内存中寻找。 但缓存也是内存数据的一份副本，也就存在着数据不一致的情况，需要保证数据同步。 写直达（Write Through）：每次需要写缓存中的数据时就修改内存的数据，使其同步。对于读
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Operating-System/" class="category-chain-item">Operating System</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Operating%20System/Cache%20Coherence/" target="_self">
+          Cache Coherence
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Operating%20System/Cache%20Coherence/" target="_self">
+        <div>
+          缓存一致性CPU缓存由于内存和CPU之间速度存在的巨大差异，在CPU和内存之间引入缓存，缓存速度介于内存于CPU之间，以减轻这种差异。 如果仅仅是从内存读到缓存，然后读写缓存，最后写会内存这3个简单步骤，缓存的作用就发挥不出来，甚至因为多拷贝、写回一次导致副作用。而由于程序的  时间局部性（Temporal Locality）：如果一个信息项正在被访问，那么在近期它很可能还会被再次访问。 空间局部
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Operating-System/" class="category-chain-item">Operating System</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Operating%20System/File%20System/" target="_self">
+          File System
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Operating%20System/File%20System/" target="_self">
+        <div>
+          文件系统文件系统：FAT、HPFS Linux：EXT4 Windows：NTFS 文件存储连续存储即文件头保存起始地址和文件大小。  连续空间存放的方式虽然读写效率高，但是有「磁盘空间碎片」和「文件长度不易扩展」的缺陷。 磁盘空间碎片是由于是连续连续存放，当空间不足以放下新文件就会出现该现象。 不易扩展就得找到一个更大的新空间，复制过去，很耗时。 非连续空间存放方式非连续空间存放方式分为「链表方
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Operating-System/" class="category-chain-item">Operating System</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/MySQL/%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/" target="_self">
+          存储结构
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/MySQL/%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/" target="_self">
+        <div>
+          MySQL存储的结构 记录: Record 页: Page 区: extent 组:  段: Segement 表: Table 库  记录: Record记录与记录之间连成单向链表, 便于二分查找到页面最小记录向后遍历查询. 页: Page这是MySQL存储最基本的单位, 一般为16KB, 页与页之间连成双向链表, 便于双向查询. 区: Extent对于16KB的页来说 连续的64个页就是一个区
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/MySQL/%E7%B4%A2%E5%BC%95/" target="_self">
+          索引
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/MySQL/%E7%B4%A2%E5%BC%95/" target="_self">
+        <div>
+          索引InnoDB读写基本单位是页, 数据页结构(大致7个部分):  File Header: 表示页的一些通用信息, 占固定38字节 Page HeadD:\blog\docs\.vuepress\nav-backUp.jser: 表示数据页专有的一些信息, 占固定的56字节 lnfimum + Supremum ，两个虚拟的伪记 ，分 表示页中的最小记录和最大记录，占固定的 26 字节。  Us
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/MySQL/%E8%B0%83%E4%BC%98%E5%AE%9E%E4%BE%8B/" target="_self">
+          调优实例
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/MySQL/%E8%B0%83%E4%BC%98%E5%AE%9E%E4%BE%8B/" target="_self">
+        <div>
+          调优实例针对具体的实例调优的话，通过由一下几个步骤  明确背景 明确瓶颈、问题。 对齐需求 针对问题分析 结合业务提出优化手段  offset无效回表 简单总结： sql层和engine分工明确  由sql层负责条件判断、聚合以及offset条件等 由engine层负责具体的数据读写  所以，engine并不理解offset的概念，由sql层记录，所以每次都是sql层调用engine获取完整数据，
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/MySQL/%E5%AD%90%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/" target="_self">
+          子查询优化
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/MySQL/%E5%AD%90%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/" target="_self">
+        <div>
+          查询优化连接优化条件化简 移除不必要的括号。 常量传递，例如条件中有a = 5 and b &gt; a会变为a = 5 and b &gt; 5 移除没必要的条件，如移除永远为True和False的条件。 表达式的计算，将能够计算的就计算出来。 Having和Where子句的合并，如果没有出现聚合函数、GROUP BY等，Having就等同于where。 常量表检测：如果查询条件为唯一索引等值匹
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/MySQL/%E4%BA%8B%E5%8A%A1/" target="_self">
+          事务
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/MySQL/%E4%BA%8B%E5%8A%A1/" target="_self">
+        <div>
+          事务起因: 转账时, 我这边扣100, 你那边加100, 当我这边扣完, 你那边还没加, 服务器出断电, 导致我这少了100, 你那没加, 就出现了问题. 解决办法: 事务（Transaction）  原子性（Atomicity）：一个事务中的所有操作，要么全部完成，要么全部不完成，不会结束在中间某个环节，而且事务在执行过程中发生错误，会被回滚到事务开始前的状态，就像这个事务从来没有执行过一样；
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/MySQL/Undo%20Log/" target="_self">
+          Undo Log
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/MySQL/Undo%20Log/" target="_self">
+        <div>
+          Undo LogUndo PagePage formatNormal Undo Page First Page In Linked List    Specific Logsinsert Speficic data   delete Flow  UpdateNot Update Primary Keyif it’s in-place update, it just update. else, me
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/MySQL/Structure/" target="_self">
+          Structure
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/MySQL/Structure/" target="_self">
+        <div>
+          StructureTableevery table has three linked list to orgnize 3 kinds of extent.  FREE List FREE_FRAG List FULL_FRAG List  every table has many segment  SET_INODES_FULL List SET_INODES_FREE List  when se
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/MySQL/Redo%20Log/" target="_self">
+          Redo Log
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/MySQL/Redo%20Log/" target="_self">
+        <div>
+          Redo LogFormat Example  By the way, for a sparse page, there are logs(MLOG_COMP_LIST_START   ,MLOG_COMP_LIST_END and etc) that store a list of operation.  Mini-TransactionAtomic operations Group Redo
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/MySQL/Record/" target="_self">
+          Record
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/MySQL/Record/" target="_self">
+        <div>
+          Recordfor each record, MySQL will add other default three column. But if any column could be primary key , row_id will  not be added.  There are totally four kinds of formats in MySQL  compact   redun
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/MySQL/Buffer%20Pool/" target="_self">
+          Buffer Pool
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/MySQL/Buffer%20Pool/" target="_self">
+        <div>
+          Buffer Pool由于CPU和硬盘的速度存在很大差异，类似如CPU Cache、Linux Page Buffer， 都是为了缓和速度差异，有了Buffer Pool　的概念。 有了缓冲池后：  当读取数据时，如果数据存在于 Buffer Pool 中，就会直接读取 Buffer Pool 中的数据，否则再去磁盘中读取。 当修改数据时，首先是修改 Buffer Pool 中数据所在的页，然后将
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" target="_self">
+          网络编程
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" target="_self">
+        <div>
+          网络编程基本socket模型 IO多路复用I&#x2F;O多路复用实际上是将等待IO请求的责任交给了内核，内核管理所有已经建立连接的socket，当程序调用查询函数时返回给程序去处理。  select&#x2F;pollselect 实现多路复用的方式是，将已连接的 Socket 都放到一个文件描述符集合，然后调用 select 函数将文件描述符集合拷贝到内核里，让内核来检查是否有网络事件产生，检
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Linux/Virtual%20Memory/" target="_self">
+          Virtual Memory
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Linux/Virtual%20Memory/" target="_self">
+        <div>
+          Linux虚拟内存每个用户进程都只能看到虚拟内存，操作虚拟内存。虚拟内存到物理内存的映射任务由操作系统完成。 每个用户进程看到的虚拟内存地址都是连续的，且具有一定布局规则。 每个用户的虚拟内存之间是相互隔离的，相互独立，无法感知其他进程虚拟内存的存在。 虚拟内存采用lazy loading机制，只有真正用到内存，才会将虚拟内存映射到物理内存。 用户空间32位Linux用户空间为3G，64下实际用到
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Linux/Slub/" target="_self">
+          Slub
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Linux/Slub/" target="_self">
+        <div>
+          SlubSlab是基于Buddy的分配器，也就是首先向Buddy分配对应的大内存，对这块内存进行管理，从而避免内部碎片。 具体的，Slab向Buddy申请特地大小的内存，这块内存的大小要求能被结构体大小整除，即正好能放下完整的对象，不会存在内部碎片。 Slab策略看起来像池的思想，但由于对象类型很多，不可能每个都分配一个池，Slab可以看成一个通用的拟内存池机制。 一个Slab包含一个或多个连续的
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Linux/Physical%20Memory/" target="_self">
+          Physical Memory
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Linux/Physical%20Memory/" target="_self">
+        <div>
+          Linux物理内存架构Linux使用节点(node)，区域(zone)，页(page)三级结构来描述整个物理内存。 一个物理内存分为好几个node，每个node存在好几个zone，每个zone中细分为page大小。 一个内存zone中包含该zone中所有可用的内存页。 struct zone &#123;     struct free_area free_area[MAX_ORDER]; 	..
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Linux/Process/" target="_self">
+          Process
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Linux/Process/" target="_self">
+        <div>
+          Linux进程进程状态进程创建进程创建可以通过3个函数  fork：拷贝当前进程，创建出一个子进程。 vfork：类似fork，但不复制父进程的页表项。但由于copy on write技术的出现，这个函数的相对于fork的优势越来越小。 clone：最基本的函数，根据各种标志位指定父子进程需要共享的资源，比如虚拟内存。共享虚拟内存的话就是常说的线程。  实际上，fork和vfork的实现都是调用的
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Linux/Ext%20File%20System/" target="_self">
+          Ext File System
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Linux/Ext%20File%20System/" target="_self">
+        <div>
+          Ext文件系统综述通过我们都是通过系统调用read、write等操作文件，实际上，这是一类统一的接口，具体操作是需要底层的文件系统来实现的。在Linux下，这层抽象就是VFS（Virtual File System），而Linux默认的文件系统是Ext文件系统，从Ext2到Ext4，处在迭代之中。当然由于VFS的存在，也可以操作其他文件系统，比如XFS，NTFS等，甚至LInux的内存中有一个pr
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/%E5%B8%B8%E8%A7%81%E9%A2%98%E7%9B%AE%E7%B3%BB%E5%88%97/" target="_self">
+          常见题目系列
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/%E5%B8%B8%E8%A7%81%E9%A2%98%E7%9B%AE%E7%B3%BB%E5%88%97/" target="_self">
+        <div>
+          常见题目系列括号 判断是否有效：计数即可 最长有效：双向遍历、计数重置 括号生成：回溯 移除：Stack、set记录删除位置 最小移除次数：BFS   20. 有效的括号  32. 最长有效括号  678. 有效的括号字符串  22. 括号生成  1249. 移除无效的括号  301. 删除无效的括号   后缀表达式 224. 基本计算器  227. 基本计算器 II  772. 基本计算器 II
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/%E6%B1%82%E8%81%8C%E7%AC%94%E8%AF%95%E9%A2%98%E7%9B%AE/" target="_self">
+          求职笔试题目
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/%E6%B1%82%E8%81%8C%E7%AC%94%E8%AF%95%E9%A2%98%E7%9B%AE/" target="_self">
+        <div>
+          笔试常见题目2023年 秋招 滴滴 第二场笔试 9.15   1552. 两球之间的磁力 2290. 到达角落需要移除障碍物的最小数目
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Not%20Sorted/" target="_self">
+          Not Sorted
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Not%20Sorted/" target="_self">
+        <div>
+          Not Sorted1825. Finding MK Average
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/SQL/" target="_self">
+          SQL
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/SQL/" target="_self">
+        <div>
+          MySQL执行顺序 from  on  join  where  group by(开始使用select中的别名，后面的语句中都可以使用) avg,sum….  having  select  distinct  order by limit  流程控制判断语句 IF CASE WHEN  LeetCode  627. Swap Salary  聚合函数CountSumgroup_concat 1
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Sort/" target="_self">
+          Sort
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Sort/" target="_self">
+        <div>
+          数组排序 148. 排序链表   冒泡排序 选择排序 堆排序 插入排序 希尔排序 归并排序  快速排序 &#x3D;&#x3D;时交换好处是避免了很多没用的交换。坏处是移动到中间的机会减小了。 当数据规模小时，可以直接调用普通排序，定义一个阈值cutoff。  桶排序计数排序适用于数据有范围的情况。数据大效果明显。  基数排序 记得要clear。      快速选择Parition 堆排    时
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Stack&amp;Queue/" target="_self">
+          Stack&amp;Queue
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Stack&amp;Queue/" target="_self">
+        <div>
+          栈和队列 20. 有效的括号  232. 用栈实现队列  225. 用队列实现栈  1047. 删除字符串中的所有相邻重复项  445. 两数相加 II  150. 逆波兰表达式求值  946. 验证栈序列  224. 基本计算器 227. 基本计算器 II 772. 基本计算器 III 394. 字符串解码  单调栈 如果需要找到左边或者右边第一个比当前位置的数大或者小，则可以考虑使用单调栈
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/SlidingWindow/" target="_self">
+          SlidingWindow
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/SlidingWindow/" target="_self">
+        <div>
+          滑动窗口 Sliding Window 滑动窗口一定是连续的，因此子数组类题目才能用。也有在数组两头的，一头变长一头减短。 移动窗口时变动的值最好是与两头的数据直接相关的，像是239. 滑动窗口最大值中取的是最大值，因此需要花$O(k)$的时间去获取最大值，总体为$O（n*k)$时间复杂度，对于Hard题是TEL的。 一般滑动窗口都是对容器内元素的__个数或者种类__进行限制，例如窗口内不能出现重
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/String/" target="_self">
+          String
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/String/" target="_self">
+        <div>
+          151. 翻转字符串里的单词trim，两次翻转。  647. 回文子串  1044. 最长重复子串 后缀数组|字符串哈希+二分
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Others/" target="_self">
+          Others
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Others/" target="_self">
+        <div>
+          Others原地哈希 448. 找到所有数组中消失的数字  442. 数组中重复的数据  41. 缺失的第一个正数   细节处理 4. 寻找两个正序数组的中位数 7. 整数反转 8. 字符串转换整数 (atoi) 29. 两数相除 65. 有效数字  模拟 54. 螺旋矩阵 59. 螺旋矩阵 II 885. 螺旋矩阵 III 6. Z 字形变换  技巧 26. 删除有序数组中的重复项 80. 删除
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Template/" target="_self">
+          Template
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Template/" target="_self">
+        <div>
+          Frequent TemplateShortest PathDijkstraclass Solution &#123; public:     vector&lt;int&gt; getPath(vector&lt;int&gt;&amp; path, int src, int tar) &#123; //nodes from 1 -&gt; n;         vector&lt;int&gt
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/%E5%B8%B8%E7%94%A8%E7%AE%97%E6%B3%95/" target="_self">
+          常用算法
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/%E5%B8%B8%E7%94%A8%E7%AE%97%E6%B3%95/" target="_self">
+        <div>
+          常用算法二分查找    三种： 普通 lower_bound upper_bound    找到 &#x3D; 第一个 &gt;&#x3D; 第一个 &gt;   模板题：34. 在排序数组中查找元素的第一个和最后一个位置   300. 最长递增子序列  354. 俄罗斯套娃信封问题  1996. 游戏中弱角色的数量   进阶 满足二段性即可使用二分查找 不满足时候考虑恢复二段性 判断结果时,可用
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/prefix/" target="_self">
+          prefix
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/prefix/" target="_self">
+        <div>
+          前缀和应用场景：不变区间, 区间求和. 一维: 数组 325. 和等于 k 的最长子数组长度 523. 连续的子数组和 560. 和为 K 的子数组  写下来不难发现, 这几个题目都是取左闭右开的区间, 即 (prev, i].   对于统计长度的题目, 需要初始化哈希表prefix[0] = -1;  对于统计个数的题目, 需要初始为prefix[0] = 1   此外, 也可以是特殊的区间和,
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Math/" target="_self">
+          Math
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Math/" target="_self">
+        <div>
+          Math 258. 各位相加(数字根%9同余)  12. 整数转罗马数字 13. 罗马数字转整数 9. 回文数 89. 格雷编码 172. Factorial Trailing Zeroes 166. Fraction to Recurring Decimal 441. Arranging Coins  进制相关 逆序求和, 按进制进位, 结果转置即可   67. 二进制求和 415. 字符串相加
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Milestone/" target="_self">
+          Milestone
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Milestone/" target="_self">
+        <div>
+          Leetcode300题 2022&#x2F;3&#x2F;20 10:04:00    400题 2022&#x2F;4&#x2F;20 21:39:09    剑指Offer (第2版) 2022&#x2F;04&#x2F;30 14:12:19    Hot 100 2022&#x2F;05&#x2F;01 10:14:22    500题 2022&#x2F;05&#x2F;08 09:3
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Greedy/" target="_self">
+          Greedy
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Greedy/" target="_self">
+        <div>
+          
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Graph/" target="_self">
+          Graph
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Graph/" target="_self">
+        <div>
+          大类 有向图 无向图 加权图  有向图 考虑入度和出度。   841. 钥匙和房间 997. 找到小镇的法官 1557. 可以到达所有点的最少点数目  拓扑排序 207. 课程表  210. 课程表 II  851. 喧闹和富有  802. 找到最终的安全状态  310. 最小高度树  444. 序列重建 1557. Minimum Number of Vertices to Reach All
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/LinkedList/" target="_self">
+          LinkedList
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/LinkedList/" target="_self">
+        <div>
+          链表 链表操作基本都需要prev指针, 搭配dummy用于操作头节点.  删除 203. 移除链表元素  83. 删除排序链表中的重复元素  82. 删除排序链表中的重复元素 II  19. 删除链表的倒数第 N 个结点   交换 206. 反转链表 24. 两两交换链表中的节点 25. K 个一组翻转链表  插入、归并 21. 合并两个有序链表 23. 合并 K 个升序链表 86. 分隔链表
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Advanced%20Data%20Structure&amp;Algorithm/" target="_self">
+          Advanced Data Structure&amp;Algorithm
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Advanced%20Data%20Structure&amp;Algorithm/" target="_self">
+        <div>
+          后缀数组 1044. 最长重复子串  树哈希 572. 另一棵树的子树//这里采用的哈希公式是：h(X) = Xv + mb + lb * h(Xl) + rb * h(Xr), 且h(nullptr) = 1 constexpr uint64_t lb = 2333, rb = 97755331, mb = 23333; class Solution &#123; public:     int
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/BackTracking/" target="_self">
+          BackTracking
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/BackTracking/" target="_self">
+        <div>
+          回溯 常常搭配剪枝来提速 回溯的时间复杂度通常是指数级别的  应用范围 组合和排列 切割 子集 棋盘 路线  组合、排列和集合 代码不同体现在startIndex、去重方式、获取结果等方面.   注意树层和树枝剪枝的区别  组合 77. 组合 最入门的 39. 组合总和可复用，注意去重 216. 组合总和 III 40. 组合总和 II 数组元素不唯一且不可复用，注意排序\used数组剪枝。 17
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Binary%20Operation/" target="_self">
+          Binary Operation
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Binary%20Operation/" target="_self">
+        <div>
+          位运算异或 找出在数组中唯一出现奇数次的数 找出在数组中唯二出现奇数次的数, 需要用bit位将两组数分开取异或 知道数的所有取值, 可以每个数都再取异或, 改变出现次数的奇偶性, 匹配上面的方法.   136. 只出现一次的数字  645. 错误的集合 260. 只出现一次的数字 III  面试题 17.19. Missing Two LCCI 137. 只出现一次的数字 II  421. 数组中
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Binary%20Tree/" target="_self">
+          Binary Tree
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Binary%20Tree/" target="_self">
+        <div>
+          树：Tree遍历 前序遍历 中序遍历 后序遍历 层序遍历  后序结果可由前序改变入栈顺序，翻转结果数组得来。**但这种方法不是真正意义上的后序遍历:左—&gt;右-&gt;中** 。但是其实遍历本来就要用root节点做媒介，也先访问了root节点。 遍历题目前中后序 递归和迭代的写法.   144. 二叉树的前序遍历 94. 二叉树的中序遍历 145. 二叉树的后序遍历  遍历应用 513. 找树
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Design&amp;Implement/" target="_self">
+          Design&amp;Implement
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Design&amp;Implement/" target="_self">
+        <div>
+          Design &amp; ImplementImplement 232. 用栈实现队列  225. 用队列实现栈  707. Design Linked List  622. Design Circular Queue  641. Design Circular Deque  705. 设计哈希集合  706. 设计哈希映射  535. Encode and Decode TinyURL 146.
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Divide&amp;Conquer/" target="_self">
+          Divide&amp;Conquer
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Divide&amp;Conquer/" target="_self">
+        <div>
+          分治  将大问题分治为小问题再依次解决  跟动态规划很类似  分治通常用借以栈的特性，小问题入栈先解决。递归实现。  不同于动态规划， 动态规划通常用于计算结果数量，分治可以得到完整信息。同时，因为数据量很大，因此$n$的大小通常不大。   面试题 08.06. Hanota LCCI  面试题 08.14. Boolean Evaluation LCCI  241. 为运算表达式设计优先级  9
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Double%20Pointer/" target="_self">
+          Double Pointer
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Double%20Pointer/" target="_self">
+        <div>
+          删除 || 替换 减少从左边，增加从右边。   剑指 Offer 05. 替换空格 27. 移除元素  经典 15. 三数之和 (注意去重操作、移动到左右边界或者直接移出边界) 16. 最接近的三数之和 18. 四数之和 151. 翻转字符串里的单词 (一次整体、一次局部) 977. 有序数组的平方 88. 合并两个有序数组  LinkedList 利用长度关系, 维护两个指针的距离来找某个节点,
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Dynamic%20Programming/Dynamic%20Programming/" target="_self">
+          Dynamic Programming
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Dynamic%20Programming/Dynamic%20Programming/" target="_self">
+        <div>
+          动态规划 与暴力回溯相比，对于计算个数的题目更快。 也可记忆化搜索   120. 三角形最小路径和  序列和数组 序列不要求连续, 子数组要求连续; 子数组通常可以优化成常量，而子序列不行，无法保存这么多信息，需要两层循环。  LCS: Longest Common Sequence 1143. 最长公共子序列   1035. 不相交的线  Others 91. 解码方法 583. 两个字符串的删
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/LeetCode/Dynamic-Programming/" class="category-chain-item">Dynamic Programming</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Dynamic%20Programming/%E5%8D%95%E4%B8%B2/" target="_self">
+          单串
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Dynamic%20Programming/%E5%8D%95%E4%B8%B2/" target="_self">
+        <div>
+          单串问题确定的依赖位置仅仅依赖之前的一个确定位置, 如i - 1,i &lt;&lt; 1等.  因此, 在理解题意后, 可以很平滑地理清楚状态地转移.  338. 比特位计数 91. 解码方法 801. 使序列递增的最小交换次数  不确定的依赖位置依赖位置有所不同.  不能直接明确地找到, 需要遍历, 或者通过之前元素的性质使用二分, 前缀和等算法优化.  32. 最长有效括号 132. 分割回
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/LeetCode/Dynamic-Programming/" class="category-chain-item">Dynamic Programming</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Dynamic%20Programming/%E7%8A%B6%E6%80%81%E6%9C%BA/" target="_self">
+          状态机
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Dynamic%20Programming/%E7%8A%B6%E6%80%81%E6%9C%BA/" target="_self">
+        <div>
+          状态机DP 用DP数组的某一维【k】来表示k个状态  打家劫舍 198. 打家劫舍  213. 打家劫舍 II  337. 打家劫舍 III  740. 删除并获得点数 1388. 3n 块披萨  粉刷房子 256. 粉刷房子 265. 粉刷房子 II 1473. 粉刷房子 III  801. 使序列递增的最小交换次数1186. Maximum Subarray Sum with One Dele
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/LeetCode/Dynamic-Programming/" class="category-chain-item">Dynamic Programming</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Dynamic%20Programming/%E7%9F%A9%E9%98%B5/" target="_self">
+          矩阵
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Dynamic%20Programming/%E7%9F%A9%E9%98%B5/" target="_self">
+        <div>
+          矩阵 120. 三角形最小路径和  931. 下降路径最小和  1289. 下降路径最小和  II 64. 最小路径和  221. 最大正方形  576. 出界的路径数  174. 地下城游戏  1301. 最大得分的路径数目   升维 85. 最大矩形  363. 矩形区域不超过 K 的最大数值和  面试题 17.24. 最大子矩阵  1444. 切披萨的方案数
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/LeetCode/Dynamic-Programming/" class="category-chain-item">Dynamic Programming</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Dynamic%20Programming/%E5%8F%8C%E4%B8%B2/" target="_self">
+          双串
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Dynamic%20Programming/%E5%8F%8C%E4%B8%B2/" target="_self">
+        <div>
+          双串子数组 718. 最长重复子数组  子序列 583. 两个字符串的删除操作 97. 交错字符串 1143. 最长公共子序列   1035. 不相交的线 44. 通配符匹配 10. 正则表达式匹配 72. 编辑距离 115. 不同的子序列  多一个维度 87. 扰乱字符串
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/LeetCode/Dynamic-Programming/" class="category-chain-item">Dynamic Programming</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/LeetCode/Dynamic%20Programming/%E8%83%8C%E5%8C%85/" target="_self">
+          背包
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/LeetCode/Dynamic%20Programming/%E8%83%8C%E5%8C%85/" target="_self">
+        <div>
+          背包问题01背包 一定容量的背包所能装下的最大物品价值。 对于每个物品，选与不选两个状态，取最大值。 先遍历物品，再遍历容量。如果是一维数组  注意01背包是从后遍历来防止重复选物品。 完全背包就从物品的容量开始，到最大容量，即可以重复选。   经典 416. 分割等和子集 1049. 最后一块石头的重量 II  变式 多维01背包   494. 目标和 元素正负两种状态，转化成加法的01背包，看
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/LeetCode/Dynamic-Programming/" class="category-chain-item">Dynamic Programming</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Internet/TCP&amp;IP/%E5%9B%BE%E8%A7%A3TCP&amp;IP/" target="_self">
+          图解TCP&amp;IP
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Internet/TCP&amp;IP/%E5%9B%BE%E8%A7%A3TCP&amp;IP/" target="_self">
+        <div>
+          图解TCP&#x2F;IPNAT&#x2F; NAPT技术: 本地通信时采用私有IP, 与互联网通信时使用该技术转成公有IP  起因: 解决IPv4 IP地址不够用  IP隧道技术: 这种在网络层的首部后面继续追加网络层首部的通信方法  起因: IPv4和IPv6不兼容 扩展应用: IP隧道转发多播消息  Mobile IP: 在主机所连接的子网IP发 生变化时，主机IP地址仍保持不变。  起因:
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Internet/" class="category-chain-item">Internet</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Internet/TCP-IP/" class="category-chain-item">TCP&amp;IP</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Internet/TCP&amp;IP/TCP/" target="_self">
+          TCP
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Internet/TCP&amp;IP/TCP/" target="_self">
+        <div>
+          TCPTCP 是面向连接的、可靠的、基于字节流的传输层通信协议。  面向连接：一定是「一对一」才能连接，不能像 UDP 协议可以一个主机同时向多个主机发送消息，也就是一对多是无法做到的； 可靠的：无论的网络链路中出现了怎样的链路变化，TCP 都可以保证一个报文一定能够到达接收端； 字节流：用户消息通过 TCP 协议传输时，消息可能会被操作系统「分组」成多个的 TCP 报文，如果接收方的程序如果不知
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Internet/" class="category-chain-item">Internet</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Internet/TCP-IP/" class="category-chain-item">TCP&amp;IP</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Internet/TCP&amp;IP/Question/" target="_self">
+          Question
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Internet/TCP&amp;IP/Question/" target="_self">
+        <div>
+          为什么需要三次握手? 阻⽌重复历史连接的初始化（主因) 当旧的SYN报⽂先到达服务端，服务端回⼀个ACK+SYN报⽂  客户端收到后可以根据⾃身的上下⽂，判断这是⼀个历史连接（序列号过期或超时），那么客户端就会发送 RST 报⽂给服务端，表示中⽌这⼀次连接。  两次握⼿在收到服务端的响应后开始发⽣数据，不能判断当前连接是否是历史连接。 三次握⼿可以在客户端准备发送第三次报⽂时，客户端因有⾜够的上下
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Internet/" class="category-chain-item">Internet</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Internet/TCP-IP/" class="category-chain-item">TCP&amp;IP</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Internet/TCP&amp;IP/IP/" target="_self">
+          IP
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Internet/TCP&amp;IP/IP/" target="_self">
+        <div>
+          IP地址IP地址演变过程, 首先是IPv4. IPv4共32位bit, 以每 8 位为组，共分为 4 组，每组以「.」隔开，再将每组转换成十进制。  由于只有32位, 故最大值为  也就说，最大允许 43 亿台计算机连接到网络。 实际上，IP 地址并不是根据主机台数来配置的，而是以网卡。像服务器、路由器等设备都是有 2 个以上的网卡，也就是它们会有 2 个以上的 IP 地址。 因此，让 43 亿台
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Internet/" class="category-chain-item">Internet</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Internet/TCP-IP/" class="category-chain-item">TCP&amp;IP</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Internet/Internet-Miscellany/" target="_self">
+          Internet-Miscellany
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Internet/Internet-Miscellany/" target="_self">
+        <div>
+          数据链路层数据链路层总时延的瓶颈依赖于多个因素，如  发送速率：主机或路由器发送数据帧所需要的时间。 传播速率：电磁波在信道中传播的速度。 处理时延：主机或路由器对帧的处理，如分析帧首尾、提取数据部分、差错检验、查找转发表等。 排队时延：在路由器中排队再发出的时延。  数据链路层的工作  封装成帧：互联网上传输的数据以分组为单位，分组交换的必然要求就是帧定界，尤其在数据出现错误时，封装成帧可以让出
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Internet/" class="category-chain-item">Internet</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Internet/Protocol/" target="_self">
+          Protocol
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Internet/Protocol/" target="_self">
+        <div>
+          协议DHCP什么是DHCP协议？DHCP（Dynamic Host Configuration Protocol,动态主机配置协议）是一个局域网的网络协议，使用UDP协议工作。主要用于给内部网络或网络服务提供供应商自动分配IP地址。DHCP协议是一个应用层协议，能够让设备自动获取IP地址以及其他重要的网络资源。DHCP是基于Client&#x2F;Server工作模式。 流程 DHCP Disco
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Internet/" class="category-chain-item">Internet</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Internet/HTTP/RSA%E4%B8%8EECDHE/" target="_self">
+          RSA与ECDHE
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Internet/HTTP/RSA%E4%B8%8EECDHE/" target="_self">
+        <div>
+          RSA算法的TLS四次握手检测对方的数字签名， 验证对方是否有数字签名对应的私钥，并安全地告知对称加密密钥。   TLS 第一次握手： 客户端首先会发一个「Client Hello」消息，字面意思我们也能理解到，这是跟服务器「打招呼」。 消息里面有客户端使用的 TLS 版本号、支持的密码套件列表，以及生成的随机数（Client Random），这个随机数会被服务端保留，它是生成对称加密密钥的材料之
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Internet/" class="category-chain-item">Internet</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Internet/HTTP/" class="category-chain-item">HTTP</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Internet/HTTP/%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/" target="_self">
+          加密算法
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Internet/HTTP/%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/" target="_self">
+        <div>
+          加密算法由于HTTP是明文传输，存在安全问题。  窃听风险，比如通信链路上可以获取通信内容，用户号容易没。  篡改风险，比如强制植入垃圾广告，视觉污染，用户眼容易瞎。  冒充风险，比如冒充淘宝网站，用户钱容易没。    HTTPS 在 HTTP 与 TCP 层之间加入了 SSL/TLS 协议，可以很好的解决了上述的风险：  信息加密：交互信息无法被窃取。 校验机制：无法篡改通信内容，篡改了就不能正
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Internet/" class="category-chain-item">Internet</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Internet/HTTP/" class="category-chain-item">HTTP</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Internet/HTTP/Http/" target="_self">
+          Http
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Internet/HTTP/Http/" target="_self">
+        <div>
+          HttpHyper Text Transfer Protocol: 超文本传输协议 超文本：富含文字，图片，视频，超链接等的混合文本。 常见状态码 2xx表示服务器成功处理了客户端请求。  「200 OK」是最常见的成功状态码，表示一切正常。如果是非 HEAD 请求，服务器返回的响应头都会有 body 数据。 「204 No Content」也是常见的成功状态码，与 200 OK 基本相同，但响应
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Internet/" class="category-chain-item">Internet</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/Internet/HTTP/" class="category-chain-item">HTTP</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Golang/intro/" target="_self">
+          intro
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Golang/intro/" target="_self">
+        <div>
+          入门for range 实现range for slicefor range底层是通过调用for i = 0; i &lt; len; i++来实现的。通过将元素赋值给index和value。 特定情况下有问题。  循环取地址，所有的，取到的地址是那个临时的value的地址。  arr := [2]int&#123;1, 2&#125; res := []*int&#123;&#125; for
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Golang/" class="category-chain-item">Golang</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Golang/GPM/" target="_self">
+          GPM
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Golang/GPM/" target="_self">
+        <div>
+          GPM调度器核心结构 G（Goroutine） : 每个 Goroutine 对应一个 G 结构体，每个 Goroutine 都有自己独立的栈存放当前的运行内存及状态，可以把一个 G 当做一个任务，当 Goroutine 被调离 CPU 时，调度器代码负责把 CPU 寄存器的值保存在 G 对象的成员变量之中，当 Goroutine 被调度起来运行时，调度器代码又负责把 G 对象的成员变量所保存的寄
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Golang/" class="category-chain-item">Golang</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/C++/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3C++11/" target="_self">
+          深入理解C++11
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/C++/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3C++11/" target="_self">
+        <div>
+          深入理解C++11稳定性和兼容性宏定义    名称 作用    __STDC_HOSTED__ 判断是否拥有完整C库   __func__ 返回函数名称   __cplusplus 指出当前版本，用于版本兼容   构造方面继承构造函数 class Base &#123; public:     Base(int val): val(val) &#123;&#125; private:     in
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/C/" class="category-chain-item">C++</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Golang/Data%20Structure/" target="_self">
+          Data Structure
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Golang/Data%20Structure/" target="_self">
+        <div>
+          Go 中常用数据结构Slice实现Slice结构如下 slice struct &#123;   array unsafe.Pointer   len int   cap int &#125;  Slice底层依赖于数组来实现，有一个数组指针，指向实际存储数据的数组。  len指的是slice创建时制定的大小。 cap与数据数组的容量有关，当然创建时也可指定。   append时，当cap足够（即
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Golang/" class="category-chain-item">Golang</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/C++/Effective%20C++/" target="_self">
+          Effective C++
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/C++/Effective%20C++/" target="_self">
+        <div>
+          Effective C++熟悉C++ Accustoming Yourself to C++条款1：View C++ as a federation of languages.  C Objected-Oriented C++ Template C++ STL  根据要使用的C++部分，来遵守相应的高效编程守则。 条款2：Prefer consts， enums, and inlines to #
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/C/" class="category-chain-item">C++</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/C++/Effective%20Modern%20C++/" target="_self">
+          Effective Modern C++
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/C++/Effective%20Modern%20C++/" target="_self">
+        <div>
+          Effective Modern C++第一章：类别推导条款1：理解模板类型推导 函数声明。 template&lt;typename T&gt; void f(ParamType param);  函数调用 void f(expr);    情况1：ParamType含引用或指针。 template&lt;typename T&gt; void f([const] T&amp; param);
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/C/" class="category-chain-item">C++</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/C++/More%20Effective%20C++/" target="_self">
+          More Effective C++
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/C++/More%20Effective%20C++/" target="_self">
+        <div>
+          More Effecctive C++基本议题：Basics条款1： 仔细区别pointers和references 由于reference必须代表某个对象，因此必须被初始化。由此，reference不会成为null。 但指针有这种可能性。  pointers可以不被赋初值 pointers可以被重新赋值  条款2：最好使用C++转型操作符 四种  static_cast&lt;&gt;(): 常
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/C/" class="category-chain-item">C++</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/C++/Effective%20STL/" target="_self">
+          Effective STL
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/C++/Effective%20STL/" target="_self">
+        <div>
+          Effective STLContainersItem 1: Choose Your containers with care Item 2: Beware the illusion of container-independent code use typedef to facilitate changes of container’s kind by encapsulating Item 3:
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/C/" class="category-chain-item">C++</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/C++/C++%20Primer/" target="_self">
+          C++ Primer
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/C++/C++%20Primer/" target="_self">
+        <div>
+          C++ Primer第二章: Variable 头文件不应包含using声明，因为头文件会被copy到所有引用其的文件中。  decltype(expresssion) 类型推导 如果expression含括号，则一定是引用类型。  int i = 0; int&amp; j = i; decltype(i) a = 0; //int decltype(j) b = i; //b是引用 declt
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/C/" class="category-chain-item">C++</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Articles/reader-writer%20control/" target="_self">
+          reader-writer control
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Articles/reader-writer%20control/" target="_self">
+        <div>
+          读者写者-处理的多种方式第一种：最省事的互斥锁使用C++11的thread和&#96;&#96;mutex&#96;库的互斥量和锁和多线程来实现。 #include &lt;iostream&gt; #include &lt;thread&gt; #include &lt;mutex&gt;  int val = 0; std::mutex mutex;  void read() &#123;
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Articles/" class="category-chain-item">Articles</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Articles/distributed-system/" target="_self">
+          distributed-system
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Articles/distributed-system/" target="_self">
+        <div>
+          分布式、集群属性可靠性可靠性（Reliability）是指系统可以无故障地持续运行。与可用性相反，可靠性是根据时间间隔而不是任何时刻来进行定义的。可靠性相关的几个指标如下： 可靠性（Reliability）是指系统可以无故障地持续运行。与可用性相反，可靠性是根据时间间隔而不是任何时刻来进行定义的。可靠性相关的几个指标如下： MTBF（Mean Time Between Failure） 即平均无故
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Articles/" class="category-chain-item">Articles</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Articles/Union-Find/" target="_self">
+          Union-Find
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Articles/Union-Find/" target="_self">
+        <div>
+          Union-Find也称Disjoint-set structure。 基于树数组实现树 + 按rank合并 + 路径压缩 class UnionFind&#123; public:     UnionFind(int n): setNum(n), rank(n, 1) &#123;         parent.reserve(n);         for (int i = 0; i &lt;
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Articles/" class="category-chain-item">Articles</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Articles/Consistency/" target="_self">
+          Consistency
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Articles/Consistency/" target="_self">
+        <div>
+          一致性一致性模型有很多，如  线性一致性 顺序一致性 因果一致性 最终一致性  等等。 线性一致性线性一致性一开始是在并发领域提出的。 并发角度一致性模型是指，在并发编程中，系统和开发者之间的一种约定。如果开发者遵循某种规则，那么开发者执行读操作或者写操作的结果是可预测的。 重点落在可预测的，可预测保证了程序逻辑的确定性。这么说起来很抽象， 在我看来，从并发角度，线性一致性避免了data race
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Articles/" class="category-chain-item">Articles</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Articles/Counting%20Sort/" target="_self">
+          Counting Sort
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Articles/Counting%20Sort/" target="_self">
+        <div>
+          计数排序：Counting Sort时间复杂度：$O(n)$ 空间复杂度：$O(maxValue - minValue)$ 适用于数据范围比较小。 简单计数排序如果只是普通的值、直接排序即可。代码如下 vector&lt;int&gt; countingSort(const vector&lt;int&gt;&amp; arr) &#123;     int max = *max_element(
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Articles/" class="category-chain-item">Articles</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Articles/Hash%20Table/" target="_self">
+          Hash Table
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Articles/Hash%20Table/" target="_self">
+        <div>
+          Hash TableHash table is a actually a array . APIIt’s all O(1) time and space complexity for each function.  insert search get delete  Hash Function Single Function Double hash Function  Hash Collision
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Articles/" class="category-chain-item">Articles</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Articles/Process%20Communication/" target="_self">
+          Process Communication
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Articles/Process%20Communication/" target="_self">
+        <div>
+          进程通信线程之间共享全局变量、文件描述符表、堆区资源等。通信较为方便，但进程之间通信需要跨越虚拟内存的鸿沟。 进程之间通信种方式有  管道 消息队列 共享内存 信号量 信号 Socket  接下来分别介绍他们和在Linux下的实现。 管道匿名管道 在Linux下，命令中传递参数用的|就是匿名管道，例如 ps aux | grep mysql  它将前一个命令ps aux的结果传递给下一个命令gre
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Articles/" class="category-chain-item">Articles</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Articles/Compile&amp;Link/" target="_self">
+          Compile&amp;Link
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Articles/Compile&amp;Link/" target="_self">
+        <div>
+          编译和链接起因最近使用到一个简易RPC库，依赖项只有消息队列ZeroMQ，对应库名字是zmq。 目录结构如下 ├── buttonrpc.hpp ├── CMakeLists.txt ├── example │   ├── main_client.cpp │   └── main_server.cpp ├── README.md └── Serializer.hpp  在自定义的头文件中butto
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Articles/" class="category-chain-item">Articles</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/18/Articles/Binary%20Tree%20Traversal/" target="_self">
+          Binary Tree Traversal
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/18/Articles/Binary%20Tree%20Traversal/" target="_self">
+        <div>
+          Binary Tree TraversalRecursionvoid preOrder(vector&lt;int&gt;&amp; res,TreeNode* root)&#123;     if(!root) &#123;         return;     &#125;          res.emplace_back(root-&gt;val);     preOrder(res,
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-18 19:03" pubdate>
+              2023-12-18
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Articles/" class="category-chain-item">Articles</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/12/15/Golang/golang%E6%9D%82%E8%B0%88/" target="_self">
+          golang杂谈
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/12/15/Golang/golang%E6%9D%82%E8%B0%88/" target="_self">
+        <div>
+          Golang名词说明变量  GOROOT：go sdk的下载存放位置，标准库包的源码在$GOROOT/src下 GOPATH：第三方依赖的下载存放位置，第三方依赖包的源码在$GOPATH/src下  层级  package：一个包含了多个 .go 文件的目录。 即当前目录下(不包子目录下的文件)的所有文件的包名必须一致. 目录名推荐和package一致，但不强制要求一致。 每一段 Go 程序都 必
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-12-15 16:36" pubdate>
+              2023-12-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Golang/" class="category-chain-item">Golang</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+      </div>
+    </article>
+  </div>
+
 
 
 
