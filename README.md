@@ -18,19 +18,19 @@
 
 4. 如果存在文件夹内，则会出现在**分类**页面下，否则仅仅出现在首页和归档下。假如我的目录是
 
-    ```shell
-    source/_posts/
-                    ├── hello.md #hello.md 这篇文章不会显示在分类页面显示（主页和检索还是能检索到）
-                    ├── Articles #文件下省略文章显示
-                    ├── C++
-                    └── LeetCode
-                        ├── Dynamic Programming
-                        ...
-    ```
+   ```shell
+   source/_posts/
+                   ├── hello.md #hello.md 这篇文章不会显示在分类页面显示（主页和检索还是能检索到）
+                   ├── Articles #文件下省略文章显示
+                   ├── C++
+                   └── LeetCode
+                       ├── Dynamic Programming
+                       ...
+   ```
 
-    分类页面就是这样的，打开LeetCode还可以看到Dynamic Programming目录下的文章。
+   分类页面就是这样的，打开LeetCode还可以看到Dynamic Programming目录下的文章。
 
-    ![image-20221120182302630](./README/image-20221120182302630.png)  
+   ![image-20221120182302630](./README/image-20221120182302630.png)  
 
 
 
@@ -55,7 +55,7 @@ yarn d # yarn d是自定义命令 "d": "hexo clean ; hexo generate ; hexo d",
 
 ## tips
 
-> 作者操作手册，读者可视情况参考
+> 本文作者操作手册，读者可视情况参考
 
 - 先下载前置依赖
 
@@ -95,7 +95,32 @@ yarn d # yarn d是自定义命令 "d": "hexo clean ; hexo generate ; hexo d",
 ### 插件
 
 1. 生成目录插件：`"hexo-enhancer": "^1.0.10",`
-2. 图片插件：`"hexo-asset-image": "github:CodeFalling/hexo-asset-image"`， 并设置 `post_asset_folder: true`。
+
+2. 图片插件：`"hexo-image-link": "^0.0.6",`， 并设置 `post_asset_folder: true`。但这种方式只能在同名文件夹下，
+
+   ```shell
+   # 目录结构
+   .
+   ├── hao
+   │   └── img.png
+   └── hao.md
+   
+   # markdown 中 image引用方式
+   ![hao](./hao/img.png)
+   ```
+
+   没法用其他名字，例如所有笔记，统一放在assert中，这是不行的（找了半天都没找到开发好的插件，可以通过拷贝图片到对应目录解决）。
+
+   ```shell
+   # hao和hao2的文件都放在assts中，虽然在本地typora中可见，但hexo并不会正确处理图片，博客网站中无法显示。
+   .
+   ├── assets
+   │   └── img.png
+   ├── hao.md
+   └── hao2.md
+   ```
+
+   
 
  
 
