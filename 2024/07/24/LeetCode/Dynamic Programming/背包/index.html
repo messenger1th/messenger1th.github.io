@@ -1,0 +1,1146 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/girl.png">
+  <link rel="icon" href="/img/girl.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Epoch">
+  <meta name="keywords" content="Epoch Blog">
+  
+    <meta name="description" content="背包问题01背包 一定容量的背包所能装下的最大物品价值。 对于每个物品，选与不选两个状态，取最大值。 先遍历物品，再遍历容量。如果是一维数组  注意01背包是从后遍历来防止重复选物品。 完全背包就从物品的容量开始，到最大容量，即可以重复选。   经典 416. 分割等和子集 1049. 最后一块石头的重量 II  变式 多维01背包   494. 目标和 元素正负两种状态，转化成加法的01背包，看">
+<meta property="og:type" content="article">
+<meta property="og:title" content="背包">
+<meta property="og:url" content="https://messenger1th.github.io/2024/07/24/LeetCode/Dynamic%20Programming/%E8%83%8C%E5%8C%85/index.html">
+<meta property="og:site_name" content="Epoch">
+<meta property="og:description" content="背包问题01背包 一定容量的背包所能装下的最大物品价值。 对于每个物品，选与不选两个状态，取最大值。 先遍历物品，再遍历容量。如果是一维数组  注意01背包是从后遍历来防止重复选物品。 完全背包就从物品的容量开始，到最大容量，即可以重复选。   经典 416. 分割等和子集 1049. 最后一块石头的重量 II  变式 多维01背包   494. 目标和 元素正负两种状态，转化成加法的01背包，看">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-24T14:47:33.957Z">
+<meta property="article:modified_time" content="2024-07-24T14:47:33.957Z">
+<meta property="article:author" content="Epoch">
+<meta property="article:tag" content="Epoch Blog">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>背包 - Epoch</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"messenger1th.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Epoch</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/messenger1th">
+                <i class="iconfont icon-github-fill"></i>
+                GitHub
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="背包"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-24 22:47" pubdate>
+          2024年7月24日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          35 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">背包</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="背包问题"><a href="#背包问题" class="headerlink" title="背包问题"></a>背包问题</h1><h2 id="01背包"><a href="#01背包" class="headerlink" title="01背包"></a>01背包</h2><blockquote>
+<p>一定容量的背包所能装下的最大物品价值。</p>
+<p>对于每个物品，选与不选两个状态，取最大值。</p>
+<p>先遍历物品，再遍历容量。如果是一维数组</p>
+<ul>
+<li>注意01背包是从后遍历来防止重复选物品。</li>
+<li>完全背包就从物品的容量开始，到最大容量，即可以重复选。</li>
+</ul>
+</blockquote>
+<h3 id="经典"><a href="#经典" class="headerlink" title="经典"></a>经典</h3><ul>
+<li><del><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/partition-equal-subset-sum/">416. 分割等和子集</a></del></li>
+<li><del><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/last-stone-weight-ii/">1049. 最后一块石头的重量 II</a></del></li>
+</ul>
+<h3 id="变式"><a href="#变式" class="headerlink" title="变式"></a>变式</h3><blockquote>
+<p>多维01背包</p>
+</blockquote>
+<ul>
+<li><del><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/target-sum/">494. 目标和</a></del> 元素正负两种状态，转化成加法的01背包，看是否能凑齐。</li>
+<li><strong><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/ones-and-zeroes/">474. 一和零</a></strong></li>
+</ul>
+<h3 id="进阶"><a href="#进阶" class="headerlink" title="进阶"></a>进阶</h3><ul>
+<li><h4 id="879-盈利计划-含限制的01多维背包"><a href="#879-盈利计划-含限制的01多维背包" class="headerlink" title="879. 盈利计划  含限制的01多维背包"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/profitable-schemes/">879. 盈利计划 </a> 含限制的01多维背包</h4></li>
+</ul>
+<h2 id="多重背包"><a href="#多重背包" class="headerlink" title="多重背包"></a>多重背包</h2><blockquote>
+<p>相同物品有多件。是特殊01背包。加一个循环遍历相同物品个数。</p>
+</blockquote>
+<h2 id="完全背包"><a href="#完全背包" class="headerlink" title="完全背包"></a>完全背包</h2><blockquote>
+<p>在元素可以重复添加的条件下，能装下的最大物品价值、硬币兑换最小次数、子串是否能组成字符串等。</p>
+<h5 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h5><p>求[1,2,3]组成4的种类</p>
+<p><strong>组合</strong>:<code>[1,1,1,1],[1,1,2],[2,2],[1,3]</code></p>
+<p><em>像是后面的物品把前面的物品包含了进去，一轮循环考虑一个物品。</em></p>
+<p><strong>排列</strong>: <code>[1,1,1,1],[1,1,2],[1,2,1],[1,3],[2,1,1],[2,2],[3,1] </code></p>
+<p>_像是随机替换，一轮可以替换多个物品_。</p>
+</blockquote>
+<h3 id="组合"><a href="#组合" class="headerlink" title="组合"></a>组合</h3><ul>
+<li><del><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/perfect-squares/">279. 完全平方数</a></del></li>
+<li><del><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/coin-change/">322. 零钱兑换</a></del></li>
+<li><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/coin-change-2/">518. 零钱兑换 II</a></li>
+</ul>
+<h3 id="排列"><a href="#排列" class="headerlink" title="排列"></a>排列</h3><blockquote>
+<p>组合不考虑元素顺序，排列考虑。</p>
+</blockquote>
+<ul>
+<li><del><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/word-break/">139. 单词拆分</a></del></li>
+<li><del><a target="_blank" rel="noopener" href="https://leetcode-cn.com/problems/combination-sum-iv/">377. 组合总和 Ⅳ</a></del></li>
+</ul>
+<h3 id="进阶-1"><a href="#进阶-1" class="headerlink" title="进阶"></a>进阶</h3><blockquote>
+<p> <strong>记录路径</strong>：记录选择了哪些物品</p>
+</blockquote>
+<p><strong>01背包记录路径</strong></p>
+<p><strong>01背包，物品有多种选择，不同选择花销不同，收获不同。</strong></p>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-comment">// n个题，限定t时间，在限定时间内拿到更高的分，返回每个题的做法。</span>
+<span class="hljs-comment">// F代表不做，获得0分；</span>
+<span class="hljs-comment">// B代表暴力算法，花费force[i].first时间，获得force[i].second分；</span>
+<span class="hljs-comment">// C代表完美通过，花费perfect[i].first时间，获得perfect[i].second分；</span>
+<span class="hljs-comment">// 其实是01背包，每种物品有三种选择，path记录时，多判断一个状态即可。</span>
+<span class="hljs-comment">// 通过逆序查找来查找路径。</span>
+<span class="hljs-function">string <span class="hljs-title">GetMaxScoreStrategy</span><span class="hljs-params">(<span class="hljs-type">int</span> n, <span class="hljs-type">int</span> t, vector&lt;pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt;&gt;&amp; force, vector&lt;pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt;&gt;&amp; perfect)</span> </span>&#123;
+    vector&lt;vector&lt;<span class="hljs-type">char</span>&gt;&gt; <span class="hljs-built_in">path</span>(n + <span class="hljs-number">1</span>, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-type">char</span>&gt; (t + <span class="hljs-number">1</span>, <span class="hljs-string">&#x27;F&#x27;</span>));
+    vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt; <span class="hljs-built_in">dp</span>(n + <span class="hljs-number">1</span>, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-type">int</span>&gt; (t + <span class="hljs-number">1</span>, <span class="hljs-number">0</span>));
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>; i &lt;= n; ++i) &#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt;= t; ++j) &#123;
+            <span class="hljs-comment">// 不做</span>
+            dp[i][j] = dp[i - <span class="hljs-number">1</span>][j];
+
+            <span class="hljs-comment">// 判断暴力算法</span>
+            <span class="hljs-type">int</span> currTime = force[i - <span class="hljs-number">1</span>].first, currScore = force[i - <span class="hljs-number">1</span>].second;
+            <span class="hljs-keyword">if</span> (currTime &lt;= j &amp;&amp; dp[i][j] &lt; dp[i - <span class="hljs-number">1</span>][j - currTime] + currScore) &#123;
+                dp[i][j] = dp[i - <span class="hljs-number">1</span>][j - currTime] + currScore;
+                path[i][j] = <span class="hljs-string">&#x27;B&#x27;</span>;
+            &#125;
+            
+			<span class="hljs-comment">// 判断完美算法</span>
+            currTime = perfect[i - <span class="hljs-number">1</span>].first, currScore = perfect[i - <span class="hljs-number">1</span>].second;
+            <span class="hljs-keyword">if</span> (currTime &lt;= j &amp;&amp; dp[i][j] &lt; dp[i - <span class="hljs-number">1</span>][j - currTime] + currScore) &#123;
+                dp[i][j] = dp[i - <span class="hljs-number">1</span>][j - currTime] + currScore;
+                path[i][j] = <span class="hljs-string">&#x27;A&#x27;</span>;
+            &#125;
+        &#125;
+    &#125;
+
+    <span class="hljs-type">int</span> currTime = t, currIndex = n;
+    <span class="hljs-function">string <span class="hljs-title">res</span><span class="hljs-params">(n, <span class="hljs-string">&#x27;F&#x27;</span>)</span></span>; <span class="hljs-comment">// 默认不做</span>
+    <span class="hljs-keyword">while</span> (currIndex &gt; <span class="hljs-number">0</span> &amp;&amp; currTime &gt; <span class="hljs-number">0</span>) &#123; <span class="hljs-comment">// 为0时，为初始状态，无背包或者时间，无需计算。</span>
+        <span class="hljs-keyword">switch</span> (path[currIndex][currTime]) &#123;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;F&#x27;</span>: <span class="hljs-keyword">break</span>; <span class="hljs-comment">//noting. 默认就是不做。</span>
+            <span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;A&#x27;</span>:
+                currTime -= perfect[currIndex - <span class="hljs-number">1</span>].first;
+                res[currIndex - <span class="hljs-number">1</span>] = <span class="hljs-string">&#x27;A&#x27;</span>;
+                <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;B&#x27;</span>:
+                currTime -= force[currIndex - <span class="hljs-number">1</span>].first;
+                res[currIndex - <span class="hljs-number">1</span>] = <span class="hljs-string">&#x27;B&#x27;</span>;
+                <span class="hljs-keyword">break</span>;
+        &#125;
+        --currIndex;
+    &#125;
+    <span class="hljs-keyword">return</span> res;
+&#125;</code></pre></div>
+
+
+
+<p><strong>完全背包记录记录</strong></p>
+<ul>
+<li><h4 id="1449-数位成本和为目标值的最大数字"><a href="#1449-数位成本和为目标值的最大数字" class="headerlink" title="1449. 数位成本和为目标值的最大数字"></a><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/form-largest-integer-with-digits-that-add-up-to-target/">1449. 数位成本和为目标值的最大数字</a></h4></li>
+</ul>
+<h2 id="其他背包进阶"><a href="#其他背包进阶" class="headerlink" title="其他背包进阶"></a>其他背包进阶</h2><blockquote>
+<p>背包9讲</p>
+</blockquote>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/form-largest-integer-with-digits-that-add-up-to-target/solution/gong-shui-san-xie-fen-liang-bu-kao-lu-we-uy4y/">【宫水三叶】分两步考虑问题，以及若干进阶思考（附背包问题攻略） - 数位成本和为目标值的最大数字 - 力扣（LeetCode）</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/LeetCode/Dynamic-Programming/" class="category-chain-item">Dynamic Programming</a>
+  
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>背包</div>
+      <div>https://messenger1th.github.io/2024/07/24/LeetCode/Dynamic Programming/背包/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Epoch</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/24/LeetCode/Dynamic%20Programming/%E7%9F%A9%E9%98%B5/" title="矩阵">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">矩阵</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/24/LeetCode/Advanced%20Data%20Structure&amp;Algorithm/" title="Advanced Data Structure&amp;Algorithm">
+                        <span class="hidden-mobile">Advanced Data Structure&amp;Algorithm</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="LeetCode"
+        id="heading-071fda8ffed879b16c3308d2133bac46" role="tab" data-toggle="collapse" href="#collapse-071fda8ffed879b16c3308d2133bac46"
+        aria-expanded="true"
+      >
+        LeetCode
+        <span class="list-group-count">(30)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-071fda8ffed879b16c3308d2133bac46"
+           role="tabpanel" aria-labelledby="heading-071fda8ffed879b16c3308d2133bac46">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Advanced%20Data%20Structure&amp;Algorithm/" title="Advanced Data Structure&amp;Algorithm"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Advanced Data Structure&amp;Algorithm</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/BackTracking/" title="BackTracking"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">BackTracking</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Binary%20Operation/" title="Binary Operation"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Binary Operation</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Binary%20Tree/" title="Binary Tree"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Binary Tree</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Design&amp;Implement/" title="Design&amp;Implement"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Design&amp;Implement</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Divide&amp;Conquer/" title="Divide&amp;Conquer"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Divide&amp;Conquer</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Double%20Pointer/" title="Double Pointer"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Double Pointer</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Graph/" title="Graph"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Graph</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Greedy/" title="Greedy"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Greedy</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/LinkedList/" title="LinkedList"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">LinkedList</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Math/" title="Math"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Math</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Milestone/" title="Milestone"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Milestone</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Not%20Sorted/" title="Not Sorted"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Not Sorted</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Others/" title="Others"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Others</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/SQL/" title="SQL"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">SQL</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/SlidingWindow/" title="SlidingWindow"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">SlidingWindow</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Sort/" title="Sort"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Sort</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Stack&amp;Queue/" title="Stack&amp;Queue"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Stack&amp;Queue</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/String/" title="String"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">String</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Template/" title="Template"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Template</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/prefix/" title="prefix"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">prefix</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/%E5%B8%B8%E7%94%A8%E7%AE%97%E6%B3%95/" title="常用算法"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">常用算法</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/%E5%B8%B8%E8%A7%81%E9%A2%98%E7%9B%AE%E7%B3%BB%E5%88%97/" title="常见题目系列"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">常见题目系列</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/%E6%B1%82%E8%81%8C%E7%AC%94%E8%AF%95%E9%A2%98%E7%9B%AE/" title="求职笔试题目"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">求职笔试题目</span>
+        </a>
+      
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Dynamic Programming"
+        id="heading-ed8cda5bb8b98f18b3a3377e4edc67f9" role="tab" data-toggle="collapse" href="#collapse-ed8cda5bb8b98f18b3a3377e4edc67f9"
+        aria-expanded="true"
+      >
+        Dynamic Programming
+        <span class="list-group-count">(6)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-ed8cda5bb8b98f18b3a3377e4edc67f9"
+           role="tabpanel" aria-labelledby="heading-ed8cda5bb8b98f18b3a3377e4edc67f9">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Dynamic%20Programming/Dynamic%20Programming/" title="Dynamic Programming"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Dynamic Programming</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Dynamic%20Programming/%E5%8D%95%E4%B8%B2/" title="单串"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">单串</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Dynamic%20Programming/%E5%8F%8C%E4%B8%B2/" title="双串"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">双串</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Dynamic%20Programming/%E7%8A%B6%E6%80%81%E6%9C%BA/" title="状态机"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">状态机</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Dynamic%20Programming/%E7%9F%A9%E9%98%B5/" title="矩阵"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">矩阵</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Dynamic%20Programming/%E8%83%8C%E5%8C%85/" title="背包"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">背包</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      赣ICP备2024036505号
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

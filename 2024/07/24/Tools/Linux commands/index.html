@@ -1,0 +1,904 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/girl.png">
+  <link rel="icon" href="/img/girl.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Epoch">
+  <meta name="keywords" content="Epoch Blog">
+  
+    <meta name="description" content="Linux 命令使用前置知识文件相关Linux系统中是通过link的数量来控制文件删除的，只有当一个文件不存在任何link的时候，这个文件才会被删除。 一般来说，每个文件都有2个link计数器:i_count 和 i_nlink，也就是说：Linux系统中只有i_nlink及i_count都为0的时候，这个文件才会真正被删除。  i_count表示当前文件使用者（或被调用）的数量 i_nlink表">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux commands">
+<meta property="og:url" content="https://messenger1th.github.io/2024/07/24/Tools/Linux%20commands/index.html">
+<meta property="og:site_name" content="Epoch">
+<meta property="og:description" content="Linux 命令使用前置知识文件相关Linux系统中是通过link的数量来控制文件删除的，只有当一个文件不存在任何link的时候，这个文件才会被删除。 一般来说，每个文件都有2个link计数器:i_count 和 i_nlink，也就是说：Linux系统中只有i_nlink及i_count都为0的时候，这个文件才会真正被删除。  i_count表示当前文件使用者（或被调用）的数量 i_nlink表">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-24T14:47:34.223Z">
+<meta property="article:modified_time" content="2024-07-24T14:47:34.224Z">
+<meta property="article:author" content="Epoch">
+<meta property="article:tag" content="Epoch Blog">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Linux commands - Epoch</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"messenger1th.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Epoch</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/messenger1th">
+                <i class="iconfont icon-github-fill"></i>
+                GitHub
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Linux commands"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-24 22:47" pubdate>
+          2024年7月24日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          51 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Linux commands</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Linux-命令使用"><a href="#Linux-命令使用" class="headerlink" title="Linux 命令使用"></a>Linux 命令使用</h1><h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><h3 id="文件相关"><a href="#文件相关" class="headerlink" title="文件相关"></a>文件相关</h3><p>Linux系统中是通过link的数量来控制文件删除的，只有当一个文件不存在任何link的时候，这个文件才会被删除。</p>
+<p>一般来说，每个文件都有2个link计数器:i_count 和 i_nlink，也就是说：<strong>Linux系统中只有i_nlink及i_count都为0的时候，这个文件才会真正被删除。</strong></p>
+<ul>
+<li>i_count表示当前文件使用者（或被调用）的数量</li>
+<li>i_nlink表示介质连接的数量（硬链接的数量）；</li>
+<li>可以理解为i_count是内存引用计数器，i_nlink是磁盘的引用计数器。</li>
+</ul>
+<p>当一个文件被某一个进程引用时，对应i_count数就会增加；当创建文件的硬链接的时候，对应i_nlink数就会增加。</p>
+<p>在Linux或者Unix系统中，通过rm或者文件管理器删除文件，只是将它会从文件系统的目录结构上解除链接(unlink)，实际上就是减少磁盘引用计数i_nlink，但是并不会减少i_count数。</p>
+<p><strong>如果一个文件正在被某个进程调用，用户使用rm命令把文件”删除”了，这时候通过ls等文件管理命令就无法找到这个文件了，但是并不意味着这个文件真正的从磁盘上删除了。</strong></p>
+<p>因为还有一个进程在正常的执行，在向文件中读取或写入，也就是说文件其实并没有被真正的”删除”，所以磁盘空间也就会一直被占用。</p>
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><p>熟知的就不介绍了</p>
+<ul>
+<li><code>ls</code>、<code>cat</code>、<code>cd</code> 、<code>tail</code>、<code>head</code>等。</li>
+</ul>
+<h3 id="文本查询"><a href="#文本查询" class="headerlink" title="文本查询"></a>文本查询</h3><h4 id="tail"><a href="#tail" class="headerlink" title="tail"></a>tail</h4><p>顾名思义，显示文件后几行（默认5行）。</p>
+<p><code>tail -f [filename]</code> 阻塞式监听新加进来的行。</p>
+<h4 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h4><p>grep比较常见，过滤字符串。</p>
+<p>可以通过<code>-C [n]</code>显示上下各5行的内容。</p>
+<p>可以通过<code>-n [n]</code>显示行号。</p>
+<h4 id="less、more"><a href="#less、more" class="headerlink" title="less、more"></a>less、more</h4><p>more只能向下移动，推荐less。</p>
+<p>less上下移动、查询跟vim操作相似。</p>
+<h4 id="cut"><a href="#cut" class="headerlink" title="cut"></a>cut</h4><p>给输入（或文件）的每行移除一部分。</p>
+<p>搭配grep可以实现，只查看每行的前多少个字符，比如grep后查看前50个字符。</p>
+<p><code>cat log | grep GetRecommend | cut -c1-50</code>。</p>
+<h4 id="lsof"><a href="#lsof" class="headerlink" title="lsof"></a>lsof</h4><p>list open file。 列出被程序打开的文件，可能已经被unlink（此时会有deleted标识），但被程序引用，导致无法实际执行删除。</p>
+<p>一般用于如何查看端口被哪个进程占用。</p>
+<h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><h4 id="ps"><a href="#ps" class="headerlink" title="ps"></a>ps</h4><p><code>ps -ef</code> 或者 <code>ps -aux</code></p>
+<p>在<code>ps -ef</code>命令输出的结果中，”TTY”列表示与进程关联的终端设备。</p>
+<p>终端设备（Terminal Device）是指用于输入和输出的用户界面。在类Unix系统中，每个运行的进程都可以与一个终端设备关联。终端设备可以是物理终端（例如控制台）或虚拟终端（例如终端窗口、SSH会话等）。</p>
+<p>在”TTY”列中，你会看到一个设备名称或终端名称，用于标识与进程相关联的终端。以下是一些常见的TTY值及其含义：</p>
+<ul>
+<li>“pts&#x2F;0”：伪终端设备（pseudo terminal），通常表示一个终端窗口或SSH会话。</li>
+<li>“tty1”：”tty”是指物理终端设备，后面的数字表示设备编号。”tty1”表示第一个物理终端设备，通常是控制台。</li>
+<li>“?”：表示没有与进程相关联的终端设备，即进程是一个守护进程（daemon），不与终端交互。</li>
+</ul>
+<p>终端设备的信息对于了解进程是如何与用户进行交互以及进程的运行环境非常有用。通过查看TTY列，你可以确定进程是否与用户交互，以及它是在哪个终端上运行的。</p>
+<h4 id="kill"><a href="#kill" class="headerlink" title="kill"></a>kill</h4><p><code>kill</code>命令用于终止一个进程，实现原理是，操作系统向应用程序发送一个终止信号，应用程序进行退出。</p>
+<p><code>kill</code>默认是<code>kill -15</code>，系统会发送一个SIGTERM的信号给对应的程序。当程序接收到该信号后，具体要如何处理是自己可以决定的，通过注册对应的处理函数来实现。所以，这个处理函数也可以选择忽略这个信号，此时操作系统<code>kill -15</code>是无法终止这个程序的。</p>
+<p><code>kill -9</code>就相对强硬一点，系统会发出SIGKILL信号，他要求接收到该信号的程序应该立即结束运行，不能被阻塞或者忽略。</p>
+<p>其中，JVM关闭就涉及这方面，JVM关闭方式分为3种：</p>
+<blockquote>
+<p>正常关闭：当最后一个非守护线程结束或者调用了System.exit或者通过其他特定平台的方法关闭（接收到SIGINT（2）、SIGTERM（15）信号等）</p>
+<p>强制关闭：通过调用Runtime.halt方法或者是在操作系统中强制kill（接收到SIGKILL（9）信号)</p>
+<p>异常关闭：运行中遇到RuntimeException异常等。</p>
+</blockquote>
+<h3 id="资源查询命令"><a href="#资源查询命令" class="headerlink" title="资源查询命令"></a>资源查询命令</h3><h4 id="top"><a href="#top" class="headerlink" title="top"></a>top</h4><p>以下是一些常用的按键操作：</p>
+<ul>
+<li>使用 <code>k</code> 键：通过输入进程的 PID（进程ID）来终止选定的进程。</li>
+<li>使用 <code>r</code> 键：修改进程的优先级（nice value）。</li>
+<li>使用 <code>H</code> 键：将线程（thread）模式和进程模式之间进行切换。</li>
+<li>使用 <code>f</code> 键：进入字段管理模式，可以选择要显示的列。</li>
+<li>使用 <code>u</code> 键：显示特定用户的进程。</li>
+<li>使用 <code>s</code> 键：改变刷新间隔时间。</li>
+<li>使用 <code>q</code> 键：退出 <code>top</code> 命令。</li>
+</ul>
+<p>排序模式</p>
+<ul>
+<li><code>P</code>键：按照CPU使用率进行排序，高CPU使用率的进程会显示在前面。</li>
+<li><code>M</code>键：按照内存使用量进行排序，高内存使用量的进程会显示在前面。</li>
+<li><code>N</code>键：按照进程ID（PID）进行排序，按照进程ID的大小顺序进行排列。</li>
+<li><code>T</code>键：按照运行时间进行排序，按照进程运行的时间长短进行排列。</li>
+<li><code>W</code>键：将当前的排序方式写入到<code>~/.toprc</code>文件中，下次启动<code>top</code>命令时将使用该排序方式。</li>
+</ul>
+<p>在<code>top</code>命令中按下相应的键后，进程列表将根据指定的排序方式进行重新排序，并且显示最新的排序结果。</p>
+<h4 id="df、du"><a href="#df、du" class="headerlink" title="df、du"></a>df、du</h4><p>df：查询磁盘使用情况。</p>
+<ul>
+<li>-B[M|G|B|T] 按照不同规格显示。也可以使用 -H 按照human的习惯，自适应规格。</li>
+</ul>
+<p>du：查询文件空间情况。</p>
+<ul>
+<li>-B[M|G|B|T] 按照不同规格显示。也可以使用 -H 按照human的习惯，自适应规格。</li>
+</ul>
+<h4 id="free"><a href="#free" class="headerlink" title="free"></a>free</h4><p>显示使用的和剩余的内存、以及交换区的情况。</p>
+<h4 id="vmstat"><a href="#vmstat" class="headerlink" title="vmstat"></a>vmstat</h4><p><code>vmstat</code> 是一个常用的性能监控工具，用于显示系统的虚拟内存统计信息。它提供了有关系统内存、进程、IO等方面的信息。下面是 <code>vmstat</code> 命令输出的一些常见统计数据：</p>
+<ol>
+<li>procs：进程统计信息<ul>
+<li>r: 系统中正在运行的进程数量。</li>
+<li>b: 等待资源的进程数量。</li>
+</ul>
+</li>
+<li>memory：内存使用统计信息<ul>
+<li>swpd: 使用的虚拟内存量（以KB为单位）。</li>
+<li>free: 空闲内存量（以KB为单位）。</li>
+<li>buff: 用作缓冲区的内存量（以KB为单位）。</li>
+<li>cache: 用作缓存的内存量（以KB为单位）。</li>
+</ul>
+</li>
+<li>swap：交换空间使用统计信息<ul>
+<li>si: 从磁盘读入交换区的数据量（以KB为单位）。</li>
+<li>so: 从交换区写出到磁盘的数据量（以KB为单位）。</li>
+</ul>
+</li>
+<li>io：IO统计信息<ul>
+<li>bi: 从块设备读取的块数量（每秒）。</li>
+<li>bo: 写入块设备的块数量（每秒）。</li>
+</ul>
+</li>
+<li>system：系统统计信息<ul>
+<li>in: 每秒中断的数量。</li>
+<li>cs: 每秒上下文切换的数量。</li>
+</ul>
+</li>
+<li>cpu：CPU使用统计信息<ul>
+<li>us: 用户空间CPU时间百分比。</li>
+<li>sy: 内核空间CPU时间百分比。</li>
+<li>id: 空闲CPU时间百分比。</li>
+<li>wa: 等待IO的CPU时间百分比。</li>
+<li>st: 被虚拟化层偷取的CPU时间百分比。</li>
+</ul>
+</li>
+</ol>
+<h3 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h3><ul>
+<li><p><code>uptime</code>：显示系统的运行时间和负载平均值。</p>
+</li>
+<li><p><code>dmesg</code>：显示内核日志信息，包括启动过程中的信息和硬件设备相关的消息。</p>
+</li>
+<li><p><code>sort</code>：排序后输出。</p>
+</li>
+</ul>
+<h2 id="todo"><a href="#todo" class="headerlink" title="todo"></a>todo</h2><ul>
+<li>&#96;&#96;cat &#x2F;proc&#x2F;meminfo&#96;</li>
+<li>sed、awd</li>
+</ul>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><ol>
+<li>怎么看进程占用的CPU？</li>
+<li>怎么查看一个进程的进程号？</li>
+<li>怎么看端口被哪个进程占用了？</li>
+<li>top命令有哪些信息？</li>
+<li>top命令的CPU占用会超过100%吗？</li>
+<li>Linux怎么修改文件权限</li>
+<li></li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Tools/" class="category-chain-item">Tools</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Linux commands</div>
+      <div>https://messenger1th.github.io/2024/07/24/Tools/Linux commands/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Epoch</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/24/Tools/vim/" title="vim">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">vim</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/24/Tools/Git/" title="Git">
+                        <span class="hidden-mobile">Git</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Tools"
+        id="heading-8625e1de7be14c39b1d14dc03d822497" role="tab" data-toggle="collapse" href="#collapse-8625e1de7be14c39b1d14dc03d822497"
+        aria-expanded="true"
+      >
+        Tools
+        <span class="list-group-count">(5)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-8625e1de7be14c39b1d14dc03d822497"
+           role="tabpanel" aria-labelledby="heading-8625e1de7be14c39b1d14dc03d822497">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2024/07/24/Tools/Cmake%20note/" title="Cmake note"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Cmake note</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Tools/Git/" title="Git"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Git</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Tools/Linux%20commands/" title="Linux commands"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">Linux commands</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Tools/Makefile/" title="Makefile"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Makefile</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Tools/vim/" title="vim"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">vim</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      赣ICP备2024036505号
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

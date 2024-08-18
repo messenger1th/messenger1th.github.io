@@ -1,0 +1,902 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/girl.png">
+  <link rel="icon" href="/img/girl.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Epoch">
+  <meta name="keywords" content="Epoch Blog">
+  
+    <meta name="description" content="垃圾回收简介Golang的垃圾回收策略为：并发三色标记法+混合写屏障机制。 三色标记法是一种标记-清除法的实现，三色标记法在并发的时候会存在漏标问题，也就是可能存在资源泄露，可以通过插入写或者删除写屏障来避免。（还有内存碎片的问题，通过TCMalloc解决） 但实际上，还有栈上的对象需要考虑，栈对象可能设计频繁的轻量操作，对这些操作来说，屏障会带来不小的成本。所以Golang引入了混合写屏障，这样">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GC">
+<meta property="og:url" content="https://messenger1th.github.io/2024/07/24/Golang/GC/index.html">
+<meta property="og:site_name" content="Epoch">
+<meta property="og:description" content="垃圾回收简介Golang的垃圾回收策略为：并发三色标记法+混合写屏障机制。 三色标记法是一种标记-清除法的实现，三色标记法在并发的时候会存在漏标问题，也就是可能存在资源泄露，可以通过插入写或者删除写屏障来避免。（还有内存碎片的问题，通过TCMalloc解决） 但实际上，还有栈上的对象需要考虑，栈对象可能设计频繁的轻量操作，对这些操作来说，屏障会带来不小的成本。所以Golang引入了混合写屏障，这样">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Golang/GC/v2-6407c942d5004a8d48514b3386543545_720w.webp">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Golang/GC/v2-e5cfe71a2eb567f8681c8b9c6c3f71c0_720w.webp">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Golang/GC/v2-cd0a8005e9ccbeaf3d5b367924d8cde0_720w.webp">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Golang/GC/v2-328a1ee5c7410fb4c406f53041ea461d_720w.webp">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Golang/GC/v2-46757ef2106d090faabc8c2adb50fa76_720w.webp">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Golang/GC/v2-6f97f252e0d21b2835e9c2c95ab657b3_720w.webp">
+<meta property="article:published_time" content="2024-07-24T14:47:33.915Z">
+<meta property="article:modified_time" content="2024-07-24T14:47:33.916Z">
+<meta property="article:author" content="Epoch">
+<meta property="article:tag" content="Epoch Blog">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://messenger1th.github.io/2024/07/24/Golang/GC/v2-6407c942d5004a8d48514b3386543545_720w.webp">
+  
+  
+  
+  <title>GC - Epoch</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"messenger1th.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Epoch</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/messenger1th">
+                <i class="iconfont icon-github-fill"></i>
+                GitHub
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="GC"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-24 22:47" pubdate>
+          2024年7月24日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          55 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">GC</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="垃圾回收"><a href="#垃圾回收" class="headerlink" title="垃圾回收"></a>垃圾回收</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Golang的垃圾回收策略为：并发三色标记法+混合写屏障机制。</p>
+<p>三色标记法是一种标记-清除法的实现，三色标记法在并发的时候会存在漏标问题，也就是可能存在资源泄露，可以通过插入写或者删除写屏障来避免。（还有内存碎片的问题，通过TCMalloc解决）</p>
+<p>但实际上，还有栈上的对象需要考虑，栈对象可能设计频繁的轻量操作，对这些操作来说，屏障会带来不小的成本。所以Golang引入了混合写屏障，这样就保证了正确性，同时避免栈对象的操作引入屏障的成本。</p>
+<h2 id="常用算法"><a href="#常用算法" class="headerlink" title="常用算法"></a>常用算法</h2><h3 id="标记-清除-Mark-Sweep"><a href="#标记-清除-Mark-Sweep" class="headerlink" title="标记-清除 Mark-Sweep"></a>标记-清除 Mark-Sweep</h3><p>标记清扫（Mark-Sweep）算法，分为两步走：</p>
+<ul>
+<li>标记：标记出当前还存活的对象</li>
+<li>清扫：清扫掉未被标记到的垃圾对象</li>
+</ul>
+
+
+<p>这是一种类似于排除法的间接处理思路，不直接查找垃圾对象，而是标记存活对象，从而取补集推断出垃圾对象.</p>
+<p>至于标记清扫算法的不足之处，通过上图也得以窥见一二，那就是会产生内存碎片. 经过几轮标记清扫之后，空闲的内存块可能零星碎片化分布，此时倘若有大对象需要分配内存，可能会因为内存空间无法化零为整从而导致分配失败.</p>
+<h3 id="标记-压缩-Mark-Compact"><a href="#标记-压缩-Mark-Compact" class="headerlink" title="标记-压缩 Mark-Compact"></a>标记-压缩 Mark-Compact</h3><img src="/2024/07/24/Golang/GC/v2-6407c942d5004a8d48514b3386543545_720w.webp" srcset="/img/loading.gif" lazyload class="" title="img">
+
+<p>标记压缩（Mark-Compact）算法，是在标记清扫算法的基础上做了升级，在第二步”清扫“的同时还会对存活对象进行压缩整合，使得整体空间更为紧凑，从而解决内存碎片问题.</p>
+<p>标记压缩算法在功能性上呈现得很出色，而其存在的缺陷也很简单，就是实现时会有很高的复杂度.</p>
+<h3 id="引用计数"><a href="#引用计数" class="headerlink" title="引用计数"></a>引用计数</h3><p>引用计数（Reference Counting）算法是很简单高效的：</p>
+<ul>
+<li>对象每被引用一次，计数器加1</li>
+<li>对象每被删除引用一次，计数器减1</li>
+<li>GC时，把计数器等于 0 的对象删除</li>
+</ul>
+<p>然而，这个朴素的算法存在一个致命的缺陷：无法解决循环引用或者自引用问题.</p>
+<h2 id="三色标记法"><a href="#三色标记法" class="headerlink" title="三色标记法"></a>三色标记法</h2><p>Golang GC 中用到的三色标记法属于标记清扫-算法下的一种实现，由荷兰的计算机科学家 Dijkstra 提出，下面阐述要点：</p>
+<ul>
+<li>对象分为三种颜色标记：黑、灰、白</li>
+<li>黑对象代表，对象自身存活，且其指向对象都已标记完成</li>
+<li>灰对象代表，对象自身存活，但其指向对象还未标记完成</li>
+<li>白对象代表，对象尙未被标记到，可能是垃圾对象</li>
+<li>标记开始前，将根对象（全局对象、栈上局部变量等）置黑，将其所指向的对象置灰</li>
+<li>标记规则是，从灰对象出发，将其所指向的对象都置灰. 所有指向对象都置灰后，当前灰对象置黑</li>
+<li>标记结束后，白色对象就是不可达的垃圾对象，需要进行清扫.</li>
+</ul>
+<img src="/2024/07/24/Golang/GC/v2-e5cfe71a2eb567f8681c8b9c6c3f71c0_720w.webp" srcset="/img/loading.gif" lazyload class="" title="img">
+
+<p>但它存在一个漏标问题。</p>
+<h3 id="漏标问题"><a href="#漏标问题" class="headerlink" title="漏标问题"></a>漏标问题</h3><p>漏标问题指的是在用户协程与GC协程并发执行的场景下，部分存活对象未被标记从而被误删的情况。如下图，A被置为黑，B置为灰色。此时用户协程，断开B对C的引用，让A引用C。</p>
+<img src="/2024/07/24/Golang/GC/v2-cd0a8005e9ccbeaf3d5b367924d8cde0_720w.webp" srcset="/img/loading.gif" lazyload class="" title="img">
+
+<h3 id="错标问题"><a href="#错标问题" class="headerlink" title="错标问题"></a>错标问题</h3><img src="/2024/07/24/Golang/GC/v2-328a1ee5c7410fb4c406f53041ea461d_720w.webp" srcset="/img/loading.gif" lazyload class="" title="img">
+
+<p>即本次垃圾回收被标记为灰色，但随后被删除引用（图中A删除对B的引用，此时B已经为灰色），此时可以被删除了，但本轮没删除。</p>
+<p>但这本身不是啥问题，可以等到下一轮回收。</p>
+<h3 id="强弱三色不变式"><a href="#强弱三色不变式" class="headerlink" title="强弱三色不变式"></a>强弱三色不变式</h3><p>漏标问题的本质就是，一个已经扫描完成的黑对象指向了一个被灰\白对象删除引用的白色对象. 构成这一场景的要素拆分如下：</p>
+<p>（1）黑色对象指向了白色对象</p>
+<p>（2）灰、白对象删除了白色对象</p>
+<p>（3）（1）、（2）步中谈及的白色对象是同一个对象</p>
+<p>（4）（1）发生在（2）之前</p>
+<p>一套用于解决漏标问题的方法论称之为强弱三色不变式：</p>
+<ul>
+<li>强三色不变式：白色对象不能被黑色对象直接引用（直接破坏（1））</li>
+<li>弱三色不变式：白色对象可以被黑色对象引用，但要从某个灰对象出发仍然可达该白对象（间接破坏了（1）、（2）的联动）</li>
+</ul>
+<p>可以通过插入写屏障删除写屏障来保证强弱三色不变式。</p>
+<h3 id="插入写屏障"><a href="#插入写屏障" class="headerlink" title="插入写屏障"></a>插入写屏障</h3><p>插入写屏障（Dijkstra）的目标是实现<strong>强三色不变式</strong>，保证当一个黑色对象指向一个白色对象前，会先触发屏障将白色对象置为灰色，再建立引用.</p>
+<img src="/2024/07/24/Golang/GC/v2-46757ef2106d090faabc8c2adb50fa76_720w.webp" srcset="/img/loading.gif" lazyload class="" title="img">
+
+<h3 id="删除写屏障"><a href="#删除写屏障" class="headerlink" title="删除写屏障"></a>删除写屏障</h3><p>删除写屏障就是在删除一个白色对象的引用前，会给它标记为灰色，避免它被黑色对象引用，但显示为白色的情况。</p>
+<img src="/2024/07/24/Golang/GC/v2-6f97f252e0d21b2835e9c2c95ab657b3_720w.webp" srcset="/img/loading.gif" lazyload class="" title="img">
+
+<p>两个屏障，二者选其一，即可解决GC并发的漏标的问题。</p>
+<h3 id="混合写屏障"><a href="#混合写屏障" class="headerlink" title="混合写屏障"></a>混合写屏障</h3><p>然而，真实场景中，需要补充一个新的设定——不太希望栈对象的操作都附带屏障机制。</p>
+<p>这是因为栈对象可能涉及频繁的轻量操作，倘若这些高频度操作都需要一一触发屏障机制，那么所带来的成本将是无法接受的.</p>
+<p>在这一背景下，单独看插入写屏障或删除写屏障，都无法真正解决漏标问题，除非我们引入额外的Stop the world（STW）阶段，对栈对象的处理进行兜底。</p>
+<p>为了消除这个额外的 STW 成本，Golang 1.8 引入了混合写屏障机制，可以视为糅合了插入写屏障+删除写屏障的加强版本，要点如下：</p>
+<ul>
+<li>GC 开始前，以栈为单位分批扫描，将栈中所有对象置黑</li>
+<li>GC 期间，栈上新创建对象直接置黑</li>
+<li>堆对象正常启用插入写屏障</li>
+<li>堆对象正常启用删除写屏障</li>
+</ul>
+<h2 id="内存逃逸分析机制"><a href="#内存逃逸分析机制" class="headerlink" title="内存逃逸分析机制"></a>内存逃逸分析机制</h2><p>在 C 语言和 C++ 这类需要手动管理内存的编程语言中，将对象或者结构体分配到栈上或者堆上是由工程师自主决定的，这也为工程师的工作带来的挑战，如果工程师能够精准地为每一个变量分配合理的空间，那么整个程序的运行效率和内存使用效率一定是最高的，但是手动分配内存会导致如下的两个问题：</p>
+<ol>
+<li>不需要分配到堆上的对象分配到了堆上 — 浪费内存空间；</li>
+<li>需要分配到堆上的对象分配到了栈上 — 悬挂指针、影响内存安全；</li>
+</ol>
+<p>与悬挂指针相比，浪费内存空间反而是小问题。在 C 语言中，栈上的变量被函数作为返回值返回给调用方是一个常见的错误，在如下所示的代码中，栈上的变量 <code>i</code> 被错误返回：</p>
+<div class="code-wrapper"><pre><code class="hljs c"><span class="hljs-type">int</span> *<span class="hljs-title function_">dangling_pointer</span><span class="hljs-params">()</span> &#123;
+    <span class="hljs-type">int</span> i = <span class="hljs-number">2</span>;
+    <span class="hljs-keyword">return</span> &amp;i;
+&#125;</code></pre></div>
+
+<p>当 <code>dangling_pointer</code> 函数返回后，它的本地变量会被编译器回收，调用方获取的是危险的悬挂指针，我们不确定当前指针指向的值是否合法时，这种问题在大型项目中是比较难以发现和定位的。</p>
+<p>在编译器优化中，逃逸分析是用来决定指针动态作用域的方法。Go 语言的编译器使用逃逸分析决定哪些变量应该在栈上分配，哪些变量应该在堆上分配，其中包括使用 <code>new</code>、<code>make</code> 和字面量等方法隐式分配的内存，Go 语言的逃逸分析遵循以下两个不变性：</p>
+<ol>
+<li>指向栈对象的指针不能存在于堆中；</li>
+<li>指向栈对象的指针不能在栈对象回收后存活；</li>
+</ol>
+<h2 id="栈内存管理"><a href="#栈内存管理" class="headerlink" title="栈内存管理"></a>栈内存管理</h2><p>为什么Golang需要管理栈对象，它不是在结束后直接通过调整栈指针回收了吗？</p>
+<p>在Go中，堆和栈上的对象都需要被垃圾收集器管理。与其他语言不同，Go中的本地变量和函数参数不仅分配在栈上，也分配在堆上。这是因为它们的作用域可能超出函数的生命周期，在栈上的对象可能函数结束后，需要返回，此时它是不能被回收的，所以对于这类对象，会分配在堆上。</p>
+<p>简单来说，管理栈对象是因为栈上的对象也可能会引用堆上的对象，因此GC需要管理整个应用程序中的对象，包括栈和堆上的对象，以确保没有内存泄漏和堆溢出。</p>
+<p><strong>实际上，栈管理并不是说会通过垃圾回收机制删除栈的对象，而是垃圾回收器会分析栈对象是否引用堆对象，避免误删除；栈内存的管理还是通过调整栈指针的方式；本地变量具体分配在栈上还是堆上，在编译期时的内存逃逸分析时决定。</strong></p>
+<h2 id="分代算法"><a href="#分代算法" class="headerlink" title="分代算法"></a>分代算法</h2>，采用不同的GC策略进行分类管理. 分代GC算法有效的前提是，绝大多数年轻代对象都是朝生夕死，拥有更高的GC回收率，因此适合采用特别的策略进行处理.
+
+<p>然而Golang中存在内存逃逸机制，会在编译过程中将生命周期更长的对象转移到堆中，将生命周期短的对象分配在栈上，并以栈为单位对这部分对象进行回收.</p>
+<p>综上，内存逃逸机制减弱了分代算法对Golang GC所带来的优势，考虑分代算法需要产生额外的成本（如不同年代的规则映射、状态管理以及额外的写屏障），Golang 选择不采用分代GC算法.</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><ul>
+<li>内存碎片问题解决：TCMalloc</li>
+<li>Golang为什么不用引用计数：引用计数在并发的时候需要用到原子操作，虽然它已经比较快了，但相较于普通的内存引用要慢，标记-清除垃圾回收不需要频繁的原子操作，因此在多线程环境下表现更好；而且，他在循环引用或者自引用时，无法清理。</li>
+</ul>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://www.bookstack.cn/read/qcrao-Go-Questions/spilt.2.GC-GC.md">根对象到底是什么？</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/605315127">Golang 垃圾回收原理分析</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/105495961/">Go 垃圾回收（三）——三色标记法是什么鬼？</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_39676242/article/details/111581951">混合写屏障解决了单删除写屏障的什么情况下的问题？</a></li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Golang/" class="category-chain-item">Golang</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>GC</div>
+      <div>https://messenger1th.github.io/2024/07/24/Golang/GC/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Epoch</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/24/Golang/Golang%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" title="Golang常见问题">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Golang常见问题</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/24/Golang/Data%20Structure/" title="Data Structure">
+                        <span class="hidden-mobile">Data Structure</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Golang"
+        id="heading-eda14e187a768b38eda999457c9cca1e" role="tab" data-toggle="collapse" href="#collapse-eda14e187a768b38eda999457c9cca1e"
+        aria-expanded="true"
+      >
+        Golang
+        <span class="list-group-count">(7)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-eda14e187a768b38eda999457c9cca1e"
+           role="tabpanel" aria-labelledby="heading-eda14e187a768b38eda999457c9cca1e">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2024/07/24/Golang/Data%20Structure/" title="Data Structure"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Data Structure</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Golang/GC/" title="GC"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">GC</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Golang/GPM/" title="GPM"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">GPM</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Golang/Golang%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98/" title="Golang常见问题"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Golang常见问题</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Golang/Memory/" title="Memory"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Memory</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Golang/golang%E6%9D%82%E8%B0%88/" title="golang杂谈"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">golang杂谈</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Golang/intro/" title="intro"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">intro</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      赣ICP备2024036505号
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

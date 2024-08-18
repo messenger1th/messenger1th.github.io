@@ -1,0 +1,2213 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/girl.png">
+  <link rel="icon" href="/img/girl.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Epoch">
+  <meta name="keywords" content="Epoch Blog">
+  
+    <meta name="description" content="Frequent TemplateShortest Path最短路径Dijkstraclass Solution &amp;#123; public:     vector&lt;int&gt; getPath(vector&lt;int&gt;&amp; path, int src, int tar) &amp;#123; &#x2F;&#x2F;nodes from 1 -&gt; n;         vector&lt;in">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Template">
+<meta property="og:url" content="https://messenger1th.github.io/2024/07/24/LeetCode/Template/index.html">
+<meta property="og:site_name" content="Epoch">
+<meta property="og:description" content="Frequent TemplateShortest Path最短路径Dijkstraclass Solution &amp;#123; public:     vector&lt;int&gt; getPath(vector&lt;int&gt;&amp; path, int src, int tar) &amp;#123; &#x2F;&#x2F;nodes from 1 -&gt; n;         vector&lt;in">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-24T14:47:33.964Z">
+<meta property="article:modified_time" content="2024-07-24T14:47:33.964Z">
+<meta property="article:author" content="Epoch">
+<meta property="article:tag" content="Epoch Blog">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Template - Epoch</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"messenger1th.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Epoch</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/messenger1th">
+                <i class="iconfont icon-github-fill"></i>
+                GitHub
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Template"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-24 22:47" pubdate>
+          2024年7月24日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          22k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          374 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Template</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Frequent-Template"><a href="#Frequent-Template" class="headerlink" title="Frequent Template"></a>Frequent Template</h1><h2 id="Shortest-Path最短路径"><a href="#Shortest-Path最短路径" class="headerlink" title="Shortest Path最短路径"></a>Shortest Path最短路径</h2><h3 id="Dijkstra"><a href="#Dijkstra" class="headerlink" title="Dijkstra"></a>Dijkstra</h3><div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Solution</span> &#123;
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">getPath</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; path, <span class="hljs-type">int</span> src, <span class="hljs-type">int</span> tar)</span> </span>&#123; <span class="hljs-comment">//nodes from 1 -&gt; n;</span>
+        vector&lt;<span class="hljs-type">int</span>&gt; nodeSeq;
+        <span class="hljs-type">int</span> cur = tar;
+        <span class="hljs-keyword">while</span> (path[cur] != <span class="hljs-number">-1</span>) &#123;
+            nodeSeq.<span class="hljs-built_in">emplace_back</span>(cur);
+            cur = path[cur];
+        &#125;
+        nodeSeq.<span class="hljs-built_in">emplace_back</span>(src);
+        <span class="hljs-built_in">reverse</span>(nodeSeq.<span class="hljs-built_in">begin</span>(), nodeSeq.<span class="hljs-built_in">end</span>());
+        <span class="hljs-keyword">return</span> nodeSeq;
+    &#125;
+    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">networkDelayTime</span><span class="hljs-params">(vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt;&amp; times, <span class="hljs-type">int</span> n, <span class="hljs-type">int</span> src)</span> </span>&#123; <span class="hljs-comment">//nodes from 1 -&gt; n;</span>
+        <span class="hljs-type">const</span> <span class="hljs-type">int</span> Inf = INT_MAX / <span class="hljs-number">2</span>;
+        vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt; <span class="hljs-built_in">graph</span>(n, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-type">int</span>&gt; (n, Inf));
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">const</span> <span class="hljs-keyword">auto</span>&amp; edge: times) &#123;
+            <span class="hljs-type">int</span> from = edge[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>, to = edge[<span class="hljs-number">1</span>] - <span class="hljs-number">1</span>, cost = edge[<span class="hljs-number">2</span>];
+            graph[from][to] = cost;
+        &#125;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; ++i) &#123;
+            graph[i][i] = <span class="hljs-number">0</span>;
+        &#125;
+
+        priority_queue&lt;pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt;, vector&lt;pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt;&gt;, greater&lt;pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt;&gt;&gt; pq;
+        <span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">dist</span><span class="hljs-params">(n, Inf)</span></span>;
+        <span class="hljs-function">vector&lt;<span class="hljs-type">bool</span>&gt; <span class="hljs-title">visited</span><span class="hljs-params">(n, <span class="hljs-literal">false</span>)</span></span>;
+        <span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">path</span><span class="hljs-params">(n, <span class="hljs-number">-1</span>)</span></span>;
+        pq.<span class="hljs-built_in">emplace</span>(<span class="hljs-number">0</span>, src - <span class="hljs-number">1</span>);
+        dist[src - <span class="hljs-number">1</span>] = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">while</span> (!pq.<span class="hljs-built_in">empty</span>()) &#123;
+            pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt; p = pq.<span class="hljs-built_in">top</span>(); pq.<span class="hljs-built_in">pop</span>();
+            <span class="hljs-type">int</span> cur = p.second;
+            <span class="hljs-keyword">if</span> (visited[cur]) &#123;<span class="hljs-comment">//add visited array to avoid useless traversal</span>
+                <span class="hljs-keyword">continue</span>;
+            &#125;
+            visited[cur] = <span class="hljs-literal">true</span>;
+            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; ++i) &#123;
+                <span class="hljs-keyword">if</span> (dist[i] &gt; dist[cur] + graph[cur][i]) &#123;
+                    dist[i] = dist[cur] + graph[cur][i];
+                    pq.<span class="hljs-built_in">emplace</span>(dist[i], i);
+                    path[i] = cur;
+                &#125; 
+            &#125;
+        &#125;
+        vector&lt;<span class="hljs-type">int</span>&gt; pathNodes = <span class="hljs-built_in">getPath</span>(path, src - <span class="hljs-number">1</span>);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">auto</span> node: pathNodes)
+            cout &lt;&lt; node + <span class="hljs-number">1</span> &lt;&lt; <span class="hljs-string">&#x27; &#x27;</span>;
+
+        <span class="hljs-type">int</span> maxDistance = *<span class="hljs-built_in">max_element</span>(dist.<span class="hljs-built_in">begin</span>(), dist.<span class="hljs-built_in">end</span>());
+        <span class="hljs-keyword">return</span> maxDistance == Inf ? <span class="hljs-number">-1</span> : maxDistance;
+    &#125;
+&#125;;</code></pre></div>
+
+<h3 id="Floyd"><a href="#Floyd" class="headerlink" title="Floyd"></a>Floyd</h3><div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">getPath</span><span class="hljs-params">()</span></span>;
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">Floyd</span><span class="hljs-params">(vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt;&amp; times, <span class="hljs-type">int</span> n, <span class="hljs-type">int</span> src)</span> </span>&#123; <span class="hljs-comment">//nodes from 1 -&gt; n;</span>
+    <span class="hljs-type">const</span> <span class="hljs-type">int</span> Inf = INT_MAX / <span class="hljs-number">2</span>;
+    vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt; <span class="hljs-built_in">graph</span>(n, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-type">int</span>&gt; (n, Inf));
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; ++i) &#123;
+        graph[i][i] = <span class="hljs-number">0</span>;
+    &#125;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">const</span> <span class="hljs-keyword">auto</span>&amp; edge: times) &#123;
+        <span class="hljs-type">int</span> from = edge[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>, to = edge[<span class="hljs-number">1</span>] - <span class="hljs-number">1</span>, cost = edge[<span class="hljs-number">2</span>];
+        graph[from][to] = cost;
+    &#125;
+
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> k = <span class="hljs-number">0</span>; k &lt; n; ++k) &#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; ++i) &#123;
+            <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; n; ++j) &#123;
+                graph[i][j] = <span class="hljs-built_in">min</span>(graph[i][j], graph[i][k] + graph[k][j]);
+            &#125;
+        &#125;
+    &#125;
+
+    <span class="hljs-type">int</span> maxDistance = *<span class="hljs-built_in">max_element</span>(graph[src - <span class="hljs-number">1</span>].<span class="hljs-built_in">begin</span>(), graph[src - <span class="hljs-number">1</span>].<span class="hljs-built_in">end</span>());
+    <span class="hljs-keyword">return</span> maxDistance == Inf ? <span class="hljs-number">-1</span> : maxDistance;
+&#125;</code></pre></div>
+
+<h3 id="SPFA"><a href="#SPFA" class="headerlink" title="SPFA"></a>SPFA</h3><div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">SPFA</span><span class="hljs-params">(vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt;&amp; edges, <span class="hljs-type">int</span> n, <span class="hljs-type">int</span> src)</span> </span>&#123; <span class="hljs-comment">//nodes from 1 -&gt; n;</span>
+    <span class="hljs-type">const</span> <span class="hljs-type">int</span> Inf = INT_MAX / <span class="hljs-number">2</span>;
+    vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt; <span class="hljs-built_in">graph</span>(n, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-type">int</span>&gt; (n, Inf));
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; ++i) &#123;
+        graph[i][i] = <span class="hljs-number">0</span>;
+    &#125;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">const</span> <span class="hljs-keyword">auto</span>&amp; edge: edges) &#123;
+        <span class="hljs-type">int</span> from = edge[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>, to = edge[<span class="hljs-number">1</span>] - <span class="hljs-number">1</span>, cost = edge[<span class="hljs-number">2</span>];
+        graph[from][to] = cost; 
+    &#125;
+
+    <span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">dist</span><span class="hljs-params">(n, Inf)</span></span>;
+    <span class="hljs-function">vector&lt;<span class="hljs-type">bool</span>&gt; <span class="hljs-title">inQ</span><span class="hljs-params">(n, <span class="hljs-literal">false</span>)</span></span>;
+    dist[src - <span class="hljs-number">1</span>] = <span class="hljs-number">0</span>;
+    inQ[src - <span class="hljs-number">1</span>] = <span class="hljs-literal">true</span>;
+    queue&lt;<span class="hljs-type">int</span>&gt; Q;
+    Q.<span class="hljs-built_in">emplace</span>(src - <span class="hljs-number">1</span>);
+    <span class="hljs-keyword">while</span> (!Q.<span class="hljs-built_in">empty</span>()) &#123;
+        <span class="hljs-type">int</span> cur = Q.<span class="hljs-built_in">front</span>(); Q.<span class="hljs-built_in">pop</span>();
+        inQ[cur] = <span class="hljs-literal">false</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; ++i) &#123;
+            <span class="hljs-keyword">if</span> (dist[i] &gt; dist[cur] + graph[cur][i]) &#123;
+                dist[i] = dist[cur] + graph[cur][i];
+                <span class="hljs-keyword">if</span> (!inQ[i]) &#123;
+                    Q.<span class="hljs-built_in">emplace</span>(i);
+                    inQ[i] = <span class="hljs-literal">true</span>;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+    <span class="hljs-type">int</span> maxDistance = *<span class="hljs-built_in">max_element</span>(dist.<span class="hljs-built_in">begin</span>(), dist.<span class="hljs-built_in">end</span>());
+    <span class="hljs-keyword">return</span> maxDistance == Inf ? <span class="hljs-number">-1</span> : maxDistance;
+&#125;</code></pre></div>
+
+<div class="code-wrapper"><pre><code class="hljs cpp">```
+
+
+
+## Minimum Spanning Tree最小生成树
+
+### Prim
+
+```<span class="hljs-function">cpp</span>
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">Prim</span><span class="hljs-params">(vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt;&amp; edges, <span class="hljs-type">int</span> n)</span> </span>&#123;
+    <span class="hljs-type">const</span> <span class="hljs-type">int</span> Inf = INT_MAX / <span class="hljs-number">2</span>;
+    vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt; <span class="hljs-built_in">graph</span>(n, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-type">int</span>&gt; (n, Inf));
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; ++i) &#123;
+        graph[i][i] = <span class="hljs-number">0</span>;
+    &#125;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">const</span> <span class="hljs-keyword">auto</span>&amp; edge: edges) &#123;
+        <span class="hljs-type">int</span> p1 = edge[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>, p2 = edge[<span class="hljs-number">1</span>] - <span class="hljs-number">1</span>, cost = edge[<span class="hljs-number">2</span>];
+        graph[p1][p2] = graph[p2][p1] = cost;
+    &#125;
+    <span class="hljs-function">vector&lt;<span class="hljs-type">bool</span>&gt; <span class="hljs-title">visited</span><span class="hljs-params">(n, <span class="hljs-literal">false</span>)</span></span>;
+    <span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">dist</span><span class="hljs-params">(n, Inf)</span></span>;
+    dist[<span class="hljs-number">0</span>] = <span class="hljs-number">0</span>;
+    priority_queue&lt;pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt;, vector&lt;pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt;&gt;, greater&lt;pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt;&gt;&gt; pq;
+    pq.<span class="hljs-built_in">emplace</span>(<span class="hljs-number">0</span>, <span class="hljs-number">0</span>);
+    <span class="hljs-type">int</span> res = <span class="hljs-number">0</span>;
+    <span class="hljs-type">int</span> connectedNum = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span>(!pq.<span class="hljs-built_in">empty</span>()) &#123;
+        pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt; p = pq.<span class="hljs-built_in">top</span>(); pq.<span class="hljs-built_in">pop</span>();
+        <span class="hljs-type">int</span> cur = p.second;
+        <span class="hljs-keyword">if</span> (visited[cur]) &#123;
+            <span class="hljs-keyword">continue</span>;
+        &#125;
+        ++connectedNum;
+        res += p.first;
+        visited[cur] = <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; ++i) &#123;
+            <span class="hljs-keyword">if</span> (dist[i] &gt; graph[cur][i]) &#123;
+                dist[i] = graph[cur][i];
+                pq.<span class="hljs-built_in">emplace</span>(dist[i], i);
+            &#125;
+        &#125;
+    &#125;
+    <span class="hljs-keyword">return</span> n == connectedNum ? res : - <span class="hljs-number">1</span>;
+&#125;</code></pre></div>
+
+<h3 id="UnionFind并查集"><a href="#UnionFind并查集" class="headerlink" title="UnionFind并查集"></a>UnionFind并查集</h3><div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">UnionFind</span> &#123; 
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-built_in">UnionFind</span>(<span class="hljs-type">int</span> n): <span class="hljs-built_in">rank</span>(n, <span class="hljs-number">1</span>) &#123;
+        parent.<span class="hljs-built_in">reserve</span>(n);
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; ++i) &#123;
+            parent.<span class="hljs-built_in">emplace_back</span>(i);
+        &#125;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">IsConnected</span><span class="hljs-params">(<span class="hljs-type">int</span> x, <span class="hljs-type">int</span> y)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">find</span>(x) == <span class="hljs-built_in">find</span>(y);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">Unite</span><span class="hljs-params">(<span class="hljs-type">int</span> x, <span class="hljs-type">int</span> y)</span> </span>&#123;
+        <span class="hljs-type">int</span> rootX = <span class="hljs-built_in">find</span>(x), rootY = <span class="hljs-built_in">find</span>(y);
+        <span class="hljs-keyword">if</span> (rootX == rootY) &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+        &#125; 
+        
+        <span class="hljs-keyword">if</span> (rank[rootX] &lt; rank[rootY]) &#123;
+            parent[rootX] = rootY;
+        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (rank[rootX] &gt; rank[rootY]) &#123;
+            parent[rootY] = rootX;
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            parent[rootX] = rootY;
+            ++rank[rootY];
+        &#125;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+    &#125;
+
+<span class="hljs-keyword">private</span>:
+    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">find</span><span class="hljs-params">(<span class="hljs-type">int</span> x)</span> </span>&#123;
+        <span class="hljs-keyword">if</span> (x != parent[x]) &#123;
+            parent[x]  = <span class="hljs-built_in">find</span>(parent[x]);
+        &#125;
+        <span class="hljs-keyword">return</span> parent[x];
+    &#125;
+
+    vector&lt;<span class="hljs-type">int</span>&gt; parent;
+    vector&lt;<span class="hljs-type">int</span>&gt; rank;
+&#125;;</code></pre></div>
+
+
+
+
+
+<h3 id="Kruskal"><a href="#Kruskal" class="headerlink" title="Kruskal"></a>Kruskal</h3><div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">UnionFind</span> &#123;
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-built_in">UnionFind</span>(<span class="hljs-type">int</span> n) &#123;
+        parent.<span class="hljs-built_in">resize</span>(n);
+        rank.<span class="hljs-built_in">resize</span>(n);
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; ++i) &#123;
+            parent[i] = i;
+            rank[i] = <span class="hljs-number">1</span>;
+        &#125;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">find</span><span class="hljs-params">(<span class="hljs-type">int</span> i)</span> </span>&#123;
+        <span class="hljs-keyword">if</span> (i != parent[i]) &#123;
+            parent[i] = <span class="hljs-built_in">find</span>(parent[i]);
+        &#125;
+        <span class="hljs-keyword">return</span> parent[i];
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">unite</span><span class="hljs-params">(<span class="hljs-type">int</span> x, <span class="hljs-type">int</span> y)</span> </span>&#123;
+        <span class="hljs-type">int</span> rootX = <span class="hljs-built_in">find</span>(x);
+        <span class="hljs-type">int</span> rootY = <span class="hljs-built_in">find</span>(y);
+        <span class="hljs-keyword">if</span> (rootX != rootY) &#123;
+            <span class="hljs-keyword">if</span> (rank[rootX] &lt;= rank[rootY]) &#123;
+                <span class="hljs-keyword">if</span> (rank[rootX] == rank[rootY]) &#123;
+                    ++rank[rootY];
+                &#125;
+                parent[rootX] = rootY;
+            &#125; <span class="hljs-keyword">else</span> &#123;
+                parent[rootY] = rootX;
+            &#125;
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+        &#125;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    &#125;
+
+<span class="hljs-keyword">private</span>:
+    vector&lt;<span class="hljs-type">int</span>&gt; parent;
+    vector&lt;<span class="hljs-type">int</span>&gt; rank;
+&#125;;
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">Kruskal</span><span class="hljs-params">(vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt;&amp; edges, <span class="hljs-type">int</span> n)</span> </span>&#123;
+    <span class="hljs-built_in">sort</span>(edges.<span class="hljs-built_in">begin</span>(), edges.<span class="hljs-built_in">end</span>(), [](<span class="hljs-type">const</span> vector&lt;<span class="hljs-type">int</span>&gt;&amp; edge1, <span class="hljs-type">const</span> vector&lt;<span class="hljs-type">int</span>&gt;&amp; edge2) &#123;
+        <span class="hljs-keyword">return</span> edge1[<span class="hljs-number">2</span>] &lt; edge2[<span class="hljs-number">2</span>];
+    &#125;);
+
+    <span class="hljs-type">int</span> connectedNum = <span class="hljs-number">1</span>;
+    <span class="hljs-type">int</span> res = <span class="hljs-number">0</span>;
+    <span class="hljs-function">UnionFind <span class="hljs-title">uf</span><span class="hljs-params">(n)</span></span>;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">const</span> <span class="hljs-keyword">auto</span>&amp; edge: edges) &#123;
+        <span class="hljs-type">int</span> p1 = edge[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>, p2 = edge[<span class="hljs-number">1</span>] - <span class="hljs-number">1</span>, cost = edge[<span class="hljs-number">2</span>];
+        <span class="hljs-keyword">if</span> (uf.<span class="hljs-built_in">unite</span>(p1, p2)) &#123;
+            res += cost;
+            ++connectedNum;
+        &#125;
+    &#125;
+    <span class="hljs-keyword">return</span> connectedNum == n ? res : <span class="hljs-number">-1</span>;
+&#125;</code></pre></div>
+
+
+
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">SPFA</span><span class="hljs-params">(vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt;&amp; edges, <span class="hljs-type">int</span> n, <span class="hljs-type">int</span> src)</span> </span>&#123; <span class="hljs-comment">//nodes from 1 -&gt; n;</span>
+    <span class="hljs-type">const</span> <span class="hljs-type">int</span> Inf = INT_MAX / <span class="hljs-number">2</span>;
+    vector&lt;vector&lt;<span class="hljs-type">int</span>&gt;&gt; <span class="hljs-built_in">graph</span>(n, <span class="hljs-built_in">vector</span>&lt;<span class="hljs-type">int</span>&gt; (n, Inf));
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; ++i) &#123;
+        graph[i][i] = <span class="hljs-number">0</span>;
+    &#125;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">const</span> <span class="hljs-keyword">auto</span>&amp; edge: edges) &#123;
+        <span class="hljs-type">int</span> from = edge[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>, to = edge[<span class="hljs-number">1</span>] - <span class="hljs-number">1</span>, cost = edge[<span class="hljs-number">2</span>];
+        graph[from][to] = cost; 
+    &#125;
+
+    <span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">dist</span><span class="hljs-params">(n, Inf)</span></span>;
+    <span class="hljs-function">vector&lt;<span class="hljs-type">bool</span>&gt; <span class="hljs-title">inQ</span><span class="hljs-params">(n, <span class="hljs-literal">false</span>)</span></span>;
+    dist[src - <span class="hljs-number">1</span>] = <span class="hljs-number">0</span>;
+    inQ[src - <span class="hljs-number">1</span>] = <span class="hljs-literal">true</span>;
+    queue&lt;<span class="hljs-type">int</span>&gt; Q;
+    Q.<span class="hljs-built_in">emplace</span>(src - <span class="hljs-number">1</span>);
+    <span class="hljs-keyword">while</span> (!Q.<span class="hljs-built_in">empty</span>()) &#123;
+        <span class="hljs-type">int</span> cur = Q.<span class="hljs-built_in">front</span>(); Q.<span class="hljs-built_in">pop</span>();
+        inQ[cur] = <span class="hljs-literal">false</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; n; ++i) &#123;
+            <span class="hljs-keyword">if</span> (dist[i] &gt; dist[cur] + graph[cur][i]) &#123;
+                dist[i] = dist[cur] + graph[cur][i];
+                <span class="hljs-keyword">if</span> (!inQ[i]) &#123;
+                    Q.<span class="hljs-built_in">emplace</span>(i);
+                    inQ[i] = <span class="hljs-literal">true</span>;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+    <span class="hljs-type">int</span> maxDistance = *<span class="hljs-built_in">max_element</span>(dist.<span class="hljs-built_in">begin</span>(), dist.<span class="hljs-built_in">end</span>());
+    <span class="hljs-keyword">return</span> maxDistance == Inf ? <span class="hljs-number">-1</span> : maxDistance;
+&#125;</code></pre></div>
+
+
+
+
+
+<h2 id="Segment-Tree线段树"><a href="#Segment-Tree线段树" class="headerlink" title="Segment Tree线段树"></a>Segment Tree线段树</h2><h3 id="区间加法"><a href="#区间加法" class="headerlink" title="区间加法"></a>区间加法</h3><blockquote>
+<p><code>tag[]</code>表示加法懒标记</p>
+</blockquote>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-comment">//add to the interval block</span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span><span class="hljs-string">&lt;bits/stdc++.h&gt;</span></span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;
+<span class="hljs-type">int</span> n, m;
+<span class="hljs-keyword">typedef</span> <span class="hljs-type">long</span> <span class="hljs-type">long</span> ll;
+<span class="hljs-type">const</span> <span class="hljs-type">int</span> MAXN = <span class="hljs-number">1e5</span> + <span class="hljs-number">10</span>;
+ll arr[MAXN], sum[MAXN&lt;&lt;<span class="hljs-number">2</span>], tag[MAXN&lt;&lt;<span class="hljs-number">2</span>];
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-type">int</span> <span class="hljs-title">lc</span><span class="hljs-params">(<span class="hljs-type">int</span> p)</span> </span>&#123;
+    <span class="hljs-keyword">return</span> p &lt;&lt; <span class="hljs-number">1</span>;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-type">int</span> <span class="hljs-title">rc</span><span class="hljs-params">(<span class="hljs-type">int</span> p)</span> </span>&#123;
+    <span class="hljs-keyword">return</span> p &lt;&lt; <span class="hljs-number">1</span> | <span class="hljs-number">1</span>;
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">pushUp</span><span class="hljs-params">(<span class="hljs-type">int</span> p)</span> </span>&#123;
+    sum[p] = sum[<span class="hljs-built_in">lc</span>(p)] + sum[<span class="hljs-built_in">rc</span>(p)];
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">build</span><span class="hljs-params">(<span class="hljs-type">int</span> p, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (l == r) &#123;
+        sum[p] = arr[l];
+        <span class="hljs-keyword">return</span>;
+    &#125;
+    <span class="hljs-type">int</span> mid = ((r - l) &gt;&gt; <span class="hljs-number">1</span>) + l;
+    <span class="hljs-built_in">build</span>(<span class="hljs-built_in">lc</span>(p), l, mid);
+    <span class="hljs-built_in">build</span>(<span class="hljs-built_in">rc</span>(p), mid + <span class="hljs-number">1</span>, r);
+    <span class="hljs-built_in">pushUp</span>(p);
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">lazy</span><span class="hljs-params">(<span class="hljs-type">int</span> p, ll val, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span> </span>&#123;
+    tag[p] += val;
+    sum[p] += val * (r - l + <span class="hljs-number">1</span>);
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">pushDown</span><span class="hljs-params">(<span class="hljs-type">int</span> p, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span> </span>&#123;
+    <span class="hljs-type">int</span> mid = ((r - l) &gt;&gt; <span class="hljs-number">1</span>) + l;
+    <span class="hljs-built_in">lazy</span>(<span class="hljs-built_in">lc</span>(p), tag[p], l, mid);
+    <span class="hljs-built_in">lazy</span>(<span class="hljs-built_in">rc</span>(p), tag[p], mid + <span class="hljs-number">1</span>, r);
+    tag[p] = <span class="hljs-number">0</span>;
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">update</span><span class="hljs-params">(<span class="hljs-type">int</span> p, ll val, <span class="hljs-type">int</span> updateL, <span class="hljs-type">int</span> updateR, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (updateL &lt;= l &amp;&amp; r &lt;= updateR) &#123;
+        <span class="hljs-built_in">lazy</span>(p, val, l, r);
+        <span class="hljs-keyword">return</span>;
+    &#125;
+    <span class="hljs-type">int</span> mid = ((r - l) &gt;&gt; <span class="hljs-number">1</span>) + l;
+    <span class="hljs-keyword">if</span> (tag[p] != <span class="hljs-number">0</span>) &#123;
+        <span class="hljs-built_in">pushDown</span>(p, l, r);
+    &#125;
+    <span class="hljs-keyword">if</span> (updateL &lt;= mid) <span class="hljs-built_in">update</span>(<span class="hljs-built_in">lc</span>(p), val, updateL, updateR, l, mid);
+    <span class="hljs-keyword">if</span> (updateR &gt; mid) <span class="hljs-built_in">update</span>(<span class="hljs-built_in">rc</span>(p), val, updateL, updateR, mid + <span class="hljs-number">1</span>, r);
+    <span class="hljs-built_in">pushUp</span>(p);
+&#125;
+
+<span class="hljs-function">ll <span class="hljs-title">query</span><span class="hljs-params">(<span class="hljs-type">int</span> p, <span class="hljs-type">int</span> queryL, <span class="hljs-type">int</span> queryR, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (queryL &lt;= l &amp;&amp; r &lt;= queryR) &#123;
+        <span class="hljs-keyword">return</span> sum[p];
+    &#125;
+    <span class="hljs-type">int</span> mid = ((r - l) &gt;&gt; <span class="hljs-number">1</span>) + l;
+    <span class="hljs-keyword">if</span> (tag[p] != <span class="hljs-number">0</span>) &#123;
+        <span class="hljs-built_in">pushDown</span>(p, l, r);
+    &#125;
+    ll res = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">if</span> (queryL &lt;= mid) res += <span class="hljs-built_in">query</span>(<span class="hljs-built_in">lc</span>(p), queryL, queryR, l, mid);
+    <span class="hljs-keyword">if</span> (queryR &gt; mid) res += <span class="hljs-built_in">query</span>(<span class="hljs-built_in">rc</span>(p), queryL, queryR, mid + <span class="hljs-number">1</span>, r);
+    <span class="hljs-keyword">return</span> res;
+&#125;
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-type">int</span> l, r;
+    ll val;
+    cin &gt;&gt; n &gt;&gt; m;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>; i &lt;= n; ++i) &#123;
+        <span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%lld&quot;</span>, &amp;arr[i]);
+    &#125;
+    <span class="hljs-built_in">build</span>(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, n);
+    <span class="hljs-keyword">while</span> (m--) &#123;
+        <span class="hljs-type">int</span> choice; cin &gt;&gt; choice;
+        <span class="hljs-keyword">if</span> (choice == <span class="hljs-number">1</span>) &#123;
+            <span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d%d%lld&quot;</span>, &amp;l, &amp;r, &amp;val);
+            <span class="hljs-built_in">update</span>(<span class="hljs-number">1</span>, val, l, r, <span class="hljs-number">1</span>, n);
+        &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (choice == <span class="hljs-number">2</span>) &#123;
+            <span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d%d&quot;</span>, &amp;l, &amp;r);
+            <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%lld\n&quot;</span>,<span class="hljs-built_in">query</span>(<span class="hljs-number">1</span>, l, r, <span class="hljs-number">1</span>, n));
+        &#125;
+    &#125;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+
+<h3 id="区间乘法和加法"><a href="#区间乘法和加法" class="headerlink" title="区间乘法和加法"></a>区间乘法和加法</h3><blockquote>
+<p><code>mul[]</code>和<code>add[]</code></p>
+</blockquote>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-meta">#<span class="hljs-keyword">include</span><span class="hljs-string">&lt;bits/stdc++.h&gt;</span></span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;
+<span class="hljs-type">int</span> n, m, mod;
+<span class="hljs-keyword">typedef</span> <span class="hljs-type">long</span> <span class="hljs-type">long</span> ll;
+<span class="hljs-type">const</span> <span class="hljs-type">int</span> MAXN = <span class="hljs-number">1e5</span> + <span class="hljs-number">10</span>;
+ll arr[MAXN], sum[MAXN&lt;&lt;<span class="hljs-number">2</span>], add[MAXN&lt;&lt;<span class="hljs-number">2</span>], mul[MAXN&lt;&lt;<span class="hljs-number">2</span>];
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-type">int</span> <span class="hljs-title">lc</span><span class="hljs-params">(<span class="hljs-type">int</span> p)</span> </span>&#123;
+	<span class="hljs-keyword">return</span> p &lt;&lt; <span class="hljs-number">1</span>;
+&#125;
+
+<span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-type">int</span> <span class="hljs-title">rc</span><span class="hljs-params">(<span class="hljs-type">int</span> p)</span> </span>&#123;
+	<span class="hljs-keyword">return</span> p &lt;&lt; <span class="hljs-number">1</span> | <span class="hljs-number">1</span>;
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">pushUp</span><span class="hljs-params">(<span class="hljs-type">int</span> p)</span> </span>&#123;
+	sum[p] = (sum[<span class="hljs-built_in">lc</span>(p)] + sum[<span class="hljs-built_in">rc</span>(p)]) % mod; 
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">build</span><span class="hljs-params">(<span class="hljs-type">int</span> p, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span> </span>&#123;
+	mul[p] = <span class="hljs-number">1</span>;
+	<span class="hljs-keyword">if</span> (l == r) &#123;
+		sum[p] = arr[l];
+		<span class="hljs-keyword">return</span>;
+	&#125;
+	<span class="hljs-type">int</span> mid = ((r - l) &gt;&gt; <span class="hljs-number">1</span>) + l;
+	<span class="hljs-built_in">build</span>(<span class="hljs-built_in">lc</span>(p), l, mid);
+	<span class="hljs-built_in">build</span>(<span class="hljs-built_in">rc</span>(p), mid + <span class="hljs-number">1</span>, r);
+	<span class="hljs-built_in">pushUp</span>(p);
+&#125;
+
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">pushDown</span><span class="hljs-params">(<span class="hljs-type">int</span> p, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span> </span>&#123;
+	<span class="hljs-type">int</span> mid = ((r - l) &gt;&gt; <span class="hljs-number">1</span>) + l;
+	sum[<span class="hljs-built_in">lc</span>(p)] = (sum[<span class="hljs-built_in">lc</span>(p)] * mul[p] + add[p] * (mid - l + <span class="hljs-number">1</span>)) % mod;
+	sum[<span class="hljs-built_in">rc</span>(p)] = (sum[<span class="hljs-built_in">rc</span>(p)] * mul[p] + add[p] * (r - mid)) % mod;
+	mul[<span class="hljs-built_in">lc</span>(p)] = (mul[p] * mul[<span class="hljs-built_in">lc</span>(p)]) % mod;
+	mul[<span class="hljs-built_in">rc</span>(p)] = (mul[p] * mul[<span class="hljs-built_in">rc</span>(p)]) % mod;
+	add[<span class="hljs-built_in">lc</span>(p)] = (add[p] + add[<span class="hljs-built_in">lc</span>(p)] * mul[p]) % mod;
+ 	add[<span class="hljs-built_in">rc</span>(p)] = (add[p] + add[<span class="hljs-built_in">rc</span>(p)] * mul[p]) % mod;
+ 	
+	add[p] = <span class="hljs-number">0</span>;
+	mul[p] = <span class="hljs-number">1</span>;
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">updateMul</span><span class="hljs-params">(<span class="hljs-type">int</span> p, ll k, <span class="hljs-type">int</span> updateL, <span class="hljs-type">int</span> updateR, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span> </span>&#123;
+	<span class="hljs-keyword">if</span> (updateL &lt;= l &amp;&amp; r &lt;= updateR) &#123;
+		add[p] = (add[p] * k) % mod;
+		mul[p] = (mul[p] * k) % mod;
+		sum[p] = (sum[p] * k) % mod;
+		<span class="hljs-keyword">return</span>;
+	&#125;
+	<span class="hljs-type">int</span> mid = ((r - l) &gt;&gt; <span class="hljs-number">1</span>) + l;
+	<span class="hljs-keyword">if</span> (add[p] != <span class="hljs-number">0</span> || mul[p] != <span class="hljs-number">1</span>)  &#123;
+		<span class="hljs-built_in">pushDown</span>(p, l, r);
+	&#125;
+	<span class="hljs-keyword">if</span> (updateL &lt;= mid) <span class="hljs-built_in">updateMul</span>(<span class="hljs-built_in">lc</span>(p), k, updateL, updateR, l, mid);
+	<span class="hljs-keyword">if</span> (updateR &gt; mid) <span class="hljs-built_in">updateMul</span>(<span class="hljs-built_in">rc</span>(p), k, updateL, updateR, mid + <span class="hljs-number">1</span>, r);
+	<span class="hljs-built_in">pushUp</span>(p); 
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">updateAdd</span><span class="hljs-params">(<span class="hljs-type">int</span> p, ll val, <span class="hljs-type">int</span> updateL, <span class="hljs-type">int</span> updateR, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span> </span>&#123;
+	<span class="hljs-keyword">if</span> (updateL &lt;= l &amp;&amp; r &lt;= updateR) &#123;
+		add[p] = (add[p] + val) % mod;
+		sum[p] = (sum[p] + val * (r - l + <span class="hljs-number">1</span>)) % mod; 
+		<span class="hljs-keyword">return</span>;
+	&#125;
+	<span class="hljs-type">int</span> mid = ((r - l) &gt;&gt; <span class="hljs-number">1</span>) + l;
+	<span class="hljs-keyword">if</span> (add[p] != <span class="hljs-number">0</span> || mul[p] != <span class="hljs-number">1</span>) &#123;
+		<span class="hljs-built_in">pushDown</span>(p, l, r);
+	&#125;
+	<span class="hljs-keyword">if</span> (updateL &lt;= mid) <span class="hljs-built_in">updateAdd</span>(<span class="hljs-built_in">lc</span>(p), val, updateL, updateR, l, mid);
+	<span class="hljs-keyword">if</span> (updateR &gt; mid) <span class="hljs-built_in">updateAdd</span>(<span class="hljs-built_in">rc</span>(p), val, updateL, updateR, mid + <span class="hljs-number">1</span>, r);
+	<span class="hljs-built_in">pushUp</span>(p);
+&#125;
+
+<span class="hljs-function">ll <span class="hljs-title">query</span><span class="hljs-params">(<span class="hljs-type">int</span> p, <span class="hljs-type">int</span> queryL, <span class="hljs-type">int</span> queryR, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span> </span>&#123;
+	<span class="hljs-keyword">if</span> (queryL &lt;= l &amp;&amp; r &lt;= queryR) &#123;
+		<span class="hljs-keyword">return</span> sum[p];
+	&#125;
+	<span class="hljs-type">int</span> mid = ((r - l) &gt;&gt; <span class="hljs-number">1</span>) + l;
+	<span class="hljs-keyword">if</span> (add[p] != <span class="hljs-number">0</span> || mul[p] != <span class="hljs-number">1</span>) &#123;
+		<span class="hljs-built_in">pushDown</span>(p, l, r);
+	&#125;
+	ll res = <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">if</span> (queryL &lt;= mid) res += <span class="hljs-built_in">query</span>(<span class="hljs-built_in">lc</span>(p), queryL, queryR, l, mid) % mod;
+	<span class="hljs-keyword">if</span> (queryR &gt; mid) res += <span class="hljs-built_in">query</span>(<span class="hljs-built_in">rc</span>(p), queryL, queryR, mid + <span class="hljs-number">1</span>, r) % mod;
+	<span class="hljs-keyword">return</span> res % mod;
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;
+	<span class="hljs-type">int</span> l, r;
+	ll val;
+	cin &gt;&gt; n &gt;&gt; m &gt;&gt; mod;
+	<span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>; i &lt;= n; ++i) &#123;
+		<span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%lld&quot;</span>, &amp;arr[i]);
+	&#125;
+	<span class="hljs-built_in">build</span>(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, n);
+	<span class="hljs-keyword">while</span> (m--) &#123;
+		<span class="hljs-type">int</span> choice; cin &gt;&gt; choice;
+		<span class="hljs-keyword">if</span> (choice == <span class="hljs-number">1</span>) &#123;
+			<span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d%d%lld&quot;</span>, &amp;l, &amp;r, &amp;val);
+			<span class="hljs-built_in">updateMul</span>(<span class="hljs-number">1</span>, val, l, r, <span class="hljs-number">1</span>, n);
+		&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (choice == <span class="hljs-number">2</span>) &#123;
+			<span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d%d%lld&quot;</span>, &amp;l, &amp;r, &amp;val);
+			<span class="hljs-built_in">updateAdd</span>(<span class="hljs-number">1</span>, val, l, r, <span class="hljs-number">1</span>, n);
+		&#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (choice == <span class="hljs-number">3</span>) &#123;
+			<span class="hljs-built_in">scanf</span>(<span class="hljs-string">&quot;%d%d&quot;</span>, &amp;l, &amp;r);
+			<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%lld\n&quot;</span>,<span class="hljs-built_in">query</span>(<span class="hljs-number">1</span>, l, r, <span class="hljs-number">1</span>, n));
+		&#125;
+	&#125;
+	<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+
+<h2 id="Binary-Indexed-Tree数状数组"><a href="#Binary-Indexed-Tree数状数组" class="headerlink" title="Binary Indexed Tree数状数组"></a>Binary Indexed Tree数状数组</h2><div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">BIT</span> &#123;
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-built_in">BIT</span>(<span class="hljs-type">int</span> n) &#123;
+        tree.<span class="hljs-built_in">resize</span>(n + <span class="hljs-number">1</span>, <span class="hljs-number">0</span>);
+    &#125;
+    <span class="hljs-function"><span class="hljs-type">static</span> <span class="hljs-type">int</span> <span class="hljs-title">lowBit</span><span class="hljs-params">(<span class="hljs-type">int</span> x)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> x  &amp; (-x);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">add</span><span class="hljs-params">(<span class="hljs-type">int</span> x, <span class="hljs-type">int</span> val)</span> </span>&#123; 
+        <span class="hljs-keyword">while</span> (x &lt; tree.<span class="hljs-built_in">size</span>()) &#123;
+            tree[x] += val;
+            x += <span class="hljs-built_in">lowBit</span>(x);
+        &#125;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">query</span><span class="hljs-params">(<span class="hljs-type">int</span> x)</span> </span>&#123; <span class="hljs-comment">// sum from tree[1] to tree[x].</span>
+        <span class="hljs-type">int</span> res = <span class="hljs-number">0</span>;
+        <span class="hljs-keyword">while</span> (x &gt; <span class="hljs-number">0</span>) &#123;
+            res += tree[x];
+            x -= <span class="hljs-built_in">lowBit</span>(x);
+        &#125;
+        <span class="hljs-keyword">return</span> res;
+    &#125;
+    
+    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">query</span><span class="hljs-params">(<span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span> </span>&#123;  <span class="hljs-comment">// [l, r];</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">query</span>(r) - <span class="hljs-built_in">query</span>(l - <span class="hljs-number">1</span>);
+    &#125;
+<span class="hljs-keyword">private</span>:
+    vector&lt;<span class="hljs-type">int</span>&gt; tree; <span class="hljs-comment">//tree index from 1 -&gt; n</span>
+&#125;;</code></pre></div>
+
+<h2 id="Quick-Power-x2F-Multiply快速幂、快速乘"><a href="#Quick-Power-x2F-Multiply快速幂、快速乘" class="headerlink" title="Quick Power&#x2F;Multiply快速幂、快速乘"></a>Quick Power&#x2F;Multiply快速幂、快速乘</h2><p><strong>Quick Power</strong></p>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">double</span> <span class="hljs-title">binaryExponentiation</span><span class="hljs-params">(<span class="hljs-type">double</span> x, <span class="hljs-type">long</span> <span class="hljs-type">long</span> n)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (n == <span class="hljs-number">0</span>) &#123;
+		<span class="hljs-keyword">return</span> <span class="hljs-number">1.0</span>;
+    &#125;
+    <span class="hljs-type">double</span> half = <span class="hljs-built_in">binaryExponentiation</span>(x, n &gt;&gt; <span class="hljs-number">1</span>);
+    <span class="hljs-keyword">return</span> n &amp; <span class="hljs-number">1</span>? half * half * x : half * half;
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">double</span> <span class="hljs-title">iteration</span><span class="hljs-params">(<span class="hljs-type">double</span> x, <span class="hljs-type">long</span> <span class="hljs-type">long</span> n)</span> </span>&#123;
+	<span class="hljs-type">double</span> res = <span class="hljs-number">1.0</span>;
+    <span class="hljs-type">double</span> xContribution = x;
+    <span class="hljs-keyword">while</span> (n &gt; <span class="hljs-number">0</span>) &#123;
+		<span class="hljs-keyword">if</span> (n &amp; <span class="hljs-number">1</span>) &#123;
+            res *= xContribution;
+        &#125;
+        xContribution *= xContribution;
+        n &gt;&gt;= <span class="hljs-number">1</span>;
+    &#125;
+    <span class="hljs-keyword">return</span> res;
+&#125;</code></pre></div>
+
+<p><strong>Quick Multiply</strong></p>
+<div class="code-wrapper"><pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-type">long</span> <span class="hljs-type">long</span> <span class="hljs-title">quickMul</span><span class="hljs-params">(<span class="hljs-type">long</span> <span class="hljs-type">long</span> x, <span class="hljs-type">long</span> <span class="hljs-type">long</span> y)</span> </span>&#123;
+    <span class="hljs-type">long</span> <span class="hljs-type">long</span> res = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span> (y != <span class="hljs-number">0</span>) &#123;
+        <span class="hljs-keyword">if</span> (y &amp; <span class="hljs-number">1</span>) &#123;
+            res += x;
+        &#125;
+        x += x;
+        y &gt;&gt;= <span class="hljs-number">1</span>;
+    &#125;
+    <span class="hljs-keyword">return</span> res;
+&#125;</code></pre></div>
+
+<h2 id="数组排序"><a href="#数组排序" class="headerlink" title="数组排序"></a>数组排序</h2><ol>
+<li>插入排序</li>
+<li>选择排序</li>
+<li>冒泡排序</li>
+<li>快速排序</li>
+<li>归并排序</li>
+</ol>
+<div class="code-wrapper"><pre><code class="hljs c++"><span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">insertSort</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums)</span> </span>&#123;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; nums.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>; ++i) &#123;
+        <span class="hljs-type">int</span> val = nums[i + <span class="hljs-number">1</span>];
+        <span class="hljs-type">int</span> j = i + <span class="hljs-number">1</span>;
+        <span class="hljs-keyword">while</span> (j &gt; <span class="hljs-number">0</span> &amp;&amp; nums[j - <span class="hljs-number">1</span>] &gt; val) &#123;
+            nums[j] = nums[j - <span class="hljs-number">1</span>];
+            --j;
+        &#125;
+        nums[j] = val;
+    &#125;
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">selectSort</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums)</span> </span>&#123;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; nums.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>; ++i) &#123;
+        <span class="hljs-type">int</span> minIndex = i;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = i + <span class="hljs-number">1</span>; j &lt; nums.<span class="hljs-built_in">size</span>(); ++j) &#123;
+            <span class="hljs-keyword">if</span> (nums[j] &lt; nums[minIndex]) &#123;
+                minIndex = j;
+            &#125;
+        &#125;
+        <span class="hljs-built_in">swap</span>(nums[minIndex], nums[i]);
+    &#125;
+&#125;
+
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">bubbleSort</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums)</span> </span>&#123;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = nums.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; --i) &#123;
+        <span class="hljs-type">bool</span> isSorted = <span class="hljs-literal">true</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> j = <span class="hljs-number">0</span>; j &lt; i; ++j) &#123;
+            <span class="hljs-keyword">if</span> (nums[j] &gt; nums[j + <span class="hljs-number">1</span>]) &#123;
+                <span class="hljs-built_in">swap</span>(nums[j], nums[j + <span class="hljs-number">1</span>]);
+                isSorted = <span class="hljs-literal">false</span>;
+            &#125;
+        &#125;
+        <span class="hljs-keyword">if</span> (isSorted) &#123;
+            <span class="hljs-keyword">break</span>;
+        &#125;
+    &#125;
+&#125;
+
+<span class="hljs-comment">// 快速排序</span>
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">partiion</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span> </span>&#123;
+    <span class="hljs-type">int</span> pivotValue = nums[r];
+    <span class="hljs-type">int</span> p = l;
+    <span class="hljs-comment">//保证p左边的值都小于pivotValue</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = l; i &lt; r; ++i) &#123;
+        <span class="hljs-keyword">if</span> (nums[i] &lt; pivotValue) &#123;
+            <span class="hljs-built_in">swap</span>(nums[i], nums[p++]);
+        &#125;
+    &#125;
+    <span class="hljs-comment">//将pivotValue放到中间的位置，此时 左边都小于，右边都大于。</span>
+    <span class="hljs-built_in">swap</span>(nums[p], nums[r]); 
+    <span class="hljs-keyword">return</span> p;
+&#125;
+
+<span class="hljs-comment">// find pivot, divide and conqure recursively</span>
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">quickSort</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (l &gt;= r) &#123;
+        <span class="hljs-keyword">return</span> ;
+    &#125;
+
+    <span class="hljs-type">int</span> pivotIndex = <span class="hljs-built_in">rand</span>() % (r - l + <span class="hljs-number">1</span>) + l;
+    <span class="hljs-built_in">swap</span>(nums[r], nums[pivotIndex]);
+    <span class="hljs-type">int</span> m = <span class="hljs-built_in">partiion</span>(nums,  l, r);
+    <span class="hljs-built_in">quickSort</span>(nums, l, m);
+    <span class="hljs-built_in">quickSort</span>(nums, m + <span class="hljs-number">1</span>, r);
+&#125;
+
+<span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">quickSort</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums)</span> </span>&#123;
+    <span class="hljs-built_in">quickSort</span>(nums, <span class="hljs-number">0</span>, nums.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>);
+    <span class="hljs-keyword">return</span> nums;
+&#125;
+
+<span class="hljs-comment">// 归并排序</span>
+<span class="hljs-comment">// 		递归向下，保证左右两部分l、r数组有序，再进行归并。</span>
+<span class="hljs-comment">// 		和quickSort不同的是，这个先递归。利用</span>
+<span class="hljs-comment">// 		归并，要用到一个临时数组temp</span>
+<span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">headSort</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums, vector&lt;<span class="hljs-type">int</span>&gt;&amp; temp, <span class="hljs-type">int</span> l, <span class="hljs-type">int</span> r)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (l &gt;= r) &#123;
+        <span class="hljs-keyword">return</span>;
+    &#125;
+    <span class="hljs-type">int</span> m = (r - l) / <span class="hljs-number">2</span> + l;
+    <span class="hljs-built_in">headSort</span>(nums, temp, l, m);
+    <span class="hljs-built_in">headSort</span>(nums, temp, m + <span class="hljs-number">1</span>, r);
+
+    <span class="hljs-type">int</span> ptr = l;
+    <span class="hljs-type">int</span> lPtr = l, rPtr = m + <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">while</span> (lPtr &lt;= m &amp;&amp; rPtr &lt;= r) &#123;
+        <span class="hljs-keyword">if</span> (nums[lPtr] &lt; nums[rPtr]) &#123;
+            temp[ptr++] = nums[lPtr++];
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            temp[ptr++] = nums[rPtr++];
+        &#125;
+    &#125;
+    <span class="hljs-keyword">while</span> (lPtr &lt;= m) &#123;
+        temp[ptr++] = nums[lPtr++];
+    &#125;
+    <span class="hljs-keyword">while</span> (rPtr &lt;= r) &#123;
+        temp[ptr++] = nums[rPtr++];
+    &#125;
+    <span class="hljs-built_in">copy</span>(temp.<span class="hljs-built_in">begin</span>() + l, temp.<span class="hljs-built_in">begin</span>() + r + <span class="hljs-number">1</span>, nums.<span class="hljs-built_in">begin</span>() + l);
+&#125;
+
+<span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">sortArray</span><span class="hljs-params">(vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums)</span> </span>&#123;
+    <span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">temp</span><span class="hljs-params">(nums.size())</span></span>;
+    <span class="hljs-built_in">headSort</span>(nums, temp, <span class="hljs-number">0</span>, nums.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>);
+    <span class="hljs-keyword">return</span> nums;
+&#125;</code></pre></div>
+
+<h2 id="链表排序"><a href="#链表排序" class="headerlink" title="链表排序"></a>链表排序</h2><ul>
+<li>归并排序</li>
+<li>堆排序：但需要指定比较器，稍麻烦。</li>
+</ul>
+<div class="code-wrapper"><pre><code class="hljs c++"><span class="hljs-comment">// mergeSort</span>
+<span class="hljs-comment">// 1. 找中点</span>
+<span class="hljs-comment">// 2. 划分l、r两部分链表，设置middle的next为nullptr</span>
+<span class="hljs-comment">// 3. 递归分割l、r两部分，直到l、r两部分有序</span>
+<span class="hljs-comment">// 4. 向上归并</span>
+<span class="hljs-function">ListNode* <span class="hljs-title">findMiddle</span><span class="hljs-params">(ListNode* head)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (head == <span class="hljs-literal">nullptr</span> || head-&gt;next == <span class="hljs-literal">nullptr</span>) &#123;
+        <span class="hljs-keyword">return</span> head;
+    &#125;
+    <span class="hljs-function">ListNode <span class="hljs-title">dummy</span><span class="hljs-params">(<span class="hljs-number">0</span>, head)</span></span>;
+    ListNode* fast = &amp;dummy;
+    ListNode* slow = &amp;dummy;
+    <span class="hljs-keyword">while</span> (fast-&gt;next != <span class="hljs-literal">nullptr</span> &amp;&amp; fast-&gt;next-&gt;next != <span class="hljs-literal">nullptr</span>) &#123;
+        fast = fast-&gt;next-&gt;next;
+        slow = slow-&gt;next;
+    &#125;
+    <span class="hljs-keyword">return</span> slow;
+&#125;
+
+<span class="hljs-function">ListNode* <span class="hljs-title">merge</span><span class="hljs-params">(ListNode* head1, ListNode* head2)</span> </span>&#123;
+    ListNode dummy;
+    ListNode* tail = &amp;dummy;
+    <span class="hljs-keyword">while</span> (head1 != <span class="hljs-literal">nullptr</span> &amp;&amp; head2 != <span class="hljs-literal">nullptr</span>) &#123;
+        <span class="hljs-keyword">if</span> (head1-&gt;val &lt; head2-&gt;val) &#123;
+            tail-&gt;next = head1;
+            head1 = head1-&gt;next;
+        &#125; <span class="hljs-keyword">else</span> &#123;
+            tail-&gt;next = head2;
+            head2 = head2-&gt;next;
+        &#125;
+        tail = tail-&gt;next;
+    &#125;
+    <span class="hljs-keyword">if</span> (head1 != <span class="hljs-literal">nullptr</span>) &#123;
+        tail-&gt;next = head1;
+    &#125; <span class="hljs-keyword">else</span> &#123;
+        tail-&gt;next = head2;
+    &#125;
+    <span class="hljs-keyword">return</span> dummy.next;
+&#125;
+
+<span class="hljs-function">ListNode* <span class="hljs-title">mergeSort</span><span class="hljs-params">(ListNode* head)</span> </span>&#123;
+    <span class="hljs-keyword">if</span> (head == <span class="hljs-literal">nullptr</span> || head-&gt;next == <span class="hljs-literal">nullptr</span>) &#123;
+        <span class="hljs-keyword">return</span> head;
+    &#125;
+
+  	<span class="hljs-comment">// 找中点，并划分l、r两部分</span>
+    ListNode* middle = <span class="hljs-built_in">findMiddle</span>(head);
+    ListNode* left = head, *right = middle-&gt;next;
+    middle-&gt;next = <span class="hljs-literal">nullptr</span>;
+  
+  	<span class="hljs-comment">// 让l、r两部分有序</span>
+    left = <span class="hljs-built_in">mergeSort</span>(left);
+    right = <span class="hljs-built_in">mergeSort</span>(right);
+  
+  	<span class="hljs-comment">// 有序后，进行归并</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">merge</span>(left, right);
+&#125;</code></pre></div>
+
+
+
+
+
+<h2 id="Heap、堆、堆排序"><a href="#Heap、堆、堆排序" class="headerlink" title="Heap、堆、堆排序"></a>Heap、堆、堆排序</h2><p>核心操作是heapify，分为在数组最后的heapifyUp和在数组0下标进行的heapifyDown；</p>
+<ul>
+<li>Add时，插入到尾部，再heapifyUp</li>
+<li>delete时，将头部和尾部置换，为新的头部进行heapifyDown</li>
+</ul>
+<div class="code-wrapper"><pre><code class="hljs Cpp"><span class="hljs-keyword">class</span> <span class="hljs-title class_">MinHeap</span> &#123;
+<span class="hljs-keyword">private</span>:
+    std::vector&lt;<span class="hljs-type">int</span>&gt; heap;
+
+    <span class="hljs-comment">// 从指定位置开始向上递归调整堆，维护小顶堆性质</span>
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">heapifyUp</span><span class="hljs-params">(<span class="hljs-type">int</span> index)</span> </span>&#123;
+        <span class="hljs-keyword">if</span> (index == <span class="hljs-number">0</span>) &#123;
+            <span class="hljs-keyword">return</span>;
+        &#125;
+
+        <span class="hljs-type">int</span> parent = <span class="hljs-built_in">getParent</span>(index);
+        <span class="hljs-keyword">if</span> (heap[index] &lt; heap[parent]) &#123;
+            std::<span class="hljs-built_in">swap</span>(heap[index], heap[parent]);
+            <span class="hljs-built_in">heapifyUp</span>(parent); <span class="hljs-comment">// 递归调整</span>
+        &#125;
+    &#125;
+
+    <span class="hljs-comment">// 从指定位置开始向下递归调整堆，维护小顶堆性质</span>
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">heapifyDown</span><span class="hljs-params">(<span class="hljs-type">int</span> index)</span> </span>&#123;
+        <span class="hljs-type">int</span> leftChild = <span class="hljs-built_in">getLeftChild</span>(index);
+        <span class="hljs-type">int</span> rightChild = <span class="hljs-built_in">getRightChild</span>(index);
+        <span class="hljs-type">int</span> smallest = index;
+
+        <span class="hljs-keyword">if</span> (leftChild &lt; heap.<span class="hljs-built_in">size</span>() &amp;&amp; heap[leftChild] &lt; heap[smallest]) &#123;
+            smallest = leftChild;
+        &#125;
+
+        <span class="hljs-keyword">if</span> (rightChild &lt; heap.<span class="hljs-built_in">size</span>() &amp;&amp; heap[rightChild] &lt; heap[smallest]) &#123;
+            smallest = rightChild;
+        &#125;
+
+        <span class="hljs-keyword">if</span> (smallest != index) &#123;
+            std::<span class="hljs-built_in">swap</span>(heap[index], heap[smallest]);
+            <span class="hljs-built_in">heapifyDown</span>(smallest); <span class="hljs-comment">// 递归调整</span>
+        &#125;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-type">int</span> <span class="hljs-title">getParent</span><span class="hljs-params">(<span class="hljs-type">int</span> index)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> (index - <span class="hljs-number">1</span>) / <span class="hljs-number">2</span>;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-type">int</span> <span class="hljs-title">getLeftChild</span><span class="hljs-params">(<span class="hljs-type">int</span> index)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-number">2</span> * index + <span class="hljs-number">1</span>;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">inline</span> <span class="hljs-type">int</span> <span class="hljs-title">getRightChild</span><span class="hljs-params">(<span class="hljs-type">int</span> index)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-number">2</span> * index + <span class="hljs-number">2</span>;
+    &#125;
+
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-comment">// 构造函数，数组构造时，一个一个添加</span>
+    <span class="hljs-built_in">MinHeap</span>() &#123;&#125;
+    <span class="hljs-built_in">MinHeap</span>(<span class="hljs-type">const</span> vector&lt;<span class="hljs-type">int</span>&gt;&amp; nums) &#123;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">const</span> <span class="hljs-keyword">auto</span>&amp;num: nums) &#123;
+            <span class="hljs-built_in">add</span>(num);
+        &#125;
+    &#125;
+
+
+    <span class="hljs-comment">// 添加元素</span>
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">add</span><span class="hljs-params">(<span class="hljs-type">int</span> value)</span> </span>&#123;
+        heap.<span class="hljs-built_in">push_back</span>(value);
+        <span class="hljs-built_in">heapifyUp</span>(heap.<span class="hljs-built_in">size</span>() - <span class="hljs-number">1</span>);
+    &#125;
+
+    <span class="hljs-comment">// 弹出堆顶元素</span>
+    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">pop</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">if</span> (heap.<span class="hljs-built_in">empty</span>()) &#123;
+            <span class="hljs-keyword">throw</span> std::<span class="hljs-built_in">out_of_range</span>(<span class="hljs-string">&quot;Heap is empty&quot;</span>);
+        &#125;
+
+        <span class="hljs-type">int</span> top = heap[<span class="hljs-number">0</span>];
+        heap[<span class="hljs-number">0</span>] = heap.<span class="hljs-built_in">back</span>();
+        heap.<span class="hljs-built_in">pop_back</span>();
+        <span class="hljs-built_in">heapifyDown</span>(<span class="hljs-number">0</span>);
+
+        <span class="hljs-keyword">return</span> top;
+    &#125;
+
+    <span class="hljs-comment">// 获取堆顶元素（不弹出）</span>
+    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">top</span><span class="hljs-params">()</span> <span class="hljs-type">const</span> </span>&#123;
+        <span class="hljs-keyword">if</span> (heap.<span class="hljs-built_in">empty</span>()) &#123;
+            <span class="hljs-keyword">throw</span> std::<span class="hljs-built_in">out_of_range</span>(<span class="hljs-string">&quot;Heap is empty&quot;</span>);
+        &#125;
+        <span class="hljs-keyword">return</span> heap[<span class="hljs-number">0</span>];
+    &#125;
+
+    <span class="hljs-comment">// 获取堆的大小</span>
+    <span class="hljs-function"><span class="hljs-type">size_t</span> <span class="hljs-title">size</span><span class="hljs-params">()</span> <span class="hljs-type">const</span> </span>&#123;
+        <span class="hljs-keyword">return</span> heap.<span class="hljs-built_in">size</span>();
+    &#125;
+
+    <span class="hljs-comment">// 判断堆是否为空</span>
+    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">empty</span><span class="hljs-params">()</span> <span class="hljs-type">const</span> </span>&#123;
+        <span class="hljs-keyword">return</span> heap.<span class="hljs-built_in">empty</span>();
+    &#125;
+
+&#125;;</code></pre></div>
+
+
+
+<h2 id="C-中的优先队列"><a href="#C-中的优先队列" class="headerlink" title="C++中的优先队列"></a>C++中的优先队列</h2><p>这块有点反直觉说实话</p>
+<div class="code-wrapper"><pre><code class="hljs C++"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;queue&gt;</span> <span class="hljs-comment">// 包含 priority_queue 头文件</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;vector&gt;</span></span>
+
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> std;
+<span class="hljs-comment">// 定义一个结构体</span>
+<span class="hljs-keyword">struct</span> <span class="hljs-title class_">MyStruct</span> &#123;
+    <span class="hljs-type">int</span> value;
+
+    <span class="hljs-comment">// 重载 operator&lt;</span>
+    <span class="hljs-comment">// C++的priority_queue的默认是最大堆，最优先的在堆顶，</span>
+    <span class="hljs-comment">// 意思是，堆顶元素的operator&lt;函数，对于其他非顶元素，都为false。</span>
+    <span class="hljs-type">bool</span> <span class="hljs-keyword">operator</span>&lt;(<span class="hljs-type">const</span> MyStruct&amp; other) <span class="hljs-type">const</span> &#123;
+        <span class="hljs-comment">// 在这里实现自定义的比较逻辑</span>
+        <span class="hljs-keyword">return</span> value &lt; other.value;
+    &#125;
+&#125;;
+
+<span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-comment">// 定义一个自定义比较器结构体，如果需要的话</span>
+    <span class="hljs-keyword">struct</span> <span class="hljs-title class_">MyComparator</span> &#123;
+        <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">operator</span><span class="hljs-params">()</span><span class="hljs-params">(<span class="hljs-type">const</span> MyStruct&amp; a, <span class="hljs-type">const</span> MyStruct&amp; b)</span> <span class="hljs-type">const</span> </span>&#123;
+            <span class="hljs-keyword">return</span> a.value &lt; b.value; <span class="hljs-comment">// &gt;小顶堆；&lt;大顶堆</span>
+        &#125;
+    &#125;;
+
+    <span class="hljs-comment">// 使用自定义的结构体类型和比较器创建优先队列</span>
+    std::priority_queue&lt;MyStruct, vector&lt;MyStruct&gt;, MyComparator&gt; pq;
+<span class="hljs-comment">//    std::priority_queue&lt;MyStruct&gt; pq;</span>
+
+    <span class="hljs-comment">// 添加元素到优先队列</span>
+    pq.<span class="hljs-built_in">push</span>(&#123;<span class="hljs-number">5</span>&#125;);
+    pq.<span class="hljs-built_in">push</span>(&#123;<span class="hljs-number">10</span>&#125;);
+    pq.<span class="hljs-built_in">push</span>(&#123;<span class="hljs-number">3</span>&#125;);
+
+    <span class="hljs-comment">// 弹出并输出队列中的元素</span>
+    <span class="hljs-keyword">while</span> (!pq.<span class="hljs-built_in">empty</span>()) &#123;
+        std::cout &lt;&lt; pq.<span class="hljs-built_in">top</span>().value &lt;&lt; <span class="hljs-string">&quot; &quot;</span>;
+        pq.<span class="hljs-built_in">pop</span>();
+    &#125;
+
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+&#125;</code></pre></div>
+
+
+
+
+
+<h2 id="KMP"><a href="#KMP" class="headerlink" title="KMP"></a>KMP</h2><p>找到所有匹配子串的位置</p>
+<div class="code-wrapper"><pre><code class="hljs C++">
+<span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">findAllSubStrPosition</span><span class="hljs-params">(<span class="hljs-type">const</span> string&amp; s, <span class="hljs-type">const</span> string&amp; subStr)</span> </span>&#123;
+    <span class="hljs-type">int</span> n = subStr.<span class="hljs-built_in">size</span>();
+    <span class="hljs-function">vector&lt;<span class="hljs-type">int</span>&gt; <span class="hljs-title">next</span><span class="hljs-params">(n, <span class="hljs-number">0</span>)</span></span>;
+    <span class="hljs-comment">// next[j]代表[0,j]这个子串的前后相同部分的长度</span>
+    <span class="hljs-comment">// 也代表在j + 1匹配失败时，下一个尝试匹配的位置。</span>
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">1</span>, j = <span class="hljs-number">0</span>; i &lt; subStr.<span class="hljs-built_in">size</span>(); ++i) &#123;
+        <span class="hljs-keyword">while</span> (j != <span class="hljs-number">0</span> &amp;&amp; subStr[j] != subStr[i]) &#123;
+            j = next[j - <span class="hljs-number">1</span>];
+        &#125;
+        <span class="hljs-keyword">if</span> (subStr[i] == subStr[j]) &#123;
+            ++j;
+        &#125;
+        next[i] = j;
+    &#125;
+
+    vector&lt;<span class="hljs-type">int</span>&gt; allPosition;
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>, j = <span class="hljs-number">0</span>; i &lt; s.<span class="hljs-built_in">size</span>(); ++i) &#123;
+        <span class="hljs-comment">// j的位置是尝试匹配的位置，不匹配则需要返回到next[j - 1]（这个也就是下一个尝试的位置）</span>
+        <span class="hljs-comment">// 举例 s=&quot;abab-ababe&quot; subStr=&quot;ababe&quot;, 其中next为[0, 0, 1, 2, 0]</span>
+        <span class="hljs-comment">// 正常匹配，关键位置举例，此时i、j位置如下</span>
+        <span class="hljs-comment">//             i</span>
+        <span class="hljs-comment">//             |</span>
+        <span class="hljs-comment">// a  b  c  d  -  a  b  a  b  e</span>
+        <span class="hljs-comment">// a  b  a  b  e</span>
+        <span class="hljs-comment">//             |</span>
+        <span class="hljs-comment">//             j</span>
+        <span class="hljs-comment">// 此时尝试匹配e和-，会匹配失败，子串的next为[0, 0, 1, 2, 0]，</span>
+        <span class="hljs-comment">// 即在e尝试失败时，需要在已经匹配的部分（即以j - 1结尾的前后部分，这里为2）找共同部分, 如下</span>
+        <span class="hljs-comment">//             i</span>
+        <span class="hljs-comment">//             |</span>
+        <span class="hljs-comment">// a  b  c  d  -  a  b  a  b  e</span>
+        <span class="hljs-comment">// a  b  a  b  e</span>
+        <span class="hljs-comment">//       |</span>
+        <span class="hljs-comment">//       j</span>
+        <span class="hljs-comment">// 此时还是匹配失败，就只能跳到0了（next[2 - 1] = 0）</span>
+        <span class="hljs-keyword">while</span> (j != <span class="hljs-number">0</span> &amp;&amp; subStr[j] != s[i]) &#123;
+            j = next[j - <span class="hljs-number">1</span>];
+        &#125;
+        <span class="hljs-keyword">if</span> (s[i] == subStr[j]) &#123;
+            ++j;
+            <span class="hljs-keyword">if</span> (j == subStr.<span class="hljs-built_in">size</span>()) &#123;
+                allPosition.<span class="hljs-built_in">emplace_back</span>(i - j + <span class="hljs-number">1</span>);
+            &#125;
+        &#125;
+    &#125;
+
+    <span class="hljs-keyword">return</span> allPosition;
+&#125;</code></pre></div>
+
+<h2 id="前缀树"><a href="#前缀树" class="headerlink" title="前缀树"></a>前缀树</h2><div class="code-wrapper"><pre><code class="hljs C++"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Trie</span> &#123;
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-built_in">Trie</span>(): <span class="hljs-built_in">isEnd</span>(<span class="hljs-literal">false</span>) &#123;&#125;
+    
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">insert</span><span class="hljs-params">(<span class="hljs-type">const</span> string&amp; word)</span> </span>&#123;
+        Trie* curr = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; word.<span class="hljs-built_in">size</span>(); ++i) &#123;
+            <span class="hljs-keyword">if</span> (!curr-&gt;next.<span class="hljs-built_in">count</span>(word[i])) &#123;
+                curr-&gt;next[word[i]] = <span class="hljs-keyword">new</span> Trie;
+            &#125;
+            curr = curr-&gt;next[word[i]];
+        &#125;
+        curr-&gt;isEnd = <span class="hljs-literal">true</span>;
+    &#125;
+    
+    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">search</span><span class="hljs-params">(<span class="hljs-type">const</span> string&amp; word)</span> </span>&#123;
+        Trie* p = <span class="hljs-built_in">searchPtr</span>(word);
+        <span class="hljs-keyword">return</span> p != <span class="hljs-literal">nullptr</span> &amp;&amp; p-&gt;isEnd;
+    &#125;   
+    
+    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">startsWith</span><span class="hljs-params">(<span class="hljs-type">const</span> string&amp; prefix)</span> </span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-built_in">searchPtr</span>(prefix) != <span class="hljs-literal">nullptr</span>;
+    &#125;
+    
+<span class="hljs-keyword">private</span>:
+    <span class="hljs-function">Trie* <span class="hljs-title">searchPtr</span><span class="hljs-params">(<span class="hljs-type">const</span> string&amp; prefix)</span> </span>&#123;
+        Trie* curr = <span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> i = <span class="hljs-number">0</span>; i &lt; prefix.<span class="hljs-built_in">size</span>(); ++i) &#123;
+            <span class="hljs-keyword">if</span> (!curr-&gt;next.<span class="hljs-built_in">count</span>(prefix[i]))
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">nullptr</span>;
+            curr = curr-&gt;next[prefix[i]];
+        &#125;
+        <span class="hljs-keyword">return</span> curr;
+    &#125;
+    unordered_map&lt;<span class="hljs-type">char</span>, Trie*&gt; next;
+    <span class="hljs-type">bool</span> isEnd;
+&#125;;</code></pre></div>
+
+<h2 id="缓存淘汰"><a href="#缓存淘汰" class="headerlink" title="缓存淘汰"></a>缓存淘汰</h2><h3 id="LRU"><a href="#LRU" class="headerlink" title="LRU"></a>LRU</h3><div class="code-wrapper"><pre><code class="hljs C++"><span class="hljs-comment">// 要点：</span>
+<span class="hljs-comment">// 1. 哈希表加速node检索</span>
+<span class="hljs-comment">// 2. 从头插，从尾删，保证顺序</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">LRUCache</span> &#123;
+<span class="hljs-keyword">public</span>:
+    <span class="hljs-built_in">LRUCache</span>(<span class="hljs-type">int</span> capacity): <span class="hljs-built_in">capacity</span>(capacity) &#123;&#125;
+    
+    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-type">int</span> key)</span> </span>&#123;
+        <span class="hljs-comment">// 不存在直接返回</span>
+        <span class="hljs-keyword">auto</span> it = map.<span class="hljs-built_in">find</span>(key);
+        <span class="hljs-keyword">if</span> (it == map.<span class="hljs-built_in">end</span>()) &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+        &#125;
+
+        <span class="hljs-comment">// 存在则提出来放头部</span>
+        <span class="hljs-type">int</span> value = it-&gt;second-&gt;second;
+        <span class="hljs-built_in">updatePosition</span>(key, value);
+        <span class="hljs-keyword">return</span> value;
+    &#125;
+    
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">put</span><span class="hljs-params">(<span class="hljs-type">int</span> key, <span class="hljs-type">int</span> value)</span> </span>&#123;
+        <span class="hljs-comment">// 存在，提出来放头部并修改value</span>
+        <span class="hljs-keyword">auto</span> it = map.<span class="hljs-built_in">find</span>(key);
+        <span class="hljs-keyword">if</span> (it != map.<span class="hljs-built_in">end</span>()) &#123;
+            <span class="hljs-built_in">updatePosition</span>(key, value);
+        &#125; <span class="hljs-keyword">else</span> &#123;  <span class="hljs-comment">// 不存在，放入；放入前检查容量，不足则弹出尾部。</span>
+            <span class="hljs-built_in">insertNewNode</span>(key, value);
+        &#125;
+    &#125;
+<span class="hljs-keyword">private</span>:
+    list&lt;pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt;&gt; nodes;
+    unordered_map&lt;<span class="hljs-type">int</span>, list&lt;pair&lt;<span class="hljs-type">int</span>, <span class="hljs-type">int</span>&gt;&gt;::iterator&gt; map; 
+    <span class="hljs-type">int</span> capacity;
+
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">insertNewNode</span><span class="hljs-params">(<span class="hljs-type">int</span> key, <span class="hljs-type">int</span> value)</span> </span>&#123;
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">full</span>()) &#123;
+            <span class="hljs-built_in">pop</span>();
+        &#125;
+        <span class="hljs-built_in">putIn</span>(key, value);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">updatePosition</span><span class="hljs-params">(<span class="hljs-type">int</span> key, <span class="hljs-type">int</span> value)</span> </span>&#123;
+        <span class="hljs-built_in">dropOut</span>(key);
+        <span class="hljs-built_in">putIn</span>(key, value);
+    &#125;
+
+    <span class="hljs-comment">// 尾部弹出</span>
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">pop</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">auto</span> it = --nodes.<span class="hljs-built_in">end</span>();
+        <span class="hljs-keyword">auto</span> key = it-&gt;first;
+        map.<span class="hljs-built_in">erase</span>(key);
+        nodes.<span class="hljs-built_in">erase</span>(it);
+    &#125;
+
+    <span class="hljs-comment">// 放入头部，操作map和list。</span>
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">putIn</span><span class="hljs-params">(<span class="hljs-type">int</span> key, <span class="hljs-type">int</span> value)</span> </span>&#123;
+        <span class="hljs-keyword">auto</span> it = nodes.<span class="hljs-built_in">emplace_front</span>(key, value);
+        map[key] = nodes.<span class="hljs-built_in">begin</span>();
+    &#125;
+
+    <span class="hljs-comment">// 删除节点，操作map和list。</span>
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">dropOut</span><span class="hljs-params">(<span class="hljs-type">int</span> key)</span> </span>&#123;
+        <span class="hljs-keyword">auto</span> it = map.<span class="hljs-built_in">find</span>(key)-&gt;second;
+        map.<span class="hljs-built_in">erase</span>(key);
+        nodes.<span class="hljs-built_in">erase</span>(it);
+    &#125;
+    
+    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">full</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> map.<span class="hljs-built_in">size</span>() == capacity;
+    &#125;
+&#125;;</code></pre></div>
+
+
+
+<h3 id="LFU"><a href="#LFU" class="headerlink" title="LFU"></a>LFU</h3><div class="code-wrapper"><pre><code class="hljs C++"><span class="hljs-keyword">struct</span> <span class="hljs-title class_">Node</span>&#123;
+    <span class="hljs-type">int</span> key;
+    <span class="hljs-type">int</span> value;
+    <span class="hljs-type">int</span> frequency;
+    <span class="hljs-built_in">Node</span>(<span class="hljs-type">int</span> key, <span class="hljs-type">int</span> value, <span class="hljs-type">int</span> frequency): <span class="hljs-built_in">key</span>(key), <span class="hljs-built_in">value</span>(value), <span class="hljs-built_in">frequency</span>(frequency) &#123;&#125;
+&#125;;
+
+<span class="hljs-comment">// 要点：</span>
+<span class="hljs-comment">// 1. 通过minimumFrequency记录最小频率，避免pop时遍历frequencyMap。</span>
+<span class="hljs-comment">// 2. 维护最小频率，只需考虑这两种情况。因为不主动删除，只在满时pop，所以满时要么插入新（为1），要么提高（n + 1）；</span>
+<span class="hljs-comment">//      1. 插入新节点，更新为1。 </span>
+<span class="hljs-comment">//      2. 提升频率，最小频率链表为空时提升为。</span>
+<span class="hljs-comment">// 3. 每个链表，从头插，从尾删，保证频率相同时，删除最先插入的。</span>
+<span class="hljs-keyword">class</span> <span class="hljs-title class_">LFUCache</span> &#123;
+<span class="hljs-keyword">public</span>:
+
+    <span class="hljs-built_in">LFUCache</span>(<span class="hljs-type">int</span> capacity): <span class="hljs-built_in">capacity</span>(capacity), <span class="hljs-built_in">minimumFrequency</span>(<span class="hljs-number">0</span>) &#123;&#125;
+
+    <span class="hljs-function"><span class="hljs-type">int</span> <span class="hljs-title">get</span><span class="hljs-params">(<span class="hljs-type">int</span> key)</span> </span>&#123;
+        <span class="hljs-comment">// 不存在返回错误</span>
+        <span class="hljs-keyword">auto</span> it = map.<span class="hljs-built_in">find</span>(key);
+        <span class="hljs-keyword">if</span> (it == map.<span class="hljs-built_in">end</span>()) &#123;
+            <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+        &#125;
+        <span class="hljs-comment">// 存在，提升频率</span>
+        <span class="hljs-type">int</span> value = it-&gt;second-&gt;value;
+        <span class="hljs-built_in">incrementFrequency</span>(key, value);
+        <span class="hljs-keyword">return</span> value;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">put</span><span class="hljs-params">(<span class="hljs-type">int</span> key, <span class="hljs-type">int</span> value)</span> </span>&#123;
+        <span class="hljs-comment">// 不存在，插入频率为1的链表，注意满时pop</span>
+        <span class="hljs-keyword">auto</span> it = map.<span class="hljs-built_in">find</span>(key);
+        <span class="hljs-keyword">if</span> (it == map.<span class="hljs-built_in">end</span>()) &#123;
+            <span class="hljs-built_in">insertNewNode</span>(key, value);
+        &#125; <span class="hljs-keyword">else</span> &#123; <span class="hljs-comment">// 存在，提升频率</span>
+            <span class="hljs-built_in">incrementFrequency</span>(key, value);
+        &#125;
+    &#125;
+
+<span class="hljs-keyword">private</span>:
+    unordered_map&lt;<span class="hljs-type">int</span>, std::list&lt;Node&gt;&gt; frequencyMap;
+    unordered_map&lt;<span class="hljs-type">int</span>, std::list&lt;Node&gt;::iterator&gt; map;
+    <span class="hljs-type">int</span> minimumFrequency; <span class="hljs-comment">// 频率更新情况：1. 插入新节点，更新为1。 2. 提升频率，最小频率链表为空时提升。</span>
+    <span class="hljs-type">int</span> capacity;
+
+<span class="hljs-keyword">private</span>:
+
+    <span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">full</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>-&gt;map.<span class="hljs-built_in">size</span>() == <span class="hljs-keyword">this</span>-&gt;capacity;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">insertNewNode</span><span class="hljs-params">(<span class="hljs-type">int</span> key, <span class="hljs-type">int</span> value)</span> </span>&#123;
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">full</span>()) &#123;
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>-&gt;capacity &lt; <span class="hljs-number">0</span>) &#123;
+                <span class="hljs-keyword">return</span> ;
+            &#125;
+            <span class="hljs-built_in">pop</span>();
+        &#125;
+        <span class="hljs-built_in">insertNode</span>(key, value, <span class="hljs-number">1</span>);
+        <span class="hljs-keyword">this</span>-&gt;minimumFrequency = <span class="hljs-number">1</span>; <span class="hljs-comment">// 1. 插入新节点，更新为1。</span>
+    &#125;
+
+
+    <span class="hljs-comment">// 弹出频率最低的节点。</span>
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">pop</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-type">int</span> key = frequencyMap[minimumFrequency].<span class="hljs-built_in">back</span>().key;
+        <span class="hljs-built_in">removeNode</span>(key);
+    &#125;
+
+
+    <span class="hljs-comment">// 删除节点：删除map和frequcnyMap信息，但未更新频率</span>
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">removeNode</span><span class="hljs-params">(<span class="hljs-type">int</span> key)</span> </span>&#123;
+        <span class="hljs-built_in">removeFromFrequencyMap</span>(key);
+        map.<span class="hljs-built_in">erase</span>(key);
+    &#125;
+
+
+    <span class="hljs-comment">// 更新频率：涉及value更新、map指向更新、frequency频率更新</span>
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">incrementFrequency</span><span class="hljs-params">(<span class="hljs-type">int</span> key, <span class="hljs-type">int</span> value)</span> </span>&#123;
+        Node d = *(map.<span class="hljs-built_in">find</span>(key)-&gt;second);
+        <span class="hljs-built_in">removeNode</span>(key);
+        <span class="hljs-built_in">insertNode</span>(d.key, value, d.frequency + <span class="hljs-number">1</span>);
+        <span class="hljs-keyword">if</span> (!frequencyMap.<span class="hljs-built_in">count</span>(minimumFrequency)) &#123;<span class="hljs-comment">// 2. 提升频率，原链表为空时提升。</span>
+            ++minimumFrequency;
+        &#125;
+    &#125;
+
+    <span class="hljs-comment">// 只操作frequecnyMap删除key，并删除空链表</span>
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">removeFromFrequencyMap</span><span class="hljs-params">(<span class="hljs-type">int</span> key)</span> </span>&#123;
+        <span class="hljs-keyword">auto</span> it = map.<span class="hljs-built_in">find</span>(key)-&gt;second;
+        <span class="hljs-type">int</span> frequency = it-&gt;frequency;
+        frequencyMap[frequency].<span class="hljs-built_in">erase</span>(it);
+        <span class="hljs-keyword">if</span> (frequencyMap[frequency].<span class="hljs-built_in">empty</span>()) &#123;
+            frequencyMap.<span class="hljs-built_in">erase</span>(frequency);
+        &#125;
+    &#125;
+
+    <span class="hljs-comment">// 将node插入到map和frequecnyMap</span>
+    <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">insertNode</span><span class="hljs-params">(<span class="hljs-type">int</span> key, <span class="hljs-type">int</span> value, <span class="hljs-type">int</span> frequency)</span> </span>&#123;
+        <span class="hljs-keyword">auto</span> it = frequencyMap[frequency].<span class="hljs-built_in">emplace_front</span>(key, value, frequency);
+        map[key] = frequencyMap[frequency].<span class="hljs-built_in">begin</span>();
+    &#125;
+&#125;;</code></pre></div>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/LeetCode/" class="category-chain-item">LeetCode</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Template</div>
+      <div>https://messenger1th.github.io/2024/07/24/LeetCode/Template/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Epoch</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/24/LeetCode/Sort/" title="Sort">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Sort</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/24/LeetCode/String/" title="String">
+                        <span class="hidden-mobile">String</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="LeetCode"
+        id="heading-071fda8ffed879b16c3308d2133bac46" role="tab" data-toggle="collapse" href="#collapse-071fda8ffed879b16c3308d2133bac46"
+        aria-expanded="true"
+      >
+        LeetCode
+        <span class="list-group-count">(30)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-071fda8ffed879b16c3308d2133bac46"
+           role="tabpanel" aria-labelledby="heading-071fda8ffed879b16c3308d2133bac46">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Advanced%20Data%20Structure&amp;Algorithm/" title="Advanced Data Structure&amp;Algorithm"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Advanced Data Structure&amp;Algorithm</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/BackTracking/" title="BackTracking"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">BackTracking</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Binary%20Operation/" title="Binary Operation"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Binary Operation</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Binary%20Tree/" title="Binary Tree"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Binary Tree</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Design&amp;Implement/" title="Design&amp;Implement"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Design&amp;Implement</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Divide&amp;Conquer/" title="Divide&amp;Conquer"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Divide&amp;Conquer</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Double%20Pointer/" title="Double Pointer"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Double Pointer</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Graph/" title="Graph"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Graph</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Greedy/" title="Greedy"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Greedy</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/LinkedList/" title="LinkedList"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">LinkedList</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Math/" title="Math"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Math</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Milestone/" title="Milestone"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Milestone</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Not%20Sorted/" title="Not Sorted"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Not Sorted</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Others/" title="Others"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Others</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/SQL/" title="SQL"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">SQL</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/SlidingWindow/" title="SlidingWindow"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">SlidingWindow</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Sort/" title="Sort"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Sort</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Stack&amp;Queue/" title="Stack&amp;Queue"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Stack&amp;Queue</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/String/" title="String"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">String</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Template/" title="Template"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">Template</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/prefix/" title="prefix"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">prefix</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/%E5%B8%B8%E7%94%A8%E7%AE%97%E6%B3%95/" title="常用算法"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">常用算法</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/%E5%B8%B8%E8%A7%81%E9%A2%98%E7%9B%AE%E7%B3%BB%E5%88%97/" title="常见题目系列"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">常见题目系列</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/%E6%B1%82%E8%81%8C%E7%AC%94%E8%AF%95%E9%A2%98%E7%9B%AE/" title="求职笔试题目"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">求职笔试题目</span>
+        </a>
+      
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Dynamic Programming"
+        id="heading-ed8cda5bb8b98f18b3a3377e4edc67f9" role="tab" data-toggle="collapse" href="#collapse-ed8cda5bb8b98f18b3a3377e4edc67f9"
+        aria-expanded="false"
+      >
+        Dynamic Programming
+        <span class="list-group-count">(6)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-ed8cda5bb8b98f18b3a3377e4edc67f9"
+           role="tabpanel" aria-labelledby="heading-ed8cda5bb8b98f18b3a3377e4edc67f9">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Dynamic%20Programming/Dynamic%20Programming/" title="Dynamic Programming"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Dynamic Programming</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Dynamic%20Programming/%E5%8D%95%E4%B8%B2/" title="单串"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">单串</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Dynamic%20Programming/%E5%8F%8C%E4%B8%B2/" title="双串"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">双串</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Dynamic%20Programming/%E7%8A%B6%E6%80%81%E6%9C%BA/" title="状态机"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">状态机</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Dynamic%20Programming/%E7%9F%A9%E9%98%B5/" title="矩阵"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">矩阵</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/LeetCode/Dynamic%20Programming/%E8%83%8C%E5%8C%85/" title="背包"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">背包</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      赣ICP备2024036505号
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

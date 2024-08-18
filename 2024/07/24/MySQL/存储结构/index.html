@@ -1,0 +1,898 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/girl.png">
+  <link rel="icon" href="/img/girl.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Epoch">
+  <meta name="keywords" content="Epoch Blog">
+  
+    <meta name="description" content="MySQL存储的结构 记录: Record 页: Page 区: extent 组:  段: Segement 表: Table 库  记录: Record记录与记录之间连成单向链表, 便于二分查找到页面最小记录向后遍历查询. 页: Page这是MySQL存储最基本的单位, 一般为16KB, 页与页之间连成双向链表, 便于双向查询. 区: Extent对于16KB的页来说 连续的64个页就是一个区">
+<meta property="og:type" content="article">
+<meta property="og:title" content="存储结构">
+<meta property="og:url" content="https://messenger1th.github.io/2024/07/24/MySQL/%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/index.html">
+<meta property="og:site_name" content="Epoch">
+<meta property="og:description" content="MySQL存储的结构 记录: Record 页: Page 区: extent 组:  段: Segement 表: Table 库  记录: Record记录与记录之间连成单向链表, 便于二分查找到页面最小记录向后遍历查询. 页: Page这是MySQL存储最基本的单位, 一般为16KB, 页与页之间连成双向链表, 便于双向查询. 区: Extent对于16KB的页来说 连续的64个页就是一个区">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-24T14:47:34.170Z">
+<meta property="article:modified_time" content="2024-07-24T14:47:34.171Z">
+<meta property="article:author" content="Epoch">
+<meta property="article:tag" content="Epoch Blog">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>存储结构 - Epoch</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"messenger1th.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Epoch</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/messenger1th">
+                <i class="iconfont icon-github-fill"></i>
+                GitHub
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="存储结构"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-24 22:47" pubdate>
+          2024年7月24日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.1k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          36 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">存储结构</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="MySQL存储的结构"><a href="#MySQL存储的结构" class="headerlink" title="MySQL存储的结构"></a>MySQL存储的结构</h1><ul>
+<li>记录: Record</li>
+<li>页: Page</li>
+<li>区: extent</li>
+<li>组: </li>
+<li>段: Segement</li>
+<li>表: Table</li>
+<li>库</li>
+</ul>
+<h2 id="记录-Record"><a href="#记录-Record" class="headerlink" title="记录: Record"></a>记录: Record</h2><p>记录与记录之间连成<strong>单向链表</strong>, 便于二分查找到页面最小记录向后遍历查询.</p>
+<h2 id="页-Page"><a href="#页-Page" class="headerlink" title="页: Page"></a>页: Page</h2><p>这是MySQL存储最基本的单位, 一般为16KB, 页与页之间连成<strong>双向链表</strong>, 便于双向查询.</p>
+<h2 id="区-Extent"><a href="#区-Extent" class="headerlink" title="区: Extent"></a>区: Extent</h2><p>对于16KB的页来说 连续的64个页就是一个区, 也就是说一个区默认占用1MB空间大小.</p>
+<p>在表中数据量很大时, 为某个索引分配空间的时候就以区为单位分配, 甚至是一次分配多个区, 来减少磁盘I&#x2F;O. <strong>但由于数据量较小时, 这种策略会造成存储空间浪费, 因此提出了<code>Fragment</code>碎片区的概念, 直属于表空间</strong></p>
+<h3 id="区的分类-区有4种状态"><a href="#区的分类-区有4种状态" class="headerlink" title="区的分类:区有4种状态"></a>区的分类:区有4种状态</h3><ul>
+<li>空闲区 <em>FREE</em></li>
+<li>有剩余页面的碎片区: <em>FREE FRAG</em></li>
+<li>没有剩余页面的碎片区 <em>FREE FRAG</em></li>
+<li>附属于某个段的区 <em>FSEG</em></li>
+</ul>
+<p>每个区都对应一个XDES Entry结构, 这个结构记录了对应的区的一些属性</p>
+<p>区与区之间可以通过<code>List Node</code>中的来连成一个双向链表.</p>
+<p><strong>连成链表有什么特殊用处呢? 等谈到段的概念再来解释.</strong></p>
+<h2 id="组"><a href="#组" class="headerlink" title="组"></a>组</h2><p>每256个区被划分为一个组.组的前几页是用于管理组的, 由于页面的大小有限, <code>XDES Entry</code>结构大小为40字节, 所以才把256个区分为一组, 在每组的第一个页面存放256个<code>XDES Entry</code> 结构.</p>
+<p>此外, 由于第一个组的第一个页面有些特殊, 它也是整个表空间的第一个页面, 因此也记录的表空间的一些属性, 为了区分命名, 将其命名为<code>FSP_HDR</code>, 含有<code>File Space Header</code>等, 其他部分与<code>XDES</code>差不多.</p>
+<p>此外, 索引页和数据页分开在不同的区, 存放叶子节点的区的集合算是一个段, 存放非叶子节点的区的集合也算是一个段. </p>
+<h2 id="段-Segment"><a href="#段-Segment" class="headerlink" title="段: Segment"></a>段: Segment</h2><p>段不是一个物理上的区域, 是一个逻辑上的概念,由<strong>一些完整的区和若干零散页面组成</strong>.</p>
+<p>像每个区都有对应的<code>XDES Entry</code>来记录这个区的属性一样, InnoDB的设计者为每个段都定义了一个<code>INODE Entry</code>来记录这个段的属性, 方便管理段.</p>
+<p>第一个分组中的第三个页面类型是<code>INODE</code>, 用于存储<code>INODE Entry</code>.</p>
+ 
+
+<ul>
+<li><code>Segment ID</code>: 记录段的编号</li>
+<li><code>NOT_FULL_N_USED</code>: 在<code>NOT_FULL</code>链表中已经使用了多少个页面</li>
+<li>3个<code>List Base Node</code>分别为段的<code>FREE</code>,<code>NOT_FULL</code>,<code>FULL</code>链表的头节点和尾节点</li>
+<li><code>Magic Number</code>: 用来标记这个INODE Entry是否已经被初始化.</li>
+<li><code>Framgent Array Entry</code>: 对应一些零散的页面, 表示一些零散的页面页号.</li>
+</ul>
+<p><strong>如何快速定位各种状态的区呢?</strong></p>
+<p>前面提到各种状态的区会通过<code>List Node</code>连成链表, 通过三种<code>List Base Node</code>可以快速定位在段中各种不同状态的区的头节点, 从而快速获取需要的区来存储数据.</p>
+<p>每一个索引都对应两个段 每个段都会维护如下个链表.</p>
+<ul>
+<li>Free 链表</li>
+<li>NOT_FULL 链表</li>
+<li>FULL链表</li>
+</ul>
+<p>​	<strong>这就可以快速定位需要的区, 使用该页面后, 页面的状态改变, 继而从该状态的链表移动到转换后状态的链表.</strong></p>
+
+
+
+
+<p>如图中描述, .每个<code>INODE Entry</code> 结构占用 192 字节 个页面中可以存储 85 个这样的结构. <strong>那如果该结构不够用了怎么办?</strong> </p>
+<p>类似段中的三种区域链表, 将是否有空闲<code>INODE Entry</code>结构分成2类, 用<code>SEG_INODES_FULL</code>和<code>SEG_INDOE_FREE</code>链表连接起来, 基节点位于<code>FSP_HDR</code>类型页面的<code>File Space Header</code>中</p>
+<p><strong>说到这里, 我们来总结一下共有哪些结构连成了链表吧</strong></p>
+<ul>
+<li>便于表空间管理段, 第一个组中的第第一个区的第一个页面, 即<code>FSP_HDR</code>页面里头的<code>File Space Header</code> , 将每个段的<code>INODE</code>以是否有空闲的<code>INODE Entry</code>分类, 连成两条链表<code>SEG_INODE_FULL </code>和<code>SGE_INODE_FREE</code>链表.</li>
+<li>便于段管理使用区, 段中的<code>INODE Entry</code>中记录了三种状态的区域的基节点, <code>FREE</code>, <code>NOT_FULL</code>和<code>Full</code>链表</li>
+<li>页面之间形成双向链表</li>
+<li>页面中的记录之间形成单向链表.</li>
+</ul>
+<p>此外, 由于段的三种区存储空间是从表空间分配而来, 因此</p>
+<ul>
+<li>表空间也有三种链表<code>FREE</code>, <code>FREE_FRAG</code>和<code>FULL_FRAG</code>链表, 基节点位于<code>FSP_HDR</code>页面的<code>File Space Header</code>, 便于管理分配各种区.</li>
+</ul>
+<h2 id="Other-Tips"><a href="#Other-Tips" class="headerlink" title="Other Tips"></a>Other Tips</h2><p>我们知道，一个索引会产生两个段，分别是叶子节点段和非叶子节点段，而每个段都会对 应一个 <code>INODE</code>结构. <strong>我们 怎么知道某个段对应哪个<code>INODE Entry</code>结构呢?</strong></p>
+<p>索引页(INDEX页) 中有一个<code>Page Header</code>部分</p>
+
+
+<p>其中的 PAGE BTR_SEG_LEAF PAGE_BTR_SEG_TOP 都占用 10 字节，它们其实对应一个名为 Segmen Header 的结构，如图 9- 所示.</p>
+
+
+<p>这样就很清晰了， <code>Page_BTR_SEG_LEAF</code> 记录着叶子节点段对应的 <code>INODE Entry</code>结构的 地址是哪个表空间中哪个页丽的哪个偏移量 </p>
+<p><code>PAGE_BTR_SEG_TOP</code> 记录着非叶子节点段对应 <code>INODE Entry</code>结构的地址是哪个表空间中哪个页面的哪个偏移量.</p>
+<p>这样, 索引和对应的段的关系就建立起来了. 不过需要注意的点是, 因为一个索引只对应两个段，所以只需要在索引的根页面中记录这两个结构即可.</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/MySQL/" class="category-chain-item">MySQL</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>存储结构</div>
+      <div>https://messenger1th.github.io/2024/07/24/MySQL/存储结构/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Epoch</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/24/Operating%20System/File%20System/" title="File System">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">File System</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/24/MySQL/%E5%AD%90%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/" title="子查询优化">
+                        <span class="hidden-mobile">子查询优化</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="MySQL"
+        id="heading-62a004b95946bb97541afa471dcca73a" role="tab" data-toggle="collapse" href="#collapse-62a004b95946bb97541afa471dcca73a"
+        aria-expanded="true"
+      >
+        MySQL
+        <span class="list-group-count">(11)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-62a004b95946bb97541afa471dcca73a"
+           role="tabpanel" aria-labelledby="heading-62a004b95946bb97541afa471dcca73a">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2024/07/24/MySQL/Buffer%20Pool/" title="Buffer Pool"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Buffer Pool</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/MySQL/Lock/" title="Lock"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Lock</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/MySQL/Record/" title="Record"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Record</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/MySQL/Redo%20Log/" title="Redo Log"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Redo Log</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/MySQL/Structure/" title="Structure"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Structure</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/MySQL/Undo%20Log/" title="Undo Log"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Undo Log</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/MySQL/%E4%BA%8B%E5%8A%A1/" title="事务"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">事务</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/MySQL/%E5%AD%90%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/" title="子查询优化"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">子查询优化</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/MySQL/%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84/" title="存储结构"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">存储结构</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/MySQL/%E7%B4%A2%E5%BC%95/" title="索引"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">索引</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/MySQL/%E8%B0%83%E4%BC%98%E5%AE%9E%E4%BE%8B/" title="调优实例"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">调优实例</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      赣ICP备2024036505号
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

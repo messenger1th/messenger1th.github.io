@@ -1,0 +1,956 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/girl.png">
+  <link rel="icon" href="/img/girl.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Epoch">
+  <meta name="keywords" content="Epoch Blog">
+  
+    <meta name="description" content="Linux虚拟内存每个用户进程都只能看到虚拟内存，操作虚拟内存。虚拟内存到物理内存的映射任务由操作系统完成。 每个用户进程看到的虚拟内存地址都是连续的，且具有一定布局规则。 每个用户的虚拟内存之间是相互隔离的，相互独立，无法感知其他进程虚拟内存的存在。 虚拟内存采用lazy loading机制，只有真正用到内存，才会将虚拟内存映射到物理内存。 用户空间32位Linux用户空间为3G，64下实际用到">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Virtual Memory">
+<meta property="og:url" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/index.html">
+<meta property="og:site_name" content="Epoch">
+<meta property="og:description" content="Linux虚拟内存每个用户进程都只能看到虚拟内存，操作虚拟内存。虚拟内存到物理内存的映射任务由操作系统完成。 每个用户进程看到的虚拟内存地址都是连续的，且具有一定布局规则。 每个用户的虚拟内存之间是相互隔离的，相互独立，无法感知其他进程虚拟内存的存在。 虚拟内存采用lazy loading机制，只有真正用到内存，才会将虚拟内存映射到物理内存。 用户空间32位Linux用户空间为3G，64下实际用到">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/Virtual%20Memory">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/image-20230206144443982.png">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/Virtual%20Memory">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/Virtual%20Memory">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/image-20230206154500377.png">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/image-20230206155116536.png">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/image-20230206160456320.png">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/image-20230206161420741.png">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/image-20230206163852296.png">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/image-20230206162957563.png">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/image-20230206163954521.png">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/image-20230207163112757.png">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/image-20230207164956942.png">
+<meta property="og:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/image-20230207171108780.png">
+<meta property="article:published_time" content="2024-07-24T14:47:33.989Z">
+<meta property="article:modified_time" content="2024-07-24T14:47:33.989Z">
+<meta property="article:author" content="Epoch">
+<meta property="article:tag" content="Epoch Blog">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://messenger1th.github.io/2024/07/24/Linux/Virtual%20Memory/Virtual%20Memory">
+  
+  
+  
+  <title>Virtual Memory - Epoch</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"messenger1th.github.io","root":"/","version":"1.9.3","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"left","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Epoch</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" target="_blank" rel="noopener" href="https://github.com/messenger1th">
+                <i class="iconfont icon-github-fill"></i>
+                GitHub
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Virtual Memory"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-24 22:47" pubdate>
+          2024年7月24日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          6.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          110 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="padding-left: 2rem; margin-right: -1rem">
+    <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Virtual Memory</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Linux虚拟内存"><a href="#Linux虚拟内存" class="headerlink" title="Linux虚拟内存"></a>Linux虚拟内存</h1><p>每个用户进程都只能看到虚拟内存，操作虚拟内存。虚拟内存到物理内存的映射任务由操作系统完成。</p>
+<p>每个用户进程看到的虚拟内存地址都是连续的，且具有一定布局规则。</p>
+<p>每个用户的虚拟内存之间是相互隔离的，相互独立，无法感知其他进程虚拟内存的存在。</p>
+<p>虚拟内存采用lazy loading机制，只有真正用到内存，才会将虚拟内存映射到物理内存。</p>
+<h2 id="用户空间"><a href="#用户空间" class="headerlink" title="用户空间"></a>用户空间</h2><p>32位Linux用户空间为3G，64下实际用到48位，为128T，布局类似，只是各段大小不同。</p>
+<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><img src="/2024/07/24/Linux/Virtual Memory/Virtual%20Memory" srcset="/img/loading.gif" lazyload  alt="image-20230206142734817" style="zoom: 67%;" />
+
+<p>每个段具有不同的作用</p>
+<ul>
+<li>代码段：存放可执行的二进制文件，Linux系统下为elf格式的文件。</li>
+<li>数据段：存放在代码中指定了初始值的全局变量和静态变量。</li>
+<li>BSS段：没有指定初始值的全局变量和静态变量在虚拟内存空间中的存储区域我们叫做 BSS 段。这些未初始化的全局变量被加载进内存之后会被初始化为 0 值。</li>
+</ul>
+<p>上面介绍的这些全局变量和静态变量都是在编译期间就确定的，但是我们程序在运行期间往往需要动态的申请内存，所以在虚拟内存空间中也需要一块区域来存放这些动态申请的内存，这块区域就叫做堆。</p>
+<ul>
+<li>堆：动态分配空间</li>
+<li>文件映射与匿名映射区：存放动态链接库中的代码段、数据段、BSS段以及通过mmap映射的共享内存区。</li>
+<li>栈：存放函数的局部变量、函数参数。</li>
+</ul>
+<h3 id="描述"><a href="#描述" class="headerlink" title="描述"></a>描述</h3><p>在Linux下，用户进程用<code>task_struck</code>来描述，其中含有一个<code>mm_struct</code>来描述用户空间，而mm_struct描述整个用户空间，组织如下。</p>
+<img src="/2024/07/24/Linux/Virtual%20Memory/image-20230206144443982.png" srcset="/img/loading.gif" lazyload class="" title="image-20230206144443982">
+
+<p>此外，由于各个段之间存在共性，面向对象思想，把各个段用一个<code>vm_area_struct</code>来描述，记录段开始、结束，属性，读写权限，行为规范<code>vm_flags</code>。</p>
+<img src="/2024/07/24/Linux/Virtual Memory/Virtual%20Memory" srcset="/img/loading.gif" lazyload  alt="image-20230206144834567" style="zoom: 67%;" />
+
+<p>各个<code>vm_area_struct</code>按照管理地址从低到高连成双向链表，同时指回<code>mm_struct</code>。<code>mm_struct</code>的<code>mmap</code>指针指向第一个<code>vm_area_struct</code>，组织如下。</p>
+<img src="/2024/07/24/Linux/Virtual Memory/Virtual%20Memory" srcset="/img/loading.gif" lazyload  alt="image-20230206151247930" style="zoom:67%;" />
+
+<p>此外，为了快速查找，还将每个<code>mm_struct</code>加入到一颗红黑树中，从<code>mm_struct</code>的<code>mm_rb</code>中可以获取到其根节点，组织如下。</p>
+<img src="/2024/07/24/Linux/Virtual%20Memory/image-20230206154500377.png" srcset="/img/loading.gif" lazyload class="" title="image-20230206154500377">
+
+<h2 id="内核空间"><a href="#内核空间" class="headerlink" title="内核空间"></a>内核空间</h2><p>每个用户的虚拟内存空间相互独立，但内核空间是所有进程共享的，不同进程进入内核态看到的虚拟内存空间是一样的。</p>
+<p>由于内核会涉及到物理内存的管理，所以很多人会想当然地认为只要进入了内核态就开始使用物理地址了，这就大错特错了，千万不要这样理解，进程进入内核态之后使用的仍然是虚拟内存地址，只不过在内核中使用的虚拟内存地址被限制在了内核态虚拟内存空间范围中。</p>
+<h3 id="32位布局"><a href="#32位布局" class="headerlink" title="32位布局"></a>32位布局</h3><h4 id="直接映射区"><a href="#直接映射区" class="headerlink" title="直接映射区"></a>直接映射区</h4><img src="/2024/07/24/Linux/Virtual%20Memory/image-20230206155116536.png" srcset="/img/loading.gif" lazyload class="" title="image-20230206155116536">
+
+<p>虽然这块区域中的虚拟地址是直接映射到物理地址上，但是内核在访问这段区域的时候还是走的<strong>直接映射区中的映射关系是一比一映射。映射关系是固定的不会改变</strong>。</p>
+<p><strong>直接映射区中的映射关系是一比一映射。映射关系是固定的不会改变</strong>。</p>
+<ul>
+<li><p><strong>内核代码相关：代码段、数据段、BSS段</strong>在这段 896M 大小的物理内存中，前 1M 已经在系统启动的时候被系统占用，1M 之后的物理内存存放的是内核代码段，数据段，BSS 段（这些信息起初存放在 ELF格式的二进制文件中，在系统启动的时候被加载进内存）。</p>
+</li>
+<li><p><strong>分配使用相关：各类结构描述符</strong>当我们使用 fork 系统调用创建进程的时候，内核会创建一系列进程相关的描述符，比如之前提到的进程的核心数据结构 task_struct，进程的内存空间描述符 mm_struct，以及虚拟内存区域描述符 vm_area_struct 等。这些进程相关的数据结构也会存放在物理内存前 896M 的这段区域中，当然也会被直接映射至内核态虚拟内存空间中的 3G – 3G + 896m 这段直接映射区域中。</p>
+</li>
+<li><p><strong>内核栈</strong>：当进程被创建完毕之后，在内核运行的过程中，会涉及内核栈的分配，内核会为每个进程分配一个固定大小的内核栈（一般是64位两个页，32位一个页，依赖具体的体系结构），每个进程的整个调用链必须放在自己的内核栈中，内核栈也是分配在直接映射区。与进程用户空间中的栈不同的是，内核栈容量小而且是固定的，用户空间中的栈容量大而且可以动态扩展。内核栈的溢出危害非常巨大，它会直接悄无声息的覆盖相邻内存区域中的数据，破坏数据。</p>
+</li>
+</ul>
+<p>我们知道32位Linux物理内存分为ZONE_DMA、ZONE_NORMAL、ZONE_HIGHEM区域。而ZONE_DMA是0～16MB，而ZONE_NORMAL是16MB～896MB。即ZONE_DMA和ZONE_NORMAL都是直接映射区。</p>
+<img src="/2024/07/24/Linux/Virtual%20Memory/image-20230206160456320.png" srcset="/img/loading.gif" lazyload class="" title="image-20230206160456320">
+
+<p>而剩下的内存都是ZONE_HIGHEM区，称为高端内存，由于32位下虚拟内存中内核空间仅仅为1GB，就剩下128M的内核虚拟空间，无法直接映射，只能是动态的一部分一部分的分批映射，先映射正在使用的这部分，使用完毕解除映射，接着映射其他部分。</p>
+<p>内核虚拟内存空间中的 3G + 896M 这块地址在内核中定义为 high_memory，high_memory 往上有一段 8M 大小的内存空洞。空洞范围为：high_memory 到 VMALLOC_START 。</p>
+<h4 id="动态映射区：vmalloc"><a href="#动态映射区：vmalloc" class="headerlink" title="动态映射区：vmalloc"></a>动态映射区：vmalloc</h4><p>接下来 VMALLOC_START 到 VMALLOC_END 之间的这块区域成为动态映射区。采用动态映射的方式映射物理内存中的高端内存。</p>
+<img src="/2024/07/24/Linux/Virtual%20Memory/image-20230206161420741.png" srcset="/img/loading.gif" lazyload class="" title="image-20230206161420741">
+
+<p>和用户态进程使用 malloc 申请内存一样，在这块动态映射区内核是使用 vmalloc 进行内存分配。由于之前介绍的动态映射的原因，vmalloc 分配的内存在虚拟内存上是连续的，但是物理内存是不连续的。通过页表来建立物理内存与虚拟内存之间的映射关系，从而可以将不连续的物理内存映射到连续的虚拟内存上。</p>
+<blockquote>
+<p>由于 vmalloc 获得的物理内存页是不连续的，因此它只能将这些物理内存页一个一个地进行映射，在性能开销上会比直接映射大得多。因此内核用的更多的是kmalloc直接映射。</p>
+</blockquote>
+<h4 id="永久映射区"><a href="#永久映射区" class="headerlink" title="永久映射区"></a>永久映射区</h4><p> PKMAP_BASE 到 FIXADDR_START 之间的这段空间称为永久映射区。在内核的这段虚拟地址空间中允许建立与物理高端内存的长期映射关系。比如内核通过 alloc_pages() 函数在物理内存的高端内存中申请获取到的物理内存页，这些物理内存页可以通过调用 kmap 映射到永久映射区中。</p>
+<h4 id="固定映射区"><a href="#固定映射区" class="headerlink" title="固定映射区"></a>固定映射区</h4><p>内核虚拟内存空间中的下一个区域为固定映射区，区域范围为：FIXADDR_START 到 FIXADDR_TOP。</p>
+<p>在固定映射区中的虚拟内存地址可以自由映射到物理内存的高端地址上，但是与动态映射区以及永久映射区不同的是，在固定映射区中虚拟地址是固定的，而被映射的物理地址是可以改变的。也就是说，有些虚拟地址在编译的时候就固定下来了，是在内核启动过程中被确定的，而这些虚拟地址对应的物理地址不是固定的。采用固定虚拟地址的好处是它相当于一个指针常量（常量的值在编译时确定），指向物理地址，如果虚拟地址不固定，则相当于一个指针变量。</p>
+<p>那为什么会有固定映射这个概念呢 ? 比如：在内核的启动过程中，有些模块需要使用虚拟内存并映射到指定的物理地址上，而且这些模块也没有办法等待完整的内存管理模块初始化之后再进行地址映射。因此，内核固定分配了一些虚拟地址，这些地址有固定的用途，使用该地址的模块在初始化的时候，将这些固定分配的虚拟地址映射到指定的物理地址上去。</p>
+<h4 id="临时映射区"><a href="#临时映射区" class="headerlink" title="临时映射区"></a>临时映射区</h4><p>主要用于数据拷贝。</p>
+<h3 id="64位布局"><a href="#64位布局" class="headerlink" title="64位布局"></a>64位布局</h3><p>由于64位虚拟内存空间足够的大，即便是内核要访问全部的物理内存，直接映射就可以了，不在需要用到ZONE_HIGHMEM 高端内存那样的动态映射方式。</p>
+<p>64位和32位各段作用的大差不差，布局相似，不在赘述，布局如下。</p>
+<img src="/2024/07/24/Linux/Virtual%20Memory/image-20230206163852296.png" srcset="/img/loading.gif" lazyload class="" title="image-20230206163852296">
+
+<h2 id="整体布局"><a href="#整体布局" class="headerlink" title="整体布局"></a>整体布局</h2><h3 id="32位"><a href="#32位" class="headerlink" title="32位"></a>32位</h3><img src="/2024/07/24/Linux/Virtual%20Memory/image-20230206162957563.png" srcset="/img/loading.gif" lazyload class="" title="image-20230206162957563">
+
+<h3 id="64位"><a href="#64位" class="headerlink" title="64位"></a>64位</h3><img src="/2024/07/24/Linux/Virtual%20Memory/image-20230206163954521.png" srcset="/img/loading.gif" lazyload class="" title="image-20230206163954521">
+
+<h2 id="加载ELF磁盘文件"><a href="#加载ELF磁盘文件" class="headerlink" title="加载ELF磁盘文件"></a>加载ELF磁盘文件</h2><p>进程新创建时会把磁盘中的elf二进制文件的内容加载到内存。</p>
+<p>elf文件中的 .text，.rodata 等一些只读的 Section，会被映射到内存的一个只读可执行的 Segment 里（代码段）。而 .data，.bss 等一些可读写的 Section，则会被映射到内存的一个具有读写权限的 Segment 里（数据段，BSS 段）。</p>
+<p>Linux内核完成这个映射过程的函数是 <code>load_elf_binary</code>。</p>
+<h2 id="寻址"><a href="#寻址" class="headerlink" title="寻址"></a>寻址</h2><p>寻址就是将虚拟内存转化为物理内存的过程。</p>
+<p>Linux下有多级寻址：三四五级。</p>
+<p>三级寻址：PGD（Page Global Directory）、PMD（Page Middle Directory）、PT（Page Table）。</p>
+<p>四级寻址：PGD、PUD（Page Upper Directory）、PMD、PT。</p>
+<p>五级寻址：PGD、P4D、PUD、PMD、PT。</p>
+<p>每一级的寻址表除了提供寻址功能外，还有控制读写权限等页面所具有的功能，如果提前发现权限不足即可提前退出。</p>
+<p>寻址需要借助硬件来完成，软件作为驱动，在硬件层面完成多级寻址的硬件模块叫做MMU。</p>
+<p>通常是四级寻址，每一级用到9个二进制位，共$2^{36}$，而每一页是4Kb也就是$2^{12}$，即$2^{48}$的虚拟内存空间，如下图。</p>
+
+
+
+
+<h3 id="TLB"><a href="#TLB" class="headerlink" title="TLB"></a>TLB</h3><p>由上述寻址过程不难发现，寻址是一个耗时的过程，也有了缓存机制， CPU 芯片中，加入了一个专门存放程序最常访问的页表项的 Cache，这个 Cache 我们称为TLB（Translation lookaside buffer）。TLB也由MMU访问。</p>
+<p>同样的，TLB除了存储具体页面体数据外，还存有相关的权限信息。</p>
+<h2 id="malloc内存管理"><a href="#malloc内存管理" class="headerlink" title="malloc内存管理"></a>malloc内存管理</h2><p>ptmalloc是glibc默认的内存管理器。我们常用的malloc和free就是由ptmalloc内存管理器提供的基础内存分配函数。这块主要讲的是ptmalloc分配的原理。</p>
+<p>glic库也是操作系统之上的，因此底层还是调用的操作系统的接口，所以<code>malloc</code>&#x2F;<code>free</code>也是分配&#x2F;释放虚拟内存。</p>
+<p>因为系统调用需要从用户态陷入内核态的缘故， 不是每调用一次<code>malloc</code>&#x2F;<code>free</code>都调用一次系统调用，C库对向操作系统申请来的虚拟内存进行一定的管理，来减少系统调用。</p>
+<h3 id="malloc"><a href="#malloc" class="headerlink" title="malloc"></a>malloc</h3><ul>
+<li>分配内存 &lt; <code>DEFAULT_MMAP_THRESHOLD</code>，走__brk，从<strong>内存池</strong>获取，失败的话走brk系统调用</li>
+<li>分配内存 &gt; <code>DEFAULT_MMAP_THRESHOLD</code>，走__mmap，直接调用mmap系统调用</li>
+</ul>
+<p>其中，<code>DEFAULT_MMAP_THRESHOLD</code>默认为128k，可通过<code>mallopt</code>进行设置。</p>
+<h3 id="free"><a href="#free" class="headerlink" title="free"></a>free</h3><ul>
+<li>malloc 通过 <strong>brk()</strong> 方式申请的内存，free 释放内存的时候，<strong>并不会把内存归还给操作系统，而是缓存在 malloc 的内存池中，待下次使用</strong>；</li>
+<li>malloc 通过 <strong>mmap()</strong> 方式申请的内存，free 释放内存的时候，<strong>会把内存归还给操作系统，内存得到真正的释放</strong>。</li>
+</ul>
+<p>我们重点关注内存池。</p>
+<h3 id="内存池"><a href="#内存池" class="headerlink" title="内存池"></a>内存池</h3><h4 id="数据结构Bins：管理空闲内存"><a href="#数据结构Bins：管理空闲内存" class="headerlink" title="数据结构Bins：管理空闲内存"></a>数据结构Bins：管理空闲内存</h4><ul>
+<li>fast bins：管理小块内存</li>
+<li>unsorted bin</li>
+<li>small bins</li>
+<li>large bins</li>
+</ul>
+<img src="/2024/07/24/Linux/Virtual%20Memory/image-20230207163112757.png" srcset="/img/loading.gif" lazyload class="" title="image-20230207163112757">
+
+<h4 id="malloc分配流程"><a href="#malloc分配流程" class="headerlink" title="malloc分配流程"></a>malloc分配流程</h4><img src="/2024/07/24/Linux/Virtual%20Memory/image-20230207164956942.png" srcset="/img/loading.gif" lazyload class="" title="image-20230207164956942">
+
+<ol>
+<li>获取分配区的锁，防止多线程冲突。</li>
+<li>计算出需要分配的内存的chunk实际大小。</li>
+<li>判断chunk的大小，如果小于max_fast（64b），则取fast bins上去查询是否有适合的chunk，如果有则分配结束。</li>
+<li>chunk大小是否小于512B，如果是，则从small bins上去查找chunk，如果有合适的，则分配结束。</li>
+<li>继续从 unsorted bins上查找。如果unsorted bins上只有一个chunk并且大于待分配的chunk，则进行切割，并且剩余的chunk继续扔回unsorted bins；如果unsorted bins上有大小和待分配chunk相等的，则返回，并从unsorted bins删除；如果unsorted bins中的某一chunk大小 属于small bins的范围，则放入small bins的头部；如果unsorted bins中的某一chunk大小 属于large bins的范围，则找到合适的位置放入。</li>
+<li>从large bins中查找，找到链表头后，反向遍历此链表，直到找到第一个大小 大于待分配的chunk，然后进行切割，如果有余下的，则放入unsorted bin中去，分配则结束。</li>
+<li>如果搜索fast bins和bins都没有找到合适的chunk，那么就需要操作top chunk来进行分配了（top chunk相当于分配区的剩余内存空间）。判断top chunk大小是否满足所需chunk的大小，如果是，则从top chunk中分出一块来。</li>
+<li>如果top chunk也不能满足需求，则需要扩大top chunk。主分区上，如果分配的内存小于分配阀值（默认128k），则直接使用brk()分配一块内存；如果分配的内存大于分配阀值，则需要mmap来分配；非主分区上，则直接使用mmap来分配一块内存。通过mmap分配的内存，就会放入mmap chunk上，mmap chunk上的内存会直接回收给操作系统。</li>
+</ol>
+<p><strong>unsorted清除时机（放到samll bin或者large bin上）：fast bin 和 small bin， unsorted 都没查找到合适大小。</strong></p>
+<h4 id="free释放流程"><a href="#free释放流程" class="headerlink" title="free释放流程"></a>free释放流程</h4><img src="/2024/07/24/Linux/Virtual%20Memory/image-20230207171108780.png" srcset="/img/loading.gif" lazyload class="" title="image-20230207171108780">
+
+<ol>
+<li>获取分配区的锁，保证线程安全。</li>
+<li>如果free的是空指针，则返回，什么都不做。</li>
+<li>判断当前chunk是否是mmap映射区域映射的内存，如果是，则直接munmap()释放这块内存。前面的已使用chunk的数据结构中，我们可以看到有M来标识是否是mmap映射的内存。</li>
+<li>判断chunk是否与top chunk相邻，如果相邻，则直接和top chunk合并（和top chunk相邻相当于和分配区中的空闲内存块相邻）。转到步骤8</li>
+<li>如果chunk的大小大于max_fast（64b），则放入unsorted bin，并且检查是否有合并，有合并情况并且和top chunk相邻，则转到步骤8；没有合并情况则free。</li>
+<li>如果chunk的大小小于 max_fast（64b），则直接放入fast bin，fast bin并没有改变chunk的状态。没有合并情况，则free；有合并情况，转到步骤7</li>
+<li>在fast bin，如果当前chunk的下一个chunk也是空闲的，则将这两个chunk合并，放入unsorted bin上面。合并后的大小如果大于64KB，会触发进行fast bins的合并操作，fast bins中的chunk将被遍历，并与相邻的空闲chunk进行合并，合并后的chunk会被放到unsorted bin中，fast bin会变为空。合并后的chunk和topchunk相邻，则会合并到topchunk中。转到步骤8</li>
+<li>判断top chunk的大小是否大于mmap收缩阈值（默认为128KB），如果是的话，对于主分配区，则会试图归还top chunk中的一部分给操作系统。free结束。</li>
+</ol>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li>《深入Linux内核架构与底层原理》第七章 内存管理</li>
+<li>《Linux内核设计与实现》第十二章 内存管理</li>
+<li>《程序员的自我修养——链接、装载与库》</li>
+<li><a target="_blank" rel="noopener" href="https://xiaolincoding.com/os/3_memory/vmem.html">4.1 为什么要有内存管理</a></li>
+<li><a target="_blank" rel="noopener" href="https://xiaolincoding.com/os/3_memory/vmem.html">4.2 malloc是怎样分配内存的</a></li>
+<li><a target="_blank" rel="noopener" href="https://xiaolincoding.com/os/3_memory/vmem.html">4.6 深入理解Linux虚拟内存</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/2fedeacfa797">glibc内存管理那些事儿</a></li>
+<li><a target="_blank" rel="noopener" href="https://yuhao0102.github.io/2019/04/11/%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E5%99%A8ptmalloc/">内存管理器ptmalloc</a></li>
+<li><a target="_blank" rel="noopener" href="https://paper.seebug.org/papers/Archive/refs/heap/glibc%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86ptmalloc%E6%BA%90%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90.pdf">glibc内存管理ptmalloc源码分析</a></li>
+</ol>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><h3 id="页表的存放在哪里？内核里头？用户虚拟内存里头？具体在哪里段？"><a href="#页表的存放在哪里？内核里头？用户虚拟内存里头？具体在哪里段？" class="headerlink" title="页表的存放在哪里？内核里头？用户虚拟内存里头？具体在哪里段？"></a>页表的存放在哪里？内核里头？用户虚拟内存里头？具体在哪里段？</h3><p>页表存放在<strong>内核空间</strong>，每个进程拥有独立的页表，进程页表基地址的物理地址存放在<code>mm_struct-&gt;pgd</code>里。</p>
+<p>当前正在处理的任务的页表根目录物理地址通常放在一个页表基址寄存器PTBR（page table base register ）中，比如<code>X86_64</code>的<code>CR3</code>寄存器。</p>
+<p>上下文切换时，就会切换这个寄存器的值。从新进程的<code>task_struct</code>中的<code>mm_struct</code>中<code>pgd</code>的值读到CR3寄存器。</p>
+<h3 id="什么情况下需要遍历VMA链表？"><a href="#什么情况下需要遍历VMA链表？" class="headerlink" title="什么情况下需要遍历VMA链表？"></a>什么情况下需要遍历VMA链表？</h3><p>在查看进程内存情况的时候，采用遍历该链表比在红黑树一个一个查找来的快。当然可能还有其他应用场景。由于版本的不同，该链表可能是双向链表也可能是单向链表甚至可能没有。笔者在查看源码的时候，2.6版本存在该双向链表，但最新版本看不到<code>prev</code>和<code>next</code>指针了，可能是修改了架构也可能是移除了。</p>
+<h3 id="brk和mmap虚拟内存申请原理"><a href="#brk和mmap虚拟内存申请原理" class="headerlink" title="brk和mmap虚拟内存申请原理"></a>brk和mmap虚拟内存申请原理</h3><p>brk仅仅移动brk指针。</p>
+<p>mmap首先判断是匿名映射（即申请虚拟内存）还是文件映射，判断空间是否足够、清楚旧的映射、校验内存可用性。都满足的话，创建出一块<code>vm_area_struct</code>并插入到红黑树进行管理。</p>
+<p>以上都是分配虚拟内存，真正用到内存时才会发生缺页中断，建立虚拟内存到物理内存的映射。</p>
+<h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a>TODO</h2><ul>
+<li><p>反向映射</p>
+</li>
+<li><p>TLB淘汰策略</p>
+</li>
+<li><p>换入换出</p>
+</li>
+<li><p>缺页异常的处理</p>
+</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/Linux/" class="category-chain-item">Linux</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Virtual Memory</div>
+      <div>https://messenger1th.github.io/2024/07/24/Linux/Virtual Memory/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Epoch</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/07/24/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" title="网络编程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">网络编程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/24/Linux/Slub/" title="Slub">
+                        <span class="hidden-mobile">Slub</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-left: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Linux"
+        id="heading-edc9f0a5a5d57797bf68e37364743831" role="tab" data-toggle="collapse" href="#collapse-edc9f0a5a5d57797bf68e37364743831"
+        aria-expanded="true"
+      >
+        Linux
+        <span class="list-group-count">(6)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-edc9f0a5a5d57797bf68e37364743831"
+           role="tabpanel" aria-labelledby="heading-edc9f0a5a5d57797bf68e37364743831">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2024/07/24/Linux/Ext%20File%20System/" title="Ext File System"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Ext File System</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Linux/Physical%20Memory/" title="Physical Memory"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Physical Memory</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Linux/Process/" title="Process"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Process</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Linux/Slub/" title="Slub"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Slub</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Linux/Virtual%20Memory/" title="Virtual Memory"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">Virtual Memory</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2024/07/24/Linux/%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B/" title="网络编程"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">网络编程</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+  
+  
+
+
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+    <!-- 备案信息 ICP for China -->
+    <div class="beian">
+  <span>
+    <a href="http://beian.miit.gov.cn/" target="_blank" rel="nofollow noopener">
+      赣ICP备2024036505号
+    </a>
+  </span>
+  
+</div>
+
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  
+      <script>
+        if (!window.MathJax) {
+          window.MathJax = {
+            tex    : {
+              inlineMath: { '[+]': [['$', '$']] }
+            },
+            loader : {
+              load: ['ui/lazy']
+            },
+            options: {
+              renderActions: {
+                insertedScript: [200, () => {
+                  document.querySelectorAll('mjx-container').forEach(node => {
+                    let target = node.parentNode;
+                    if (target.nodeName.toLowerCase() === 'li') {
+                      target.parentNode.classList.add('has-jax');
+                    }
+                  });
+                }, '', false]
+              }
+            }
+          };
+        } else {
+          MathJax.startup.document.state(0);
+          MathJax.texReset();
+          MathJax.typeset();
+          MathJax.typesetPromise();
+        }
+
+        Fluid.events.registerRefreshCallback(function() {
+          if ('MathJax' in window && MathJax.startup.document && typeof MathJax.startup.document.state === 'function') {
+            MathJax.startup.document.state(0);
+            MathJax.texReset();
+            MathJax.typeset();
+            MathJax.typesetPromise();
+          }
+        });
+      </script>
+    
+
+  <script  src="https://lib.baomitu.com/mathjax/3.2.2/es5/tex-mml-chtml.js" ></script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
